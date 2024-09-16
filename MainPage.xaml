@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Vendor_App.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+            <!-- label for entering amount -->
+            <Label Text="Enter Amount: " />
+            <Entry x:Name="AmountEntry" Keyboard="Numeric" Placeholder="0.00" />
+            
+            <!-- Payment Type Picker -->
+            <Label Text="Select Payment Type: " />
+            <Picker x:Name="PaymentTypePicker">
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>Cash</x:String>
+                        <x:String>Card</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+            
+            <!-- Add to List Button -->
+            <Button Text="Add to List" Clicked="OnAddTransactionClicked"/>
+            
+            <!-- List of Transactions -->
+            <Label Text="Transactions" />
+            <ListView x:Name="TransactionList" ItemsSource="{Binding transactions}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal" Padding="10" Spacing="20">
+                                <Label Text="{Binding paymentType}" />
+                                <Label Text=" " />
+                                <Label Text="{Binding Amount, StringFormat='{}{0:C}'}" />
+                            </StackLayout>
+
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            
+            <!-- Total Amount Display -->
+            <Label x:Name="TotalAmountLabel" Text="Total: 0.00" FontSize="Large" HorizontalOptions="Center"/>
+
+
+
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
