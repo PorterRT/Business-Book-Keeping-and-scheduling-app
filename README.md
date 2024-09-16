@@ -15,6 +15,14 @@ Feature 3: Vendor Performance tracking
   
 Feature 4: Vendor Network to talk with other vendors about events, what is happening in your area, and who/how to book a vendor stand.
 
+we need to plan for with our database, multiple users, o auth through google, apple, and square. we will then save the usernames and give them a auto generated id so they can securely access only their own data
+I will also need to make a ERD Diagram for the database Right now for feature 1 we will need a Table named "Transactions" that stores  ID (Auto Increment), Date, PaymentType, each transaction amount, the breakdown of each transaction (these will be optional). 
+
+Note for later will need to add a try catch for if nothing is selected in payment type, and if nothing is entered in the transaction amount. 
+Note will need to only display selected date not all dates for the transactions. 
+Note will need to add more crud operations for the transactions. update and delete still needed
+Repositories folder will make it easy to go to cloud base databases instead of local SQLite databases.
+
 
   
   

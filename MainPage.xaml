@@ -7,6 +7,11 @@
         <VerticalStackLayout
             Padding="30,0"
             Spacing="25">
+
+            <!-- Date Picker for Transaction Date -->
+            <Label Text="Select Date:" />
+            <DatePicker x:Name="TransactionDatePicker"/>
+            
             <!-- label for entering amount -->
             <Label Text="Enter Amount: " />
             <Entry x:Name="AmountEntry" Keyboard="Numeric" Placeholder="0.00" />
@@ -32,6 +37,8 @@
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout Orientation="Horizontal" Padding="10" Spacing="20">
+                                <Label Text="{Binding Date, StringFormat='{0:MM/dd/yyyy}'}" />
+                                <Label Text=" " />
                                 <Label Text="{Binding paymentType}" />
                                 <Label Text=" " />
                                 <Label Text="{Binding Amount, StringFormat='{}{0:C}'}" />
