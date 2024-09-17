@@ -20,42 +20,58 @@
             TransactionDatePicker.Date = DateTime.Today;
 
             // Load the transactions from the database
-            LoadTransactions();
+            LoadTransactionsForDate(TransactionDatePicker.Date);
         }
 
-        private async void LoadTransactions()
+        private async void LoadTransactionsForDate(DateTime selectedDate)
         {
-            // Get the transactions from the database
-            var transactions = await _transactionRepository.GetTransactionsAsync();
+            // Get the transactions from the database and only display 
+            var transactions = await _transactionRepository.GetTransactionsByDateAsync(selectedDate);
             TransactionList.ItemsSource = transactions;
 
             // calculate and display the total amount
-            await UpdateTotalAmount();
+            await UpdateTotalDateAmount(selectedDate);
+        }
+        
+        private void OnDateSelected(object sender, DateChangedEventArgs e) 
+        {
+            // Load the transactions for the selected date
+            LoadTransactionsForDate(e.NewDate); 
         }
         private async void OnAddTransactionClicked(object sender, EventArgs e)
         {
-           // add a try catch and throw an error but then allow the user to keep going if they did not select car do cash
             if (double.TryParse(AmountEntry.Text, out double amount))
             {
-                var transaction = new Transaction
-                { paymentType = PaymentTypePicker.SelectedItem.ToString() ?? "Unknown", 
-                    Amount = amount, 
-                    Date = TransactionDatePicker.Date 
-                };
-
-                // Save the transaction to the database
-                await _transactionRepository.SaveTransactionAsync(transaction);
-
-                // Reload the transactions to refresh the list and total    
-                LoadTransactions();
-
-
-
-
+                try 
+                {
+                    if (PaymentTypePicker.SelectedItem == null) // error for no payment type selected
+                    {
+                        throw new Exception("Please select a payment type");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("Error", ex.Message, "OK");
+                }
+                finally
+                {
+                    var transaction = new Transaction
+                    {
+                        paymentType = PaymentTypePicker.SelectedItem.ToString() ?? "Unknown",
+                        Amount = amount,
+                        Date = TransactionDatePicker.Date
+                    };
+                    // Save the transaction to the database
+                    await _transactionRepository.SaveTransactionAsync(transaction);
+                    // Reload the transactions to refresh the list and total    
+                    LoadTransactionsForDate(TransactionDatePicker.Date);
+                    // Clear the amount entry, payment type picker, and date picker
+                    AmountEntry.Text = string.Empty;
+                    PaymentTypePicker.SelectedIndex = -1; // Set the selected index to -1 to clear the selection
+                }
                 // Clear the amount entry, payment type picker, and date picker
                 AmountEntry.Text = string.Empty;
                 PaymentTypePicker.SelectedIndex = -1; // Set the selected index to -1 to clear the selection
-                TransactionDatePicker.Date = DateTime.Today;// reset the date to today
                 
             }
             else
@@ -64,11 +80,27 @@
                 await DisplayAlert("Invalid Amount", "Please enter a valid amount", "OK");
             }
         }
-        private async Task UpdateTotalAmount()
+        // Delete a transaction
+        private async void OnDeleteTransactionClicked(object sender, EventArgs e)
         {
-            // Get the total amount of all transactions
-            total = await _transactionRepository.GetTotalAmountAsync();
-            TotalAmountLabel.Text = $"Total Amount: {total:C}";
+            var button = (Button)sender;
+            var transaction = (Transaction)button.CommandParameter;
+
+            bool confirm = await DisplayAlert("Confirm", "Are you sure you want to delete this transaction?", "Yes", "No");
+            if (confirm)
+            {
+                // Delete the transaction from the database
+                await _transactionRepository.DeleteTransactionAsync(transaction);
+                // Reload the transactions to refresh the list and total
+                LoadTransactionsForDate(TransactionDatePicker.Date);
+            }
+        }
+        private async Task UpdateTotalDateAmount(DateTime selectedDate)
+        {
+            // Get the total amount for the selected date
+            var transactions = await _transactionRepository.GetTransactionsByDateAsync(selectedDate);
+            total = transactions.Sum(t => t.Amount);
+            TotalAmountLabel.Text = $"Total: {total:C}";
         }
     }
  }

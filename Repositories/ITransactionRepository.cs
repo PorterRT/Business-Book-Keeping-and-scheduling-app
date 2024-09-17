@@ -9,7 +9,13 @@ namespace Vendor_App.Repositories
     {
         Task SaveTransactionAsync(Transaction transaction); // Use singular 'Transaction'
         Task<List<Transaction>> GetTransactionsAsync(); // Use singular 'Transaction'
-        Task<List<Transaction>> GetTransactionsByDateAsync(DateTime date); // Use singular 'Transaction' and fix method name
+        Task<List<Transaction>> GetTransactionsByDateAsync(DateTime date); // 
         Task<double> GetTotalAmountAsync();  // Get the total amount of all transactions
+
+        // Add a method to delete a transaction
+        Task DeleteTransactionAsync(Transaction transaction); // Use singular 'Transaction'
+       
+
+
     }
 }

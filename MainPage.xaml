@@ -10,7 +10,7 @@
 
             <!-- Date Picker for Transaction Date -->
             <Label Text="Select Date:" />
-            <DatePicker x:Name="TransactionDatePicker"/>
+            <DatePicker x:Name="TransactionDatePicker" DateSelected="OnDateSelected"/>
             
             <!-- label for entering amount -->
             <Label Text="Enter Amount: " />
@@ -31,6 +31,7 @@
             <Button Text="Add to List" Clicked="OnAddTransactionClicked"/>
             
             <!-- List of Transactions -->
+            <!-- make auto width for phones for the entire section delete button currrently cut off-->
             <Label Text="Transactions" />
             <ListView x:Name="TransactionList" ItemsSource="{Binding transactions}">
                 <ListView.ItemTemplate>
@@ -42,6 +43,11 @@
                                 <Label Text="{Binding paymentType}" />
                                 <Label Text=" " />
                                 <Label Text="{Binding Amount, StringFormat='{}{0:C}'}" />
+                                <Label Text=" " />
+                                <Button Text="Delete" Clicked="OnDeleteTransactionClicked"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="Red"
+                                        TextColor="White"/>
                             </StackLayout>
 
                         </ViewCell>

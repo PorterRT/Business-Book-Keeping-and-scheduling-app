@@ -39,9 +39,14 @@ namespace Vendor_App.Repositories
         // Get all transactions for a specific date
         public Task<List<Transaction>> GetTransactionsByDateAsync(DateTime date) // Fix method signature to match interface
         {
+            // Set the start and end of the selected day
+            DateTime startOfDay = date.Date;  // Midnight of the selected day
+            DateTime endOfDay = date.Date.AddDays(1).AddTicks(-1);  // End of the selected day
+
+            // Query for transactions within the selected day
             return _database.Table<Transaction>()
-                            .Where(t => t.Date.Date == date.Date) // Ensure comparison by date only
-                            .ToListAsync(); // Get all transactions for a specific date
+                            .Where(t => t.Date >= startOfDay && t.Date <= endOfDay)
+                            .ToListAsync();
         }
 
         // Get the total amount of all transactions
@@ -50,5 +55,12 @@ namespace Vendor_App.Repositories
             var transactions = await _database.Table<Transaction>().ToListAsync();
             return transactions.Sum(t => t.Amount);
         }
+        // Delete a transaction from the database
+        
+        public Task DeleteTransactionAsync(Transaction transaction) // Change Transactions to Transaction
+        {
+            return _database.DeleteAsync(transaction); // Delete the transaction from the database
+        }
+        
     }
 }
