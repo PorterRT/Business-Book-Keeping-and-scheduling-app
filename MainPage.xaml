@@ -5,10 +5,12 @@
 
     <ScrollView>
         <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
-
-            <!-- Date Picker for Transaction Date -->
+            Padding="10"
+            Spacing="15">
+            
+           
+            
+             <!-- Date Picker for Transaction Date -->
             <Label Text="Select Date:" />
             <DatePicker x:Name="TransactionDatePicker" DateSelected="OnDateSelected"/>
             
@@ -37,19 +39,21 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout Orientation="Horizontal" Padding="10" Spacing="20">
-                                <Label Text="{Binding Date, StringFormat='{0:MM/dd/yyyy}'}" />
-                                <Label Text=" " />
-                                <Label Text="{Binding paymentType}" />
-                                <Label Text=" " />
-                                <Label Text="{Binding Amount, StringFormat='{}{0:C}'}" />
-                                <Label Text=" " />
-                                <Button Text="Delete" Clicked="OnDeleteTransactionClicked"
-                                        CommandParameter="{Binding .}"
-                                        BackgroundColor="Red"
-                                        TextColor="White"/>
-                            </StackLayout>
-
+                            <!-- Wrap the transaction in swipeView-->
+                            <SwipeView>
+                                <SwipeView.RightItems>
+                                    <SwipeItems>
+                                        <SwipeItem Text="Delete" BackgroundColor="DarkRed" Invoked="OnDeleteSwipeInvoked" CommandParameter="{Binding .}" />
+                                    </SwipeItems>
+                                </SwipeView.RightItems>
+                                <StackLayout Orientation="Horizontal" Padding="10" Spacing="20">
+                                    <Label Text="{Binding Date, StringFormat='{0:MM/dd/yyyy}'}" />
+                                    <Label Text=" " />
+                                    <Label Text="{Binding paymentType}" />
+                                    <Label Text=" " />
+                                    <Label Text="{Binding Amount, StringFormat='{}{0:C}'}" />
+                                </StackLayout>
+                            </SwipeView>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>

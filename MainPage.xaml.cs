@@ -81,10 +81,10 @@
             }
         }
         // Delete a transaction
-        private async void OnDeleteTransactionClicked(object sender, EventArgs e)
+        private async void OnDeleteSwipeInvoked(object sender, EventArgs e)
         {
-            var button = (Button)sender;
-            var transaction = (Transaction)button.CommandParameter;
+            var DeleteSlider = (SwipeItem)sender;
+            var transaction = (Transaction)DeleteSlider.CommandParameter;
 
             bool confirm = await DisplayAlert("Confirm", "Are you sure you want to delete this transaction?", "Yes", "No");
             if (confirm)
@@ -93,6 +93,8 @@
                 await _transactionRepository.DeleteTransactionAsync(transaction);
                 // Reload the transactions to refresh the list and total
                 LoadTransactionsForDate(TransactionDatePicker.Date);
+                
+
             }
         }
         private async Task UpdateTotalDateAmount(DateTime selectedDate)
