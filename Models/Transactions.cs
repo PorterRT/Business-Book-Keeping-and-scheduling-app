@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SQLite;
+﻿using SQLite;
 
 namespace Vendor_App.Models
 {
+    [Table ("Transactions")]
     public class Transaction
     {
+        
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; } // Unique identifier for the transaction in the database
         public string paymentType { get; set; } // Card or Cash 
