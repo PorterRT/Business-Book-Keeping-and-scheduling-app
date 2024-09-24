@@ -24,7 +24,11 @@
                 <Picker.ItemsSource>
                     <x:Array Type="{x:Type x:String}">
                         <x:String>Cash</x:String>
-                        <x:String>Card</x:String>
+                        <x:String>Credit Card</x:String>
+                        <x:String>Square</x:String>
+                        <x:String>Venmo</x:String>
+                        <x:String>Cash App</x:String>
+                        <x:String>Apple Pay</x:String>
                     </x:Array>
                 </Picker.ItemsSource>
             </Picker>
@@ -47,7 +51,7 @@
                                     </SwipeItems>
                                 </SwipeView.RightItems>
                                 <StackLayout Orientation="Horizontal" Padding="10" Spacing="20">
-                                    <Label Text="{Binding Date, StringFormat='{0:MM/dd/yyyy}'}" />
+                                    <Label Text="{Binding Date, StringFormat='{0:h:mm tt}'}" />
                                     <Label Text=" " />
                                     <Label Text="{Binding paymentType}" />
                                     <Label Text=" " />
