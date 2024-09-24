@@ -11,6 +11,7 @@ public class SQLiteVendorEventRepository : IVendorEventRepository
     {
         _database = new SQLiteAsyncConnection(dbPath);
         _database.CreateTableAsync<VendorEvents>().Wait();
+        
     }
     //Save a vendor Event to the database
     public Task SaveVendorEventAsync(VendorEvents vendorEvent)
@@ -26,9 +27,10 @@ public class SQLiteVendorEventRepository : IVendorEventRepository
 
     }
     //get all vendor events by name
-    public Task<IEnumerable<VendorEvents>> GetAllVendorEventsAsync()
+    public async Task<IEnumerable<VendorEvents>> GetAllVendorEventsAsync()
     {
-        throw new NotImplementedException();
+        var vendorEventsList = await _database.Table<VendorEvents>().ToListAsync();
+        return vendorEventsList.AsEnumerable();
     }
     // get a specific vendor event by name
     public Task<VendorEvents> GetVendorEventByNameAsync(string name)
@@ -38,28 +40,27 @@ public class SQLiteVendorEventRepository : IVendorEventRepository
             .FirstOrDefaultAsync();    
     }
 
-    public Task<List<VendorEvents>> GetVendorEventsByDateAsync(DateTime date)
+    public Task<List<VendorEvents>> GetVendorEventsByDateAsync(DateOnly date)
     {
-        throw new NotImplementedException();
+        return _database.Table<VendorEvents>()
+            .Where(v => v.EventDate == date)
+            .ToListAsync();
     }
 
     public Task<float> GetFeeForVendorEventAsync(VendorEvents vendorEvent)
     {
-      throw new NotImplementedException();
+        return _database.ExecuteScalarAsync<float>(
+            "SELECT Fee FROM VendorEvents WHERE VendorEventId = ?", vendorEvent.VendorEventId);
     }
 
     public Task DeleteVendorEventAsync(VendorEvents vendorEvent)
     {
-        throw new NotImplementedException();
+        return _database.DeleteAsync(vendorEvent);
     }
 
-    public Task<IEnumerable<VendorEvents>> GetAllVendorEventsByNameAsync()
-    {
-        throw new NotImplementedException();
-    }
-
+   
     public Task UpdateVendorEventAsync(VendorEvents vendorEvent)
     {
-        throw new NotImplementedException();
+        return _database.UpdateAsync(vendorEvent);
     }
 }
