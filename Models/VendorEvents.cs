@@ -8,7 +8,7 @@ public class VendorEvents
     [PrimaryKey, AutoIncrement]
     public int VendorEventId { get; set; }
     
-    public string VendorName { get; set; }
+    public string Name { get; set; }
     
     public float Fee { get; set; }
     

@@ -5,8 +5,6 @@ namespace Vendor_App.Repositories;
     {
         Task SaveVendorEventAsync(VendorEvents vendorEvent); //Save a vendor event to the databse
         
-        Task<VendorEvents> GetVendorEventByIdAsync(int id);
-        
         Task<IEnumerable<VendorEvents>> GetAllVendorEventsAsync();
         
         Task<VendorEvents> GetVendorEventByNameAsync(string name);
