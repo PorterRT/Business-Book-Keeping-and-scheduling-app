@@ -1,5 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Vendor_App.VendorEventManager">
@@ -8,9 +6,40 @@
             <VerticalStackLayout
                 Padding="10"
                 Spacing="15">
-                
-                
-                </VerticalStackLayout>
+
+                <!--Date View/picker make into a calendar view-->
+                <Label Text="Select Date:" />
+                <DatePicker x:Name="VendorEventDatePicker" DateSelected="OnDateSelected"/>
+
+                <!--Event Fee Entry-->
+                <Label Text="Enter Event Fee: " />
+                <Entry x:Name="EventFeeEntry" Keyboard="Numeric" Placeholder="0.00" />
+
+                <!--Event Name Entry-->
+                <Label Text="Enter Event Name: " />
+                <Entry x:Name="EventNameEntry" Placeholder="Event Name" />
+
+                <!--Event Location Entry-->
+                <Label Text="Enter Event Address: " />
+                <Entry x:Name="EventLocationEntry" Placeholder="Address" />
+
+                <!--Event Set up Time Entry-->
+                <Label Text="Enter Set Up Time: " />
+                <TimePicker x:Name="EventSetupTimePicker"/>
+
+                <!--Event Start Time Entry-->
+                <Label Text="Enter Start Time: " />
+                <TimePicker x:Name="EventStartTimePicker"/>
+
+                <!--Event End Time Entry-->
+                <Label Text="Enter End Time: " />
+                <TimePicker x:Name="EventEndTimePicker"/>
+
+                <!-- Is Event Recurring? -->
+                <Label Text="Is this a recurring event?" />
+                <Switch x:Name="RecurringSwitch" Toggled="OnRecurringToggled"/>
+
+            </VerticalStackLayout>
             </ScrollView>
 
     </ContentPage.Content>

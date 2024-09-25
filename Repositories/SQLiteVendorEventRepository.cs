@@ -40,10 +40,10 @@ public class SQLiteVendorEventRepository : IVendorEventRepository
             .FirstOrDefaultAsync();    
     }
 
-    public Task<List<VendorEvents>> GetVendorEventsByDateAsync(DateOnly date)
+    public Task<List<VendorEvents>> GetVendorEventsByDateAsync(DateTime date)
     {
         return _database.Table<VendorEvents>()
-            .Where(v => v.EventDate == date)
+            .Where(v => v.EventDate.Date == date.Date)
             .ToListAsync();
     }
 
@@ -63,4 +63,5 @@ public class SQLiteVendorEventRepository : IVendorEventRepository
     {
         return _database.UpdateAsync(vendorEvent);
     }
+
 }

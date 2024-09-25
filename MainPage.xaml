@@ -7,17 +7,17 @@
         <VerticalStackLayout
             Padding="10"
             Spacing="15">
-            
-           
-            
-             <!-- Date Picker for Transaction Date -->
+
+
+
+            <!-- Date Picker for Transaction Date -->
             <Label Text="Select Date:" />
             <DatePicker x:Name="TransactionDatePicker" DateSelected="OnDateSelected"/>
-            
+
             <!-- label for entering amount -->
             <Label Text="Enter Amount: " />
             <Entry x:Name="AmountEntry" Keyboard="Numeric" Placeholder="0.00" />
-            
+
             <!-- Payment Type Picker -->
             <Label Text="Select Payment Type: " />
             <Picker x:Name="PaymentTypePicker">
@@ -32,10 +32,10 @@
                     </x:Array>
                 </Picker.ItemsSource>
             </Picker>
-            
+
             <!-- Add to List Button -->
             <Button Text="Add to List" Clicked="OnAddTransactionClicked"/>
-            
+
             <!-- List of Transactions -->
             <!-- make auto width for phones for the entire section delete button currrently cut off-->
             <Label Text="Transactions" />
@@ -62,14 +62,18 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            
+
             <!-- Total Amount Display -->
             <Label x:Name="TotalAmountLabel" Text="Total: 0.00" FontSize="Large" HorizontalOptions="Center"/>
 
 
-
+            <!-- Button to navigate to Vendor Event Manager -->
+            <Button Text="Vendor Event Manager"
+         Clicked="OnNavigateToVendorEventManagerClicked"/>
 
         </VerticalStackLayout>
-    </ScrollView>
 
+    </ScrollView>
+   
+   
 </ContentPage>

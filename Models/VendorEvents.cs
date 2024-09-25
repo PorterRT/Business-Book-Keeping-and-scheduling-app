@@ -12,7 +12,7 @@ public class VendorEvents
     
     public float Fee { get; set; }
     
-    public DateOnly EventDate { get; set; }
+    public DateTime EventDate { get; set; }
     
     public DateTime SetupTime { get; set; }
     

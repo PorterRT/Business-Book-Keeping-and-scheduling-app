@@ -9,7 +9,6 @@ namespace Vendor_App.Repositories;
         
         Task<VendorEvents> GetVendorEventByNameAsync(string name);
         
-        Task<IEnumerable<VendorEvents>> GetAllVendorEventsByNameAsync();
         
         Task DeleteVendorEventAsync(VendorEvents vendorEvent);
         
