@@ -4,43 +4,78 @@
     <ContentPage.Content>
         <ScrollView>
             <VerticalStackLayout
-                Padding="10"
-                Spacing="15">
-
-                <!--Date View/picker make into a calendar view-->
-                <Label Text="Select Date:" />
-                <DatePicker x:Name="VendorEventDatePicker" DateSelected="OnDateSelected"/>
-
-                <!--Event Fee Entry-->
-                <Label Text="Enter Event Fee: " />
-                <Entry x:Name="EventFeeEntry" Keyboard="Numeric" Placeholder="0.00" />
+                Padding="15"
+                Spacing="20">
 
                 <!--Event Name Entry-->
-                <Label Text="Enter Event Name: " />
-                <Entry x:Name="EventNameEntry" Placeholder="Event Name" />
+                <Frame CornerRadius="10" BorderColor="LightGray">
+                    <VerticalStackLayout Spacing="5" Padding="10">
+                        <Label Text="Event Name" FontSize="Medium"/>
+                        <Entry x:Name="EventNameEntry" Placeholder="Enter Event Name" Keyboard="Default"/>
+                    </VerticalStackLayout>
+                </Frame>
 
-                <!--Event Location Entry-->
-                <Label Text="Enter Event Address: " />
-                <Entry x:Name="EventLocationEntry" Placeholder="Address" />
+                <!--Date Picker-->
+                <Frame CornerRadius="10" BorderColor="LightGray">
+                    <VerticalStackLayout Spacing="5" Padding="10">
+                        <Label Text="Event Date" FontSize="Medium"/>
+                        <DatePicker x:Name="VendorEventDatePicker" DateSelected="OnDateSelected"/>
+                    </VerticalStackLayout>
+                </Frame>
 
-                <!--Event Set up Time Entry-->
-                <Label Text="Enter Set Up Time: " />
-                <TimePicker x:Name="EventSetupTimePicker"/>
+                <!--Set Up Time-->
+                <Frame CornerRadius="10" BorderColor="LightGray">
+                    <VerticalStackLayout Spacing="5" Padding="10">
+                        <Label Text="Set Up Time" FontSize="Medium"/>
+                        <TimePicker x:Name="EventSetupTimePicker"/>
+                    </VerticalStackLayout>
+                </Frame>
 
-                <!--Event Start Time Entry-->
-                <Label Text="Enter Start Time: " />
-                <TimePicker x:Name="EventStartTimePicker"/>
+                <!--Event Address-->
+                <Frame CornerRadius="10" BorderColor="LightGray">
+                    <VerticalStackLayout Spacing="5" Padding="10">
+                        <Label Text="Event Address" FontSize="Medium"/>
+                        <Entry x:Name="EventLocationEntry" Placeholder="Enter Event Address" Keyboard="Default"/>
+                    </VerticalStackLayout>
+                </Frame>
 
-                <!--Event End Time Entry-->
-                <Label Text="Enter End Time: " />
-                <TimePicker x:Name="EventEndTimePicker"/>
+                <!--Start Time-->
+                <Frame CornerRadius="10" BorderColor="LightGray">
+                    <VerticalStackLayout Spacing="5" Padding="10">
+                        <Label Text="Start Time" FontSize="Medium"/>
+                        <TimePicker x:Name="EventStartTimePicker"/>
+                    </VerticalStackLayout>
+                </Frame>
 
-                <!-- Is Event Recurring? -->
-                <Label Text="Is this a recurring event?" />
-                <Switch x:Name="RecurringSwitch" Toggled="OnRecurringToggled"/>
+                <!--End Time-->
+                <Frame CornerRadius="10" BorderColor="LightGray">
+                    <VerticalStackLayout Spacing="5" Padding="10">
+                        <Label Text="End Time" FontSize="Medium"/>
+                        <TimePicker x:Name="EventEndTimePicker"/>
+                    </VerticalStackLayout>
+                </Frame>
 
+                <!--Event Fee-->
+                <Frame CornerRadius="10" BorderColor="LightGray">
+                    <VerticalStackLayout Spacing="5" Padding="10">
+                        <Label Text="Event Fee" FontSize="Medium"/>
+                        <Entry x:Name="EventFeeEntry" Placeholder="0.00" Keyboard="Numeric"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!--Recurring Event-->
+                <Frame CornerRadius="10" BorderColor="LightGray">
+                    <HorizontalStackLayout Spacing="10" Padding="10">
+                        <Label Text="Recurring Event" FontSize="Medium"/>
+                        <Switch x:Name="RecurringSwitch" Toggled="OnRecurringToggled"/>
+                    </HorizontalStackLayout>
+                </Frame>
+
+                <!--Save Button-->
+                <Button Text="Save" Clicked="OnAddVendorEventClicked" CornerRadius="10" 
+                        Margin="0,10,0,0" BackgroundColor="#2196F3" TextColor="White"/>
+                
             </VerticalStackLayout>
-            </ScrollView>
-
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>
