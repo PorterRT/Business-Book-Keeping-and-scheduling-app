@@ -1,0 +1,21 @@
+<!-- EventViewerPage.xaml -->
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Vendor_App.VendorEventViewer"
+             Title="View Vendor Events">
+    <StackLayout Padding="10">
+        <!-- DatePicker for selecting the date -->
+        <DatePicker x:Name="EventDatePicker" 
+                    DateSelected="OnDateSelected" />
+
+        <!-- ListView to display vendor events -->
+        <ListView x:Name="EventsListView">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Name}" 
+                              Detail="{Binding EventDate, StringFormat='Event on {0:MM/dd/yyyy}'}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>

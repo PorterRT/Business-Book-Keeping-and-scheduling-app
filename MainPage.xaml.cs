@@ -121,6 +121,20 @@
             }
         }
 
+        private async void OnNavigateToOrderEventViewerClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await Navigation.PushAsync(new VendorEventViewer());
+            }
+            catch (Exception ex)
+            {
+                // Display the exception message for debugging
+                await DisplayAlert("Navigation Error", ex.Message, "OK");
+                Console.WriteLine($"Navigation Error: {ex}");
+            }
+        }
+
     }
 }
 

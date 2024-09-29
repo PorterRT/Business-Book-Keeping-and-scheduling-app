@@ -70,6 +70,10 @@
             <!-- Button to navigate to Vendor Event Manager -->
             <Button Text="Vendor Event Manager"
          Clicked="OnNavigateToVendorEventManagerClicked"/>
+            
+            <!-- Button to navigate to Vendor Viwer -->
+            <Button Text="Vendor Event Viewer"
+                    Clicked="OnNavigateToOrderEventViewerClicked"/>
 
         </VerticalStackLayout>
 
