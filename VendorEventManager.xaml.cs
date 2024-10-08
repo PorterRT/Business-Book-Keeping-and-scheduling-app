@@ -39,24 +39,12 @@ public partial class VendorEventManager : ContentPage
 
     private void OnDateSelected(object sender, DateChangedEventArgs e)
     {
-        // Load the VendorEvent for the selected date
-        LoadVendorEventsByDateAsync(e.NewDate);
+        //Handle the date selector
+        Console.WriteLine($"Date selected: {e.NewDate}");
+
+
     }
 
-    private async void LoadVendorEventsByDateAsync(DateTime date)
-    {
-        // Convert DateTime to DateOnly since repository expects DateOnly type
-
-        // Fetch events for the selected date using the repository
-        var events = await _vendorEventRepository.GetVendorEventsByDateAsync(date);
-
-        // Process the fetched events as needed (e.g., display them in the UI)
-        foreach (var vendorEvent in events)
-        {
-            Console.WriteLine($"Event: {vendorEvent.Name} on {vendorEvent.EventDate}");
-            // Add more logic here if you want to display these events in the UI
-        }
-    }
 
     private void OnRecurringToggled(object sender, ToggledEventArgs e)
     {

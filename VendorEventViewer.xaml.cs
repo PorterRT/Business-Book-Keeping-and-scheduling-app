@@ -11,48 +11,101 @@ namespace Vendor_App
     public partial class VendorEventViewer : ContentPage
     {
         private readonly IVendorEventRepository _vendorEventRepository;
-        private ObservableCollection<VendorEvents> _events;
+        public ObservableCollection<VendorEvents> Events { get; set; }
+
+        public Command<VendorEvents> DeleteCommand { get; }
 
         public VendorEventViewer()
         {
             InitializeComponent();
+            this.BindingContext = this;
 
-            // Initialize the repository using the same approach as VendorEventManager
-            string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "vendorEvents.db3");
-            _vendorEventRepository = new SQLiteVendorEventRepository(dbPath);
+            try
+            {
+                // Initialize the repository using the same approach as VendorEventManager
+                string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "vendorEvents.db3");
+                _vendorEventRepository = new SQLiteVendorEventRepository(dbPath);
 
-            // Initialize the ObservableCollection to hold the events
-            _events = new ObservableCollection<VendorEvents>();
-            EventsListView.ItemsSource = _events; // Bind the ListView to the ObservableCollection
+                // Initialize the ObservableCollection to hold the events
+                Events = new ObservableCollection<VendorEvents>();
+                EventsListView.ItemsSource = Events; // Bind the ListView to the ObservableCollection
+
+                DeleteCommand = new Command<VendorEvents>(OnDeleteVendorEvent); // Initialize the DeleteCommand
+
+                // Load all events to display
+                LoadAllVendorEventsAsync();
+            }
+            catch (Exception ex)
+            {
+                DisplayAlert("Error", $"Failed to initialize: {ex.Message}", "OK");
+            }
         }
 
-        // Handle date selection from the DatePicker
-        private async void OnDateSelected(object sender, DateChangedEventArgs e)
-        {
-            DateTime selectedDate = e.NewDate;
-            await LoadVendorEventsByDateAsync(selectedDate);
-        }
-
-        // Load vendor events for the selected date
-        private async Task LoadVendorEventsByDateAsync(DateTime date)
+        // Method to load all vendor events
+        private async Task LoadAllVendorEventsAsync()
         {
             try
             {
                 // Clear the previous events
-                _events.Clear();
+                Events.Clear();
 
-                // Fetch the events for the selected date using the repository
-                var events = await _vendorEventRepository.GetVendorEventsByDateAsync(date);
+                // Fetch all events using the repository
+                var allEvents = await _vendorEventRepository.GetAllVendorEventsAsync();
 
                 // Add each fetched event to the ObservableCollection
-                foreach (var vendorEvent in events)
+                foreach (var vendorEvent in allEvents)
                 {
-                    _events.Add(vendorEvent);
+                    Events.Add(vendorEvent);
                 }
+
+                // Log event details for debugging
+                Console.WriteLine($"Loaded {allEvents.Count()} events.");
             }
             catch (Exception ex)
             {
                 await DisplayAlert("Error", $"Failed to load events: {ex.Message}", "OK");
+            }
+        }
+        private async void OnEventTapped(object sender, ItemTappedEventArgs e)
+        {
+            if (e.Item == null) return;
+
+            // Get the selected event
+            var selectedEvent = e.Item as VendorEvents;
+
+            // Display the details of the selected event
+            await DisplayAlert("Event Details",
+                $"Name: {selectedEvent.Name}\n" +
+                $"Date: {selectedEvent.EventDate.ToShortDateString()}\n" +
+                $"Setup Time: {selectedEvent.SetupTime.ToShortTimeString()}\n" +
+                $"Start Time: {selectedEvent.StartTime.ToShortTimeString()}\n" +
+                $"End Time: {selectedEvent.EndTime.ToShortTimeString()}\n" +
+                $"Fee: {selectedEvent.Fee}\n" +
+                $"Recurring: {selectedEvent.Recurring}",
+                "OK");
+
+            // Deselect the item (so the user can tap it again)
+            ((ListView)sender).SelectedItem = null;
+        }
+        private async void OnDeleteVendorEvent(VendorEvents vendorEvent)
+        {
+            bool confirm = await DisplayAlert("Confirm Delete", $"Are you sure you want to delete {vendorEvent.Name}?", "Yes", "No");
+            if (confirm)
+            {
+                try
+                {
+                    // Delete the event from the database
+                    await _vendorEventRepository.DeleteVendorEventAsync(vendorEvent);
+
+                    // Remove the event from the ObservableCollection to update the UI
+                    Events.Remove(vendorEvent);
+
+                    await DisplayAlert("Success", "Event deleted successfully", "OK");
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("Error", $"Failed to delete event: {ex.Message}", "OK");
+                }
             }
         }
     }
