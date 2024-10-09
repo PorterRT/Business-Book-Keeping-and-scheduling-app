@@ -14,6 +14,7 @@ namespace Vendor_App
         public ObservableCollection<VendorEvents> Events { get; set; }
 
         public Command<VendorEvents> DeleteCommand { get; }
+        public Command<VendorEvents> UpdateCommand { get; }
 
         public VendorEventViewer()
         {
@@ -32,8 +33,10 @@ namespace Vendor_App
 
                 DeleteCommand = new Command<VendorEvents>(OnDeleteVendorEvent); // Initialize the DeleteCommand
 
+                UpdateCommand = new Command<VendorEvents>(OnUpdateVendorEvent);
+
                 // Load all events to display
-                LoadAllVendorEventsAsync();
+              //  LoadAllVendorEventsAsync();
             }
             catch (Exception ex)
             {
@@ -81,7 +84,8 @@ namespace Vendor_App
                 $"Start Time: {selectedEvent.StartTime.ToShortTimeString()}\n" +
                 $"End Time: {selectedEvent.EndTime.ToShortTimeString()}\n" +
                 $"Fee: {selectedEvent.Fee}\n" +
-                $"Recurring: {selectedEvent.Recurring}",
+                $"Recurring: {selectedEvent.Recurring}\n"+ 
+                $"Fee Is Paid: {selectedEvent.FeePaid}",
                 "OK");
 
             // Deselect the item (so the user can tap it again)
@@ -108,5 +112,16 @@ namespace Vendor_App
                 }
             }
         }
+        private async void OnUpdateVendorEvent(VendorEvents vendorEvent)
+        {
+            await Navigation.PushAsync(new VendorEventManager(vendorEvent));
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            LoadAllVendorEventsAsync(); // Refresh the event list whenever the page appears.
+        }
+
     }
 }

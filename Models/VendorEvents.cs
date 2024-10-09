@@ -21,6 +21,14 @@ public class VendorEvents
     public DateTime EndTime { get; set; }
     
     public bool Recurring { get; set; }
+
+    public bool FeePaid { get; set; }
+
+    public string Email { get; set; }
+
+    public string PhoneNumber { get; set; }
+
+    public string Description { get; set; }
     
     
     

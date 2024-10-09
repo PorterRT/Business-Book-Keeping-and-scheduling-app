@@ -11,11 +11,20 @@
                 <DataTemplate>
                     <ViewCell>
                         <SwipeView>
+                            <SwipeView.LeftItems>
+                                <SwipeItems>
+                                    <SwipeItem Text="Update"
+                                               BackgroundColor="DarkGoldenrod" 
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type local:VendorEventViewer}}, Path= UpdateCommand}"
+                                               CommandParameter="{Binding .}"/>
+                                </SwipeItems>
+                            </SwipeView.LeftItems>
+                            
                             <SwipeView.RightItems>
                                 <SwipeItems>
                                     <SwipeItem Text="Delete"
                                                IconImageSource="delete.png"
-                                               BackgroundColor="Red"
+                                               BackgroundColor="DarkRed"
                                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:VendorEventViewer}}, Path=DeleteCommand}"
                                                CommandParameter="{Binding .}"/>
                                 </SwipeItems>

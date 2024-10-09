@@ -1,105 +1,141 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Threading.Tasks;
-
 using Vendor_App.Models;
 using Vendor_App.Repositories;
 
-namespace Vendor_App;
-
-public partial class VendorEventManager : ContentPage
+namespace Vendor_App
 {
-    private IVendorEventRepository _vendorEventRepository;
-    VendorEvents vendorEvent = new VendorEvents();
-    public VendorEventManager()
+    public partial class VendorEventManager : ContentPage
     {
-        InitializeComponent();
-        string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "vendorEvents.db3");
-        _vendorEventRepository = new SQLiteVendorEventRepository(dbPath);
+        private readonly IVendorEventRepository _vendorEventRepository;
 
-        // Attach PropertyChanged event handlers to TimePickers
-        EventSetupTimePicker.PropertyChanged += TimePicker_PropertyChanged;
-        EventStartTimePicker.PropertyChanged += TimePicker_PropertyChanged;
-        EventEndTimePicker.PropertyChanged += TimePicker_PropertyChanged;
-    }
+        // Declare a field to store the current event being edited or added.
+        private VendorEvents _currentVendorEvent; // <-- CHANGE: Declare field to store the event being edited.
 
-    // General event handler for detecting time changes in TimePickers
-    private void TimePicker_PropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(TimePicker.Time))
+        // Constructor that accepts an optional VendorEvents parameter.
+        public VendorEventManager(VendorEvents vendorEvent = null) // <-- CHANGE: Accept an optional event.
         {
-            var picker = sender as TimePicker;
-            Console.WriteLine($"Time changed to: {picker.Time}");
-            // Handle the time change as needed
-        }
-    }
+            InitializeComponent();
+            string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "vendorEvents.db3");
+            _vendorEventRepository = new SQLiteVendorEventRepository(dbPath);
 
-    private void OnDateSelected(object sender, DateChangedEventArgs e)
-    {
-        //Handle the date selector
-        Console.WriteLine($"Date selected: {e.NewDate}");
+            // Attach PropertyChanged event handlers to TimePickers
+            EventSetupTimePicker.PropertyChanged += TimePicker_PropertyChanged;
+            EventStartTimePicker.PropertyChanged += TimePicker_PropertyChanged;
+            EventEndTimePicker.PropertyChanged += TimePicker_PropertyChanged;
 
-
-    }
-
-
-    private void OnRecurringToggled(object sender, ToggledEventArgs e)
-    {
-        // Handle the toggled state change
-        bool isToggled = e.Value;
-        Console.WriteLine($"Recurring switch toggled: {isToggled}");
-    }
-
-
-    private async void OnAddVendorEventClicked(object sender, EventArgs e)
-    {
-        if (float.TryParse(EventFeeEntry.Text, out float fee))
-        {
-            try
+            // Check if a VendorEvents object was passed.
+            if (vendorEvent != null) // <-- CHANGE: Check if we are editing an existing event.
             {
-                if (EventNameEntry.Text == null)
+                _currentVendorEvent = vendorEvent;
+                PopulateFormForEditing(vendorEvent); // <-- CHANGE: Populate the form if editing.
+            }
+            else
+            {
+                _currentVendorEvent = new VendorEvents(); // <-- CHANGE: Initialize a new event if none is provided.
+            }
+        }
+
+        // Method to populate the form with the data of the event being edited.
+        private void PopulateFormForEditing(VendorEvents vendorEvent) // <-- CHANGE: Populate fields for editing.
+        {
+            EventNameEntry.Text = vendorEvent.Name;
+            EventFeeEntry.Text = vendorEvent.Fee.ToString();
+            VendorEventDatePicker.Date = vendorEvent.EventDate;
+            EventSetupTimePicker.Time = vendorEvent.SetupTime.TimeOfDay;
+            EventStartTimePicker.Time = vendorEvent.StartTime.TimeOfDay;
+            EventEndTimePicker.Time = vendorEvent.EndTime.TimeOfDay;
+            RecurringSwitch.IsToggled = vendorEvent.Recurring;
+            FeePaidSwitch.IsToggled = vendorEvent.FeePaid;
+            EventEmailContact.Text = vendorEvent.Email;
+            EventPhoneContact.Text = vendorEvent.PhoneNumber;
+            EventDescription.Text = vendorEvent.Description;
+        }
+
+        // Event handler for when the Save button is clicked.
+        private async void OnAddVendorEventClicked(object sender, EventArgs e)
+        {
+            if (float.TryParse(EventFeeEntry.Text, out float fee))
+            {
+                try
                 {
-                    throw new Exception("Please enter a name");
+                    if (string.IsNullOrWhiteSpace(EventNameEntry.Text))
+                    {
+                        throw new Exception("Please enter a name");
+                    }
+
+                    // Update the current event with the form data.
+                    _currentVendorEvent.Name = EventNameEntry.Text; // Update existing event.
+                    _currentVendorEvent.Fee = fee;
+                    _currentVendorEvent.EventDate = VendorEventDatePicker.Date;
+                    _currentVendorEvent.SetupTime = VendorEventDatePicker.Date.Add(EventSetupTimePicker.Time);
+                    _currentVendorEvent.StartTime = VendorEventDatePicker.Date.Add(EventStartTimePicker.Time);
+                    _currentVendorEvent.EndTime = VendorEventDatePicker.Date.Add(EventEndTimePicker.Time);
+                    _currentVendorEvent.Recurring = RecurringSwitch.IsToggled;
+                    _currentVendorEvent.FeePaid = FeePaidSwitch.IsToggled;
+                    _currentVendorEvent.Email = EventEmailContact.Text;
+                    _currentVendorEvent.PhoneNumber = EventPhoneContact.Text;
+                    _currentVendorEvent.Description = EventDescription.Text;
+
+                    // Save or update the event in the database.
+                    await _vendorEventRepository.SaveVendorEventAsync(_currentVendorEvent); // Save changes to existing or new event.
+                    await DisplayAlert("Success", "Vendor Event saved successfully", "OK");
+
+                    // Navigate back to the previous page after saving.
+                    await Navigation.PopAsync(); // <-- CHANGE: Go back to the previous page.
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("Error", ex.Message, "OK");
                 }
             }
-            catch (Exception ex)
+            else
             {
-                await DisplayAlert("Error", ex.Message, "OK");
-            }
-            finally
-            {
-                var vendorEvent = new VendorEvents
-                {
-                    Name = EventNameEntry.Text,
-                    Fee = fee,
-                    EventDate = VendorEventDatePicker.Date,
-                    SetupTime = VendorEventDatePicker.Date.Add(EventSetupTimePicker.Time),
-                    StartTime = VendorEventDatePicker.Date.Add(EventStartTimePicker.Time),
-                    EndTime = VendorEventDatePicker.Date.Add(EventEndTimePicker.Time),
-                    Recurring = RecurringSwitch.IsToggled
-                };
-                await _vendorEventRepository.SaveVendorEventAsync(vendorEvent);
-                await DisplayAlert("Success", "Vendor Event added successfully", "OK");
-                ClearForm();
+                await DisplayAlert("Error", "Please enter a valid fee", "OK");
             }
         }
-        else
+
+        // Method to clear the form.
+        private void ClearForm()
         {
-            await DisplayAlert("Error", "Please enter a valid fee", "OK");
+            EventNameEntry.Text = "";
+            EventFeeEntry.Text = "";
+            VendorEventDatePicker.Date = DateTime.Today;
+            EventSetupTimePicker.Time = TimeSpan.Zero;
+            EventStartTimePicker.Time = TimeSpan.Zero;
+            EventEndTimePicker.Time = TimeSpan.Zero;
+            RecurringSwitch.IsToggled = false;
+            FeePaidSwitch.IsToggled = false;
         }
-    }
-    //clear form after adding a vendor event
-    private void ClearForm()
-    {
-        EventNameEntry.Text = "";
-        EventFeeEntry.Text = "";
-        VendorEventDatePicker.Date = DateTime.Today;
-        EventSetupTimePicker.Time = TimeSpan.Zero;
-        EventStartTimePicker.Time = TimeSpan.Zero;
-        EventEndTimePicker.Time = TimeSpan.Zero;
-        RecurringSwitch.IsToggled = false;
+
+        // Event handler for time picker changes.
+        private void TimePicker_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(TimePicker.Time))
+            {
+                var picker = sender as TimePicker;
+                Console.WriteLine($"Time changed to: {picker.Time}");
+            }
+        }
+
+        private void OnDateSelected(object sender, DateChangedEventArgs e)
+        {
+            Console.WriteLine($"Date selected: {e.NewDate}");
+        }
+
+        private void OnRecurringToggled(object sender, ToggledEventArgs e)
+        {
+            bool isToggled = e.Value;
+            Console.WriteLine($"Recurring switch toggled: {isToggled}");
+        }
+
+        private void OnFeePaid(object sender, ToggledEventArgs e)
+        {
+            bool isToggled = e.Value;
+            Console.WriteLine($"FeePaid Switch toggled: {isToggled}");
+        }
+
     }
 }

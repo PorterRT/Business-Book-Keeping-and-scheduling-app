@@ -70,6 +70,39 @@
                         <Switch x:Name="RecurringSwitch" Toggled="OnRecurringToggled"/>
                     </HorizontalStackLayout>
                 </Frame>
+                
+                <!--Fee Paid-->
+                <Frame CornerRadius="10" BorderColor="LightGray">
+                    <HorizontalStackLayout Spacing="10" Padding="10">
+                        <Label Text="Fee is Paid" FontSize="Medium"/>
+                        <Switch x:Name="FeePaidSwitch" Toggled="OnFeePaid"/>
+                    </HorizontalStackLayout>
+                </Frame>
+                
+                <!--Email Contact -->
+                <Frame CornerRadius="10" BorderColor="LightGray">
+                    <VerticalStackLayout Spacing="5" Padding="10">
+                        <Label Text="Email Contact" FontSize="Medium"/>
+                        <Entry x:Name="EventEmailContact" Placeholder="Email" Keyboard="Email"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!--Phone Number Contact -->
+                <Frame CornerRadius="10" BorderColor="LightGray">
+                    <VerticalStackLayout Spacing="5" Padding="10">
+                        <Label Text="Phone Number Contact" FontSize="Medium"/>
+                        <Entry x:Name="EventPhoneContact" Placeholder="000-000-0000" Keyboard="Telephone"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!--Desciption -->
+                <Frame CornerRadius="10" BorderColor="LightGray">
+                    <VerticalStackLayout Spacing="5" Padding="10">
+                        <Label Text="Description" FontSize="Medium"/>
+                        <Entry x:Name="EventDescription" Placeholder="Description" Keyboard="Text"/>
+                    </VerticalStackLayout>
+                </Frame>
+
 
                 <!--Save Button-->
                 <Button Text="Save" Clicked="OnAddVendorEventClicked" CornerRadius="10" 
