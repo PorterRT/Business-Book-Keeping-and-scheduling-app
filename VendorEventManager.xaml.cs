@@ -43,6 +43,7 @@ namespace Vendor_App
         {
             EventNameEntry.Text = vendorEvent.Name;
             EventFeeEntry.Text = vendorEvent.Fee.ToString();
+            EventAddressEntry.Text = vendorEvent.Address;
             VendorEventDatePicker.Date = vendorEvent.EventDate;
             EventSetupTimePicker.Time = vendorEvent.SetupTime.TimeOfDay;
             EventStartTimePicker.Time = vendorEvent.StartTime.TimeOfDay;
@@ -69,6 +70,7 @@ namespace Vendor_App
                     // Update the current event with the form data.
                     _currentVendorEvent.Name = EventNameEntry.Text; // Update existing event.
                     _currentVendorEvent.Fee = fee;
+                    _currentVendorEvent.Address = EventAddressEntry.Text;
                     _currentVendorEvent.EventDate = VendorEventDatePicker.Date;
                     _currentVendorEvent.SetupTime = VendorEventDatePicker.Date.Add(EventSetupTimePicker.Time);
                     _currentVendorEvent.StartTime = VendorEventDatePicker.Date.Add(EventStartTimePicker.Time);
@@ -102,6 +104,7 @@ namespace Vendor_App
         {
             EventNameEntry.Text = "";
             EventFeeEntry.Text = "";
+            EventAddressEntry.Text = "";
             VendorEventDatePicker.Date = DateTime.Today;
             EventSetupTimePicker.Time = TimeSpan.Zero;
             EventStartTimePicker.Time = TimeSpan.Zero;

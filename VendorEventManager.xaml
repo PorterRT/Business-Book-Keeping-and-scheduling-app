@@ -35,7 +35,7 @@
                 <Frame CornerRadius="10" BorderColor="LightGray">
                     <VerticalStackLayout Spacing="5" Padding="10">
                         <Label Text="Event Address" FontSize="Medium"/>
-                        <Entry x:Name="EventLocationEntry" Placeholder="Enter Event Address" Keyboard="Default"/>
+                        <Entry x:Name="EventAddressEntry" Placeholder="Enter Event Address" Keyboard="Default"/>
                     </VerticalStackLayout>
                 </Frame>
 

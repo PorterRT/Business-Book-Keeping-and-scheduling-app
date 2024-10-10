@@ -80,12 +80,16 @@ namespace Vendor_App
             await DisplayAlert("Event Details",
                 $"Name: {selectedEvent.Name}\n" +
                 $"Date: {selectedEvent.EventDate.ToShortDateString()}\n" +
+                $"Address: {selectedEvent.Address}\n" +
                 $"Setup Time: {selectedEvent.SetupTime.ToShortTimeString()}\n" +
                 $"Start Time: {selectedEvent.StartTime.ToShortTimeString()}\n" +
                 $"End Time: {selectedEvent.EndTime.ToShortTimeString()}\n" +
                 $"Fee: {selectedEvent.Fee}\n" +
                 $"Recurring: {selectedEvent.Recurring}\n"+ 
-                $"Fee Is Paid: {selectedEvent.FeePaid}",
+                $"Fee Is Paid: {selectedEvent.FeePaid}\n" +
+                $"Email: {selectedEvent.Email}\n" +
+                $"Phone Number: {selectedEvent.PhoneNumber}\n" +
+                $"Description: {selectedEvent.Description}",
                 "OK");
 
             // Deselect the item (so the user can tap it again)
