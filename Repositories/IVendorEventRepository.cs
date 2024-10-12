@@ -17,5 +17,8 @@ namespace Vendor_App.Repositories;
         Task<float> GetFeeForVendorEventAsync(VendorEvents vendorEvent);
         
         Task<List<VendorEvents>> GetVendorEventsByDateAsync(DateTime date);
-    
+
+    Task<List<string>> GetVendorEventNamesByDateAsync(DateTime date);
+
+
     }

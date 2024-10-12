@@ -40,12 +40,21 @@ public class SQLiteVendorEventRepository : IVendorEventRepository
             .FirstOrDefaultAsync();    
     }
 
-    public Task<List<VendorEvents>> GetVendorEventsByDateAsync(DateTime date)
+    public async Task<List<VendorEvents>> GetVendorEventsByDateAsync(DateTime date)
     {
-        return _database.Table<VendorEvents>()
-            .Where(v => v.EventDate.Date == date.Date)
-            .ToListAsync();
+        var startDate = date.Date;
+        var endDate = startDate.AddDays(1).AddTicks(-1); // End of the day
+
+        var events = await _database.QueryAsync<VendorEvents>(
+            "SELECT * FROM Vendor_events WHERE EventDate BETWEEN ? AND ?",
+            startDate, endDate);
+
+        return events;
     }
+
+
+
+
 
     public Task<float> GetFeeForVendorEventAsync(VendorEvents vendorEvent)
     {
@@ -63,5 +72,14 @@ public class SQLiteVendorEventRepository : IVendorEventRepository
     {
         return _database.UpdateAsync(vendorEvent);
     }
+    public async Task<List<string>> GetVendorEventNamesByDateAsync(DateTime date)
+    {
+        // Use a raw query to select only the 'Name' column from the 'Vendor_events' table
+        var query = "SELECT Name FROM Vendor_events WHERE DATE(EventDate) = DATE(?)";
+        var result = await _database.QueryScalarsAsync<string>(query, date);
+
+        return result;
+    }
+
 
 }

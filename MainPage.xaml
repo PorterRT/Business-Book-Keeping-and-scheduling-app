@@ -8,13 +8,32 @@
             Padding="10"
             Spacing="15">
 
-
-
             <!-- Date Picker for Transaction Date -->
             <Label Text="Select Date:" />
             <DatePicker x:Name="TransactionDatePicker" DateSelected="OnDateSelected"/>
 
-            <!-- label for entering amount -->
+            <!-- Events Section -->
+            <Label Text="Events" FontAttributes="Bold" Margin="0,10,0,0" />
+            <ListView x:Name="EventsListView"
+          HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid Padding="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                <Label Grid.Row="1" Text="{Binding EventDate, StringFormat='Event on {0:MM/dd/yyyy}'}" FontSize="Small" />
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+
+            <!-- Label for entering amount -->
             <Label Text="Enter Amount: " />
             <Entry x:Name="AmountEntry" Keyboard="Numeric" Placeholder="0.00" />
 
@@ -37,13 +56,12 @@
             <Button Text="Add to List" Clicked="OnAddTransactionClicked"/>
 
             <!-- List of Transactions -->
-            <!-- make auto width for phones for the entire section delete button currrently cut off-->
             <Label Text="Transactions" />
             <ListView x:Name="TransactionList" ItemsSource="{Binding transactions}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <!-- Wrap the transaction in swipeView-->
+                            <!-- Wrap the transaction in SwipeView-->
                             <SwipeView>
                                 <SwipeView.RightItems>
                                     <SwipeItems>
@@ -66,18 +84,14 @@
             <!-- Total Amount Display -->
             <Label x:Name="TotalAmountLabel" Text="Total: 0.00" FontSize="Large" HorizontalOptions="Center"/>
 
-
             <!-- Button to navigate to Vendor Event Manager -->
             <Button Text="Vendor Event Manager"
-         Clicked="OnNavigateToVendorEventManagerClicked"/>
-            
-            <!-- Button to navigate to Vendor Viwer -->
+                    Clicked="OnNavigateToVendorEventManagerClicked"/>
+
+            <!-- Button to navigate to Vendor Viewer -->
             <Button Text="Vendor Event Viewer"
                     Clicked="OnNavigateToOrderEventViewerClicked"/>
 
         </VerticalStackLayout>
-
     </ScrollView>
-   
-   
 </ContentPage>

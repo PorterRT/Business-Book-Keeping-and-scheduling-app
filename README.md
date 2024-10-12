@@ -25,6 +25,9 @@ Repositories folder will make it easy to go to cloud base databases instead of l
 Will need to make transaction selectable by event instead of date and make navigation and editing easier
 
 
+Rider, Vs Studio, .Net Maui, C#, Xaml, SQLite
+
+
   
   
   

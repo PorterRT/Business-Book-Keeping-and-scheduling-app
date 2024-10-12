@@ -6,6 +6,9 @@
     public partial class MainPage : ContentPage
     {
         private ITransactionRepository _transactionRepository;
+        private IVendorEventRepository _vendorEventRepository;
+        public ObservableCollection<VendorEvents> Events { get; set; }
+
         private double total = 0;
 
         public MainPage()
@@ -16,11 +19,24 @@
             string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "transactions.db3");
             _transactionRepository = new SQLiteTransactionRepository(dbPath);
 
+            string eventsDbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "vendorEvents.db3");
+            _vendorEventRepository = new SQLiteVendorEventRepository(eventsDbPath);
+
+            // Initialize the ObservableCollection to hold the events
+            Events = new ObservableCollection<VendorEvents>();
+            EventsListView.ItemsSource = Events; // Bind the ListView to the ObservableCollection
+
+
+            BindingContext = this;
+
             // set the default date to today
             TransactionDatePicker.Date = DateTime.Today;
 
             // Load the transactions from the database
+            
             LoadTransactionsForDate(TransactionDatePicker.Date);
+            LoadVendorEventsByDate(TransactionDatePicker.Date);
+
         }
 
         private async void LoadTransactionsForDate(DateTime selectedDate)
@@ -32,11 +48,43 @@
             // calculate and display the total amount
             await UpdateTotalDateAmount(selectedDate);
         }
-        
+
+        private async Task LoadVendorEventsByDate(DateTime selectedDate)
+        {
+            try
+            {
+                // Clear the previous events
+                Events.Clear();
+
+                // Fetch all events using the repository
+                var allEvents = await _vendorEventRepository.GetVendorEventsByDateAsync(TransactionDatePicker.Date);
+
+                // Add each fetched event to the ObservableCollection
+                foreach (var vendorEvent in allEvents)
+                {
+                    Events.Add(vendorEvent);
+                }
+
+                // Log event details for debugging
+                Console.WriteLine($"Loaded {allEvents.Count()} events.");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to load events: {ex.Message}", "OK");
+            }
+        }
+
+
+
+
+
+
+
         private void OnDateSelected(object sender, DateChangedEventArgs e) 
         {
             // Load the transactions for the selected date
-            LoadTransactionsForDate(e.NewDate); 
+            LoadTransactionsForDate(e.NewDate);
+            LoadVendorEventsByDate(e.NewDate);
         }
         private async void OnAddTransactionClicked(object sender, EventArgs e)
         {
