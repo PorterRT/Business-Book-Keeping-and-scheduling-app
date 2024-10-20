@@ -12,6 +12,13 @@
             <Label Text="Select Date:" />
             <DatePicker x:Name="TransactionDatePicker" DateSelected="OnDateSelected"/>
 
+            <!-- Events Picker for selecting a Vendor Event -->
+            <Label Text="Select Event:" />
+            <Picker x:Name="VendorEventPicker"
+              Title="Select Vendor Event"
+              ItemsSource="{Binding Events}" 
+              ItemDisplayBinding="{Binding Name}" />
+
             <!-- Events Section -->
             <Label Text="Events" FontAttributes="Bold" Margin="0,10,0,0" />
             <ListView x:Name="EventsListView"

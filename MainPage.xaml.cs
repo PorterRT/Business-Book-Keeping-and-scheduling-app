@@ -26,6 +26,11 @@
             Events = new ObservableCollection<VendorEvents>();
             EventsListView.ItemsSource = Events; // Bind the ListView to the ObservableCollection
 
+            // Initialize the ObservableCollection for events
+            Events = new ObservableCollection<VendorEvents>();
+            VendorEventPicker.ItemsSource = Events; // Bind the Picker to the ObservableCollection
+
+
 
             BindingContext = this;
 
@@ -99,9 +104,9 @@
         {
             if (double.TryParse(AmountEntry.Text, out double amount))
             {
-                try 
+                try
                 {
-                    if (PaymentTypePicker.SelectedItem == null) // error for no payment type selected
+                    if (PaymentTypePicker.SelectedItem == null) // error for no payment type selected  
                     {
                         throw new Exception("Please select a payment type");
                     }
@@ -109,31 +114,33 @@
                 catch (Exception ex)
                 {
                     await DisplayAlert("Error", ex.Message, "OK");
+                    return; // Add return statement to exit the method if an exception is caught  
                 }
-                finally
+
+                var selectedEvent = (VendorEvents)VendorEventPicker.SelectedItem;
+                if (selectedEvent == null)
                 {
-                    var transaction = new Transaction
-                    {
-                        paymentType = PaymentTypePicker.SelectedItem.ToString() ?? "Unknown",
-                        Amount = amount,
-                        Date = TransactionDatePicker.Date
-                    };
-                    // Save the transaction to the database
-                    await _transactionRepository.SaveTransactionAsync(transaction);
-                    // Reload the transactions to refresh the list and total    
-                    LoadTransactionsForDate(TransactionDatePicker.Date);
-                    // Clear the amount entry, payment type picker, and date picker
-                    AmountEntry.Text = string.Empty;
-                    PaymentTypePicker.SelectedIndex = -1; // Set the selected index to -1 to clear the selection
+                    await DisplayAlert("Error", "Please select a vendor event", "OK");
+                    return;
                 }
-                // Clear the amount entry, payment type picker, and date picker
+
+                var transaction = new Transaction
+                {
+                    paymentType = PaymentTypePicker.SelectedItem.ToString() ?? "Unknown",
+                    Amount = amount,
+                    Date = TransactionDatePicker.Date
+                };
+                // Save the transaction to the database  
+                await _transactionRepository.SaveTransactionAsync(transaction);
+                // Reload the transactions to refresh the list and total    
+                LoadTransactionsForDate(TransactionDatePicker.Date);
+                // Clear the amount entry, payment type picker, and date picker  
                 AmountEntry.Text = string.Empty;
-                PaymentTypePicker.SelectedIndex = -1; // Set the selected index to -1 to clear the selection
-                
+                PaymentTypePicker.SelectedIndex = -1; // Set the selected index to -1 to clear the selection  
             }
             else
             {
-                // Display an alert if the amount is invalid
+                // Display an alert if the amount is invalid  
                 await DisplayAlert("Invalid Amount", "Please enter a valid amount", "OK");
             }
         }

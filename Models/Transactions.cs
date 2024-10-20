@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Vendor_App.Models
 {
-    [Table ("Transactions")]
+    [System.ComponentModel.DataAnnotations.Schema.Table("Transactions")]
     public class Transaction
     {
 
