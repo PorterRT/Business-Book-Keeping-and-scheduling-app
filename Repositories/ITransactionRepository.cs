@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Vendor_App.Models;
@@ -14,8 +15,6 @@ namespace Vendor_App.Repositories
 
         // Add a method to delete a transaction
         Task DeleteTransactionAsync(Transaction transaction); // Delete a transaction from the database
-
-
-
+        Task<Transaction> GetTransactionsByVendorEventAsync(VendorEvents vendorEvent);
     }
 }

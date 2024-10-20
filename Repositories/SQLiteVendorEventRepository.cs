@@ -55,7 +55,6 @@ public class SQLiteVendorEventRepository : IVendorEventRepository
 
 
 
-
     public Task<float> GetFeeForVendorEventAsync(VendorEvents vendorEvent)
     {
         return _database.ExecuteScalarAsync<float>(

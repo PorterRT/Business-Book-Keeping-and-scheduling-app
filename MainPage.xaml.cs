@@ -43,12 +43,21 @@
         {
             // Get the transactions from the database and only display 
             var transactions = await _transactionRepository.GetTransactionsByDateAsync(selectedDate);
-            TransactionList.ItemsSource = transactions;
+            TransactionList.ItemsSource = new ObservableCollection<Transaction>(transactions);
 
             // calculate and display the total amount
             await UpdateTotalDateAmount(selectedDate);
         }
 
+        private async void LoadTransactionsForVendorEvent(VendorEvents vendorEvent)
+        {
+            // Get the transactions from the database and only display 
+            var transactions = await _transactionRepository.GetTransactionsByVendorEventAsync(vendorEvent);
+            TransactionList.ItemsSource = new ObservableCollection<Transaction>(transactions);
+
+            // calculate and display the total amount
+            await UpdateTotalDateAmount(vendorEvent.EventDate);
+        }
         private async Task LoadVendorEventsByDate(DateTime selectedDate)
         {
             try

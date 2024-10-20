@@ -61,7 +61,15 @@ namespace Vendor_App.Repositories
         {
             return _database.DeleteAsync(transaction); // Delete the transaction from the database
         }
-        
-        
+
+        // Get a transaction by its VendorEventId
+        public Task<List<Transaction>> GetTransactionsByVendorEventAsync(VendorEvents vendorEvent)
+        {
+            return _database.Table<Transaction>()
+                            .Where(t => t.VendorEventId == vendorEvent.VendorEventId)
+                            .ToListAsync();
+        }
+
+
     }
 }
