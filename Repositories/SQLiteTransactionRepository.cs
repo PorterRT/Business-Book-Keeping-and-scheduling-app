@@ -55,6 +55,13 @@ namespace Vendor_App.Repositories
             var transactions = await _database.Table<Transaction>().ToListAsync();
             return transactions.Sum(t => t.Amount);
         }
+        
+        //Update a transaction in the database
+        public async Task<int> UpdateTransactionAsync(Transaction transaction)
+        {
+            return await _database.UpdateAsync(transaction);
+        }
+
         // Delete a transaction from the database
         
         public Task DeleteTransactionAsync(Transaction transaction) // Change Transactions to Transaction

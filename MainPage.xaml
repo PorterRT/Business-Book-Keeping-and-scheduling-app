@@ -50,6 +50,12 @@
                         <ViewCell>
                             <!-- Wrap the transaction in SwipeView-->
                             <SwipeView>
+                                <SwipeView.LeftItems>
+                                    <SwipeItems>
+                                        <SwipeItem Text="Update" BackgroundColor="DarkGoldenrod" Invoked="OnUpdateSwipeInvoked" CommandParameter="{Binding .}" />
+                                    </SwipeItems>
+                                    
+                                </SwipeView.LeftItems>
                                 <SwipeView.RightItems>
                                     <SwipeItems>
                                         <SwipeItem Text="Delete" BackgroundColor="DarkRed" Invoked="OnDeleteSwipeInvoked" CommandParameter="{Binding .}" />

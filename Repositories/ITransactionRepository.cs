@@ -12,6 +12,8 @@ namespace Vendor_App.Repositories
         Task<List<Transaction>> GetTransactionsAsync(); // Get all transactions from the database
         Task<List<Transaction>> GetTransactionsByDateAsync(DateTime date); // gets all transactions for a specific date
         Task<double> GetTotalAmountAsync();  // Get the total amount of all transactions
+        
+        public Task<int> UpdateTransactionAsync(Transaction transaction); // Update a transaction
 
         // Add a method to delete a transaction
         Task DeleteTransactionAsync(Transaction transaction); // Delete a transaction from the database

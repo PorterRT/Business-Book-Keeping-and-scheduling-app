@@ -1,4 +1,6 @@
-﻿namespace Vendor_App
+﻿using System;
+
+namespace Vendor_App
 {
     using System.Collections.ObjectModel;
     using Vendor_App.Models;
@@ -152,6 +154,31 @@
                 await DisplayAlert("Invalid Amount", "Please enter a valid amount", "OK");
             }
         }
+        
+        // update transaction
+        private async void OnUpdateSwipeInvoked(object sender, EventArgs e)
+        {
+            var UpdateSwipe = (SwipeItem)sender;
+            var transaction = (Transaction)UpdateSwipe.CommandParameter;
+
+            // Display an input dialog for the user to edit the transaction details
+            string newAmount = await DisplayPromptAsync("Update Transaction", "Enter new amount:", initialValue: transaction.Amount.ToString(), keyboard: Keyboard.Numeric);
+            string newPaymentType = await DisplayActionSheet("Select new payment type", "Cancel", null, "Cash", "Credit Card", "Square", "Venmo", "Cash App", "Apple Pay");
+
+            if (!string.IsNullOrEmpty(newAmount) && !string.IsNullOrEmpty(newPaymentType))
+            {
+                // Update the transaction with new values
+                transaction.Amount = double.Parse(newAmount);
+                transaction.paymentType = newPaymentType;
+
+                // Save the updated transaction to the database
+                await _transactionRepository.UpdateTransactionAsync(transaction);
+
+                // Refresh the transaction list
+                LoadTransactionsForVendorEvent((VendorEvents)VendorEventPicker.SelectedItem);
+            }
+        }
+        
 
         // Delete a transaction
         private async void OnDeleteSwipeInvoked(object sender, EventArgs e)
@@ -168,12 +195,7 @@
                 LoadTransactionsForVendorEvent((VendorEvents)VendorEventPicker.SelectedItem);
             }
         }
-
-        private async void OnUpdateSwipeInvoked (object sender, EventArgs e)
-        {
-            //needs implementation will be swiping to the right from the left for updating, use the same manu if possible
-        }
-
+        
         // Event handler for the date picker to load Events for the selected date
         private async void OnDateSelected(object sender, DateChangedEventArgs e)
         {
