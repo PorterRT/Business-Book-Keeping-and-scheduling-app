@@ -3,6 +3,7 @@
     using System.Collections.ObjectModel;
     using Vendor_App.Models;
     using Vendor_App.Repositories;
+
     public partial class MainPage : ContentPage
     {
         private ITransactionRepository _transactionRepository;
@@ -22,47 +23,20 @@
             string eventsDbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "vendorEvents.db3");
             _vendorEventRepository = new SQLiteVendorEventRepository(eventsDbPath);
 
-            // Initialize the ObservableCollection to hold the events
-            Events = new ObservableCollection<VendorEvents>();
-            EventsListView.ItemsSource = Events; // Bind the ListView to the ObservableCollection
-
             // Initialize the ObservableCollection for events
             Events = new ObservableCollection<VendorEvents>();
             VendorEventPicker.ItemsSource = Events; // Bind the Picker to the ObservableCollection
 
-
-
             BindingContext = this;
 
-            // set the default date to today
+            // Set the default date to today
             TransactionDatePicker.Date = DateTime.Today;
 
-            // Load the transactions from the database
-            
-            LoadTransactionsForDate(TransactionDatePicker.Date);
+            // Load the events and transactions
             LoadVendorEventsByDate(TransactionDatePicker.Date);
-
+            VendorEventPicker.SelectedIndexChanged += OnVendorEventSelected;
         }
 
-        private async void LoadTransactionsForDate(DateTime selectedDate)
-        {
-            // Get the transactions from the database and only display 
-            var transactions = await _transactionRepository.GetTransactionsByDateAsync(selectedDate);
-            TransactionList.ItemsSource = new ObservableCollection<Transaction>(transactions);
-
-            // calculate and display the total amount
-            await UpdateTotalDateAmount(selectedDate);
-        }
-
-        private async void LoadTransactionsForVendorEvent(VendorEvents vendorEvent)
-        {
-            // Get the transactions from the database and only display 
-            var transactions = await _transactionRepository.GetTransactionsByVendorEventAsync(vendorEvent);
-            TransactionList.ItemsSource = new ObservableCollection<Transaction>(transactions);
-
-            // calculate and display the total amount
-            await UpdateTotalDateAmount(vendorEvent.EventDate);
-        }
         private async Task LoadVendorEventsByDate(DateTime selectedDate)
         {
             try
@@ -71,7 +45,7 @@
                 Events.Clear();
 
                 // Fetch all events using the repository
-                var allEvents = await _vendorEventRepository.GetVendorEventsByDateAsync(TransactionDatePicker.Date);
+                var allEvents = await _vendorEventRepository.GetVendorEventsByDateAsync(selectedDate);
 
                 // Add each fetched event to the ObservableCollection
                 foreach (var vendorEvent in allEvents)
@@ -81,6 +55,13 @@
 
                 // Log event details for debugging
                 Console.WriteLine($"Loaded {allEvents.Count()} events.");
+
+                // Automatically select the first event, if any
+                if (Events.Count > 0)
+                {
+                    VendorEventPicker.SelectedItem = Events.First();
+                    LoadTransactionsForVendorEvent((VendorEvents)VendorEventPicker.SelectedItem);
+                }
             }
             catch (Exception ex)
             {
@@ -88,25 +69,47 @@
             }
         }
 
-
-
-
-
-
-
-        private void OnDateSelected(object sender, DateChangedEventArgs e) 
+        private async void LoadTransactionsForVendorEvent(VendorEvents vendorEvent)
         {
-            // Load the transactions for the selected date
-            LoadTransactionsForDate(e.NewDate);
-            LoadVendorEventsByDate(e.NewDate);
+            if (vendorEvent == null)
+            {
+                await DisplayAlert("Error", "Please select a valid vendor event", "OK");
+                return;
+            }
+
+            // Get transactions for the selected vendor event
+            var transactions = await _transactionRepository.GetTransactionsByVendorEventAsync(vendorEvent.VendorEventId);
+
+            // Bind the transactions to the UI (e.g., a ListView or CollectionView)
+            TransactionList.ItemsSource = new ObservableCollection<Transaction>(transactions);
+
+            // Optionally, update the total amount for the selected event
+            await UpdateTotalEventAmount(vendorEvent);
         }
+
+        private async Task UpdateTotalEventAmount(VendorEvents vendorEvent)
+        {
+            var transactions = await _transactionRepository.GetTransactionsByVendorEventAsync(vendorEvent.VendorEventId);
+            total = transactions.Sum(t => t.Amount);
+            TotalAmountLabel.Text = $"Total: {total:C}";
+        }
+
+        private async void OnVendorEventSelected(object sender, EventArgs e)
+        {
+            var selectedEvent = (VendorEvents)VendorEventPicker.SelectedItem;
+            if (selectedEvent != null)
+            {
+                LoadTransactionsForVendorEvent(selectedEvent); // Reload the transactions for the selected event
+            }
+        }
+
         private async void OnAddTransactionClicked(object sender, EventArgs e)
         {
             if (double.TryParse(AmountEntry.Text, out double amount))
             {
                 try
                 {
-                    if (PaymentTypePicker.SelectedItem == null) // error for no payment type selected  
+                    if (PaymentTypePicker.SelectedItem == null)
                     {
                         throw new Exception("Please select a payment type");
                     }
@@ -114,9 +117,10 @@
                 catch (Exception ex)
                 {
                     await DisplayAlert("Error", ex.Message, "OK");
-                    return; // Add return statement to exit the method if an exception is caught  
+                    return;
                 }
 
+                // Get the selected event from the picker
                 var selectedEvent = (VendorEvents)VendorEventPicker.SelectedItem;
                 if (selectedEvent == null)
                 {
@@ -124,26 +128,31 @@
                     return;
                 }
 
+                // Create a new transaction, linking it to the selected event's VendorEventId
                 var transaction = new Transaction
                 {
-                    paymentType = PaymentTypePicker.SelectedItem.ToString() ?? "Unknown",
+                    paymentType = PaymentTypePicker.SelectedItem.ToString(),
                     Amount = amount,
-                    Date = TransactionDatePicker.Date
+                    Date = TransactionDatePicker.Date,
+                    VendorEventId = selectedEvent.VendorEventId // Foreign key reference to the selected event
                 };
-                // Save the transaction to the database  
+
+                // Save the transaction to the database
                 await _transactionRepository.SaveTransactionAsync(transaction);
-                // Reload the transactions to refresh the list and total    
-                LoadTransactionsForDate(TransactionDatePicker.Date);
-                // Clear the amount entry, payment type picker, and date picker  
+
+                // Reload the transactions to refresh the list and total
+                LoadTransactionsForVendorEvent(selectedEvent);
+
+                // Clear inputs
                 AmountEntry.Text = string.Empty;
-                PaymentTypePicker.SelectedIndex = -1; // Set the selected index to -1 to clear the selection  
+                PaymentTypePicker.SelectedIndex = -1;
             }
             else
             {
-                // Display an alert if the amount is invalid  
                 await DisplayAlert("Invalid Amount", "Please enter a valid amount", "OK");
             }
         }
+
         // Delete a transaction
         private async void OnDeleteSwipeInvoked(object sender, EventArgs e)
         {
@@ -157,10 +166,25 @@
                 await _transactionRepository.DeleteTransactionAsync(transaction);
                 // Reload the transactions to refresh the list and total
                 LoadTransactionsForDate(TransactionDatePicker.Date);
-                
-
             }
         }
+
+        private async void OnDateSelected(object sender, DateChangedEventArgs e)
+        {
+            // Load vendor events for the selected date
+            await LoadVendorEventsByDate(e.NewDate);
+        }
+
+        private async void LoadTransactionsForDate(DateTime selectedDate)
+        {
+            // Get the transactions from the database and only display 
+            var transactions = await _transactionRepository.GetTransactionsByDateAsync(selectedDate);
+            TransactionList.ItemsSource = new ObservableCollection<Transaction>(transactions);
+
+            // calculate and display the total amount
+            await UpdateTotalDateAmount(selectedDate);
+        }
+
         private async Task UpdateTotalDateAmount(DateTime selectedDate)
         {
             // Get the total amount for the selected date
@@ -198,7 +222,5 @@
                 Console.WriteLine($"Navigation Error: {ex}");
             }
         }
-
     }
 }
-

@@ -63,10 +63,10 @@ namespace Vendor_App.Repositories
         }
 
         // Get a transaction by its VendorEventId
-        public Task<List<Transaction>> GetTransactionsByVendorEventAsync(VendorEvents vendorEvent)
+        public Task<List<Transaction>> GetTransactionsByVendorEventAsync(int vendorEventId)
         {
             return _database.Table<Transaction>()
-                            .Where(t => t.VendorEventId == vendorEvent.VendorEventId)
+                            .Where(t => t.VendorEventId == vendorEventId)
                             .ToListAsync();
         }
 

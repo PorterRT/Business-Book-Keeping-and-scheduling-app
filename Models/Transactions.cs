@@ -14,8 +14,7 @@ namespace Vendor_App.Models
 
         public DateTime Date { get; set; } // Date of the transaction 
 
-        [ForeignKey("VendorEventId")] // Foreign key to the VendorEvents table
-        public int VendorEventId { get; set; } // Foreign key property
+        public int VendorEventId { get; set; } // Foreign key to VendorEvents
 
         // Add a parameterless constructor to ensure all fields have default values
         public Transaction()

@@ -15,6 +15,6 @@ namespace Vendor_App.Repositories
 
         // Add a method to delete a transaction
         Task DeleteTransactionAsync(Transaction transaction); // Delete a transaction from the database
-        Task<List<Transaction>> GetTransactionsByVendorEventAsync(VendorEvents vendorEvent);
+        Task<List<Transaction>> GetTransactionsByVendorEventAsync(int vendorEventId);
     }
 }

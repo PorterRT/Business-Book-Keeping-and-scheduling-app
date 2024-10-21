@@ -19,26 +19,6 @@
               ItemsSource="{Binding Events}" 
               ItemDisplayBinding="{Binding Name}" />
 
-            <!-- Events Section -->
-            <Label Text="Events" FontAttributes="Bold" Margin="0,10,0,0" />
-            <ListView x:Name="EventsListView"
-          HasUnevenRows="True">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <Grid Padding="10">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Label Text="{Binding Name}" FontAttributes="Bold" />
-                                <Label Grid.Row="1" Text="{Binding EventDate, StringFormat='Event on {0:MM/dd/yyyy}'}" FontSize="Small" />
-                            </Grid>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-
 
             <!-- Label for entering amount -->
             <Label Text="Enter Amount: " />
@@ -81,6 +61,8 @@
                                     <Label Text="{Binding paymentType}" />
                                     <Label Text=" " />
                                     <Label Text="{Binding Amount, StringFormat='{}{0:C}'}" />
+                                    <!-- Event Name -->
+                                    <Label Text="{Binding VendorEvent.Name}" FontAttributes="Bold" />
                                 </StackLayout>
                             </SwipeView>
                         </ViewCell>
