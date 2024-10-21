@@ -61,8 +61,6 @@
                                     <Label Text="{Binding paymentType}" />
                                     <Label Text=" " />
                                     <Label Text="{Binding Amount, StringFormat='{}{0:C}'}" />
-                                    <!-- Event Name -->
-                                    <Label Text="{Binding VendorEvent.Name}" FontAttributes="Bold" />
                                 </StackLayout>
                             </SwipeView>
                         </ViewCell>
