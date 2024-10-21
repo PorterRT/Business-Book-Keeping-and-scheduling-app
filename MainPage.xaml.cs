@@ -158,17 +158,37 @@ namespace Vendor_App
         // update transaction
         private async void OnUpdateSwipeInvoked(object sender, EventArgs e)
         {
-            var UpdateSwipe = (SwipeItem)sender;
-            var transaction = (Transaction)UpdateSwipe.CommandParameter;
+            var swipeItem = (SwipeItem)sender;
+            var transaction = (Transaction)swipeItem.CommandParameter;
 
-            // Display an input dialog for the user to edit the transaction details
-            string newAmount = await DisplayPromptAsync("Update Transaction", "Enter new amount:", initialValue: transaction.Amount.ToString(), keyboard: Keyboard.Numeric);
-            string newPaymentType = await DisplayActionSheet("Select new payment type", "Cancel", null, "Cash", "Credit Card", "Square", "Venmo", "Cash App", "Apple Pay");
+            // Get the original payment type
+            string originalPaymentType = transaction.paymentType;
 
-            if (!string.IsNullOrEmpty(newAmount) && !string.IsNullOrEmpty(newPaymentType))
+            // Construct the list of options, putting the original payment type at the top
+            var paymentTypes = new List<string> 
+            { 
+                originalPaymentType, // Original payment type first
+                "Cash", 
+                "Credit Card", 
+                "Square", 
+                "Venmo", 
+                "Cash App", 
+                "Apple Pay" 
+            };
+
+            // Remove the original from the list to avoid duplication if it exists in the default set
+            paymentTypes = paymentTypes.Distinct().ToList();
+
+            // Display the action sheet with the original payment type at the top
+            string newPaymentType = await DisplayActionSheet(
+                "Select new payment type, the top is the original", 
+                "Cancel",  // Cancel button
+                null,      // No destructive button
+                paymentTypes.ToArray()); // Dynamic list of payment types
+
+            if (!string.IsNullOrEmpty(newPaymentType) && newPaymentType != "Cancel")
             {
-                // Update the transaction with new values
-                transaction.Amount = double.Parse(newAmount);
+                // Update the transaction with the selected payment type
                 transaction.paymentType = newPaymentType;
 
                 // Save the updated transaction to the database
@@ -178,8 +198,8 @@ namespace Vendor_App
                 LoadTransactionsForVendorEvent((VendorEvents)VendorEventPicker.SelectedItem);
             }
         }
-        
 
+        
         // Delete a transaction
         private async void OnDeleteSwipeInvoked(object sender, EventArgs e)
         {
