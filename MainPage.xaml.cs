@@ -93,7 +93,7 @@
             total = transactions.Sum(t => t.Amount);
             TotalAmountLabel.Text = $"Total: {total:C}";
         }
-
+        // This Loads transactions for the selected Event
         private async void OnVendorEventSelected(object sender, EventArgs e)
         {
             var selectedEvent = (VendorEvents)VendorEventPicker.SelectedItem;
@@ -102,7 +102,7 @@
                 LoadTransactionsForVendorEvent(selectedEvent); // Reload the transactions for the selected event
             }
         }
-
+        // Event handler for the button click to add a transaction which uploads the transaction to the database
         private async void OnAddTransactionClicked(object sender, EventArgs e)
         {
             if (double.TryParse(AmountEntry.Text, out double amount))
@@ -165,32 +165,20 @@
                 // Delete the transaction from the database
                 await _transactionRepository.DeleteTransactionAsync(transaction);
                 // Reload the transactions to refresh the list and total
-                LoadTransactionsForDate(TransactionDatePicker.Date);
+                LoadTransactionsForVendorEvent((VendorEvents)VendorEventPicker.SelectedItem);
             }
         }
 
+        private async void OnUpdateSwipeInvoked (object sender, EventArgs e)
+        {
+            //needs implementation will be swiping to the right from the left for updating, use the same manu if possible
+        }
+
+        // Event handler for the date picker to load Events for the selected date
         private async void OnDateSelected(object sender, DateChangedEventArgs e)
         {
             // Load vendor events for the selected date
             await LoadVendorEventsByDate(e.NewDate);
-        }
-
-        private async void LoadTransactionsForDate(DateTime selectedDate)
-        {
-            // Get the transactions from the database and only display 
-            var transactions = await _transactionRepository.GetTransactionsByDateAsync(selectedDate);
-            TransactionList.ItemsSource = new ObservableCollection<Transaction>(transactions);
-
-            // calculate and display the total amount
-            await UpdateTotalDateAmount(selectedDate);
-        }
-
-        private async Task UpdateTotalDateAmount(DateTime selectedDate)
-        {
-            // Get the total amount for the selected date
-            var transactions = await _transactionRepository.GetTransactionsByDateAsync(selectedDate);
-            total = transactions.Sum(t => t.Amount);
-            TotalAmountLabel.Text = $"Total: {total:C}";
         }
 
         // Event handler for the button click to navigate to VendorEventManager
