@@ -62,7 +62,7 @@
                                     </SwipeItems>
                                 </SwipeView.RightItems>
                                 <StackLayout Orientation="Horizontal" Padding="10" Spacing="20">
-                                    <Label Text="{Binding Date, StringFormat='{0:h:mm tt}'}" />
+                                    <Label Text="{Binding Time, StringFormat='{0:h:mm tt}'}" />
                                     <Label Text=" " />
                                     <Label Text="{Binding paymentType}" />
                                     <Label Text=" " />

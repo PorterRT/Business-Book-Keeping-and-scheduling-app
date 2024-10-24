@@ -1,9 +1,9 @@
 ﻿using SQLite;
-using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace Vendor_App.Models
 {
-    [System.ComponentModel.DataAnnotations.Schema.Table("Transactions")]
+    [Table("Transactions")]
     public class Transaction
     {
 
@@ -14,6 +14,8 @@ namespace Vendor_App.Models
 
         public DateTime Date { get; set; } // Date of the transaction 
 
+        public DateTime Time { get; set; } // Time of the transaction
+
         public int VendorEventId { get; set; } // Foreign key to VendorEvents
 
         // Add a parameterless constructor to ensure all fields have default values
@@ -21,7 +23,7 @@ namespace Vendor_App.Models
         {
             paymentType = string.Empty; // Default to empty string
             Amount = 0.0; // Default to zero
-            Date = DateTime.Now; // Default to current date
+            Date = Date; // Default to current date
         }
 
     }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Vendor_App
+﻿namespace Vendor_App
 {
     using System.Collections.ObjectModel;
     using Vendor_App.Models;
@@ -136,6 +134,7 @@ namespace Vendor_App
                     paymentType = PaymentTypePicker.SelectedItem.ToString(),
                     Amount = amount,
                     Date = TransactionDatePicker.Date,
+                    Time = DateTime.Now,
                     VendorEventId = selectedEvent.VendorEventId // Foreign key reference to the selected event
                 };
 
@@ -154,26 +153,31 @@ namespace Vendor_App
                 await DisplayAlert("Invalid Amount", "Please enter a valid amount", "OK");
             }
         }
-        
+
         // update transaction
         private async void OnUpdateSwipeInvoked(object sender, EventArgs e)
         {
             var swipeItem = (SwipeItem)sender;
             var transaction = (Transaction)swipeItem.CommandParameter;
 
+            // Display the current amount in a prompt for the user to update
+            string newAmount = await DisplayPromptAsync("Update Transaction",
+                                                        "Enter new amount:",
+                                                        initialValue: transaction.Amount.ToString(),
+                                                        keyboard: Keyboard.Numeric);
             // Get the original payment type
             string originalPaymentType = transaction.paymentType;
 
             // Construct the list of options, putting the original payment type at the top
-            var paymentTypes = new List<string> 
-            { 
+            var paymentTypes = new List<string>
+            {
                 originalPaymentType, // Original payment type first
-                "Cash", 
-                "Credit Card", 
-                "Square", 
-                "Venmo", 
-                "Cash App", 
-                "Apple Pay" 
+                "Cash",
+                "Credit Card",
+                "Square",
+                "Venmo",
+                "Cash App",
+                "Apple Pay"
             };
 
             // Remove the original from the list to avoid duplication if it exists in the default set
@@ -181,13 +185,15 @@ namespace Vendor_App
 
             // Display the action sheet with the original payment type at the top
             string newPaymentType = await DisplayActionSheet(
-                "Select new payment type, the top is the original", 
+                "Select new payment type, the top is the original",
                 "Cancel",  // Cancel button
                 null,      // No destructive button
                 paymentTypes.ToArray()); // Dynamic list of payment types
 
             if (!string.IsNullOrEmpty(newPaymentType) && newPaymentType != "Cancel")
             {
+                // Update the transaction with new values
+                transaction.Amount = double.Parse(newAmount);
                 // Update the transaction with the selected payment type
                 transaction.paymentType = newPaymentType;
 
@@ -199,7 +205,7 @@ namespace Vendor_App
             }
         }
 
-        
+
         // Delete a transaction
         private async void OnDeleteSwipeInvoked(object sender, EventArgs e)
         {
@@ -215,7 +221,8 @@ namespace Vendor_App
                 LoadTransactionsForVendorEvent((VendorEvents)VendorEventPicker.SelectedItem);
             }
         }
-        
+
+
         // Event handler for the date picker to load Events for the selected date
         private async void OnDateSelected(object sender, DateChangedEventArgs e)
         {
