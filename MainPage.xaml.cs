@@ -259,5 +259,19 @@
                 Console.WriteLine($"Navigation Error: {ex}");
             }
         }
+
+        private async void OnNavigateToFinanceBreakdownClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await Navigation.PushAsync(new FinanceBreakdown());
+            }
+            catch (Exception ex)
+            {
+                // Display the exception message for debugging
+                await DisplayAlert("Navigation Error", ex.Message, "OK");
+                Console.WriteLine($"Navigation Error: {ex}");
+            }
+        }
     }
 }

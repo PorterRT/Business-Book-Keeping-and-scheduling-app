@@ -15,14 +15,8 @@ Feature 3: Vendor Performance tracking
   
 Feature 4: Vendor Network to talk with other vendors about events, what is happening in your area, and who/how to book a vendor stand.
 
-we need to plan for with our database, multiple users, o auth through google, apple, and square. we will then save the usernames and give them a auto generated id so they can securely access only their own data
-I will also need to make a ERD Diagram for the database Right now for feature 1 we will need a Table named "Transactions" that stores  ID (Auto Increment), Date, PaymentType, each transaction amount, the breakdown of each transaction (these will be optional). 
 
-Note will need to add more crud operations for the transactions. update still needed
-Note Delete added will need to restyle all list elements to fix on phone make delete slide maybe.
-Repositories folder will make it easy to go to cloud base databases instead of local SQLite databases.
-
-Will need to make transaction selectable by event instead of date and make navigation and editing easier
+Start of breakdown page begun, Make sure to add the fee, add dates to the events, Make the VendorEvent easier to view and select and have filters to select them 
 
 
 Rider, Vs Studio, .Net Maui, C#, Xaml, SQLite

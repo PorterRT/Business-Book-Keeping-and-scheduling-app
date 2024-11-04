@@ -12,10 +12,10 @@ namespace Vendor_App
         private readonly IVendorEventRepository _vendorEventRepository;
 
         // Declare a field to store the current event being edited or added.
-        private VendorEvents _currentVendorEvent; // <-- CHANGE: Declare field to store the event being edited.
+        private VendorEvents _currentVendorEvent; 
 
         // Constructor that accepts an optional VendorEvents parameter.
-        public VendorEventManager(VendorEvents vendorEvent = null) // <-- CHANGE: Accept an optional event.
+        public VendorEventManager(VendorEvents vendorEvent = null) 
         {
             InitializeComponent();
             string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "vendorEvents.db3");
@@ -27,19 +27,19 @@ namespace Vendor_App
             EventEndTimePicker.PropertyChanged += TimePicker_PropertyChanged;
 
             // Check if a VendorEvents object was passed.
-            if (vendorEvent != null) // <-- CHANGE: Check if we are editing an existing event.
+            if (vendorEvent != null) //
             {
                 _currentVendorEvent = vendorEvent;
-                PopulateFormForEditing(vendorEvent); // <-- CHANGE: Populate the form if editing.
+                PopulateFormForEditing(vendorEvent); 
             }
             else
             {
-                _currentVendorEvent = new VendorEvents(); // <-- CHANGE: Initialize a new event if none is provided.
+                _currentVendorEvent = new VendorEvents(); 
             }
         }
 
         // Method to populate the form with the data of the event being edited.
-        private void PopulateFormForEditing(VendorEvents vendorEvent) // <-- CHANGE: Populate fields for editing.
+        private void PopulateFormForEditing(VendorEvents vendorEvent) 
         {
             EventNameEntry.Text = vendorEvent.Name;
             EventFeeEntry.Text = vendorEvent.Fee.ToString();

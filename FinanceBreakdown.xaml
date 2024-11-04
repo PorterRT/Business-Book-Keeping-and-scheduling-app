@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Vendor_App.FinanceBreakdown"
+             Title="Finance Breakdown">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <!-- Multi-Select Event Picker -->
+            
+            <Label Text="Select Events:" FontAttributes="Bold" />
+            <CollectionView x:Name="EventCollectionView"
+                            ItemsSource="{Binding Events}"
+                            SelectionMode="Multiple"
+                            SelectionChanged="OnEventsSelected">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10">
+                            <Label Text="{Binding Name}" VerticalOptions="Center" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Header for Transactions -->
+            <Label Text="Transactions for Selected Events" FontAttributes="Bold" FontSize="Medium" />
+
+            <!-- List of Transactions -->
+            <ListView x:Name="TransactionListView" ItemsSource="{Binding DisplayedTransactions}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal" Padding="10" Spacing="10">
+                                <!-- Display transaction details -->
+                                <Label Text="{Binding Date, StringFormat='{0:MM/dd/yyyy}'}" />
+                                <Label Text="{Binding paymentType}" />
+                                <Label Text="{Binding Amount, StringFormat='{}{0:C}'}" />
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <!-- Financial Totals -->
+            
+            <Label x:Name="TotalIncomeLabel" Text="0.00" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -64,4 +64,10 @@
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <MauiXaml Update="FinanceBreakdown.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
 </Project>
