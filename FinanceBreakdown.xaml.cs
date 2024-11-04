@@ -78,8 +78,35 @@ namespace Vendor_App
         {
             // Get the selected events
             var selectedEvents = e.CurrentSelection.Cast<VendorEvents>().ToList();
+            await LoadFeesForSelectedEvents(selectedEvents);
             await LoadTransactionsForSelectedEvents(selectedEvents);
         }
+
+        private async Task<double> LoadFeesForSelectedEvents(List<VendorEvents> selectedEvents)
+        {
+            double totalFees = 0;
+
+            foreach (var vendorEvent in selectedEvents)
+            {
+                try
+                {
+                    // Attempt to get the fee for the current event
+                    float vendorFee = await _vendorEventRepository.GetFeeForVendorEventAsync(vendorEvent);
+                    Console.WriteLine($"Fee for event {vendorEvent.VendorEventId}: {vendorFee}");
+                    totalFees += vendorFee;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error retrieving fee for event {vendorEvent.VendorEventId}: {ex.Message}");
+                    // Optionally, you could display an alert if a fee fails to load, or skip to the next
+                    await DisplayAlert("Error", $"Failed to retrieve fee for event {vendorEvent.VendorEventId}: {ex.Message}", "OK");
+                }
+            }
+
+            Console.WriteLine($"Total fees for selected events: {totalFees}");
+            return totalFees;
+        }
+
 
         private async Task LoadTransactionsForSelectedEvents(List<VendorEvents> selectedEvents)
         {
@@ -87,32 +114,27 @@ namespace Vendor_App
             {
                 DisplayedTransactions.Clear();
                 double totalIncome = 0;
-                double totalExpenses = 0;
+
+                double totalFees = await LoadFeesForSelectedEvents(selectedEvents);
+
+                double FinalTotal = totalIncome - totalFees;
 
                 foreach (var vendorEvent in selectedEvents)
                 {
-                    // Get transactions for each selected event
                     var transactions = await _transactionRepository.GetTransactionsByVendorEventAsync(vendorEvent.VendorEventId);
 
                     foreach (var transaction in transactions)
                     {
                         DisplayedTransactions.Add(transaction);
-
-                        // Calculate income and expenses
-                        if (transaction.Amount > 0)
-                        {
                             totalIncome += transaction.Amount;
-                        }
-                        else
-                        {
-                            totalExpenses += transaction.Amount;
-                        }
+
                     }
                 }
 
-                // Update the financial totals
-                TotalIncomeLabel.Text = $"Total Income: {totalIncome:C}";
-       
+                TotalFeesLabel.Text = $"Total for all Fees: {totalFees:C}";
+                SubTotalIncomeLabel.Text = $"Sub Total: {totalIncome:C}";
+                TotalIncomeLabel.Text = $"Final Total: {FinalTotal:C}";
+
             }
             catch (Exception ex)
             {
