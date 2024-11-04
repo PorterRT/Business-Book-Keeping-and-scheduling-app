@@ -1,4 +1,4 @@
-namespace Vendor_App
+﻿namespace Vendor_App
 {
     using System;
     using System.Collections.ObjectModel;
@@ -63,7 +63,7 @@ namespace Vendor_App
         {
             isEventCollectionVisible = !isEventCollectionVisible;
             EventCollectionView.IsVisible = isEventCollectionVisible;
-            ToggleEventButton.Text = isEventCollectionVisible ? "Select Events ?" : "Select Events ?";
+            ToggleEventButton.Text = isEventCollectionVisible ? "Select Events ▲" : "Select Events ▼";
         }
 
         // Toggle visibility for Transaction List
@@ -71,7 +71,7 @@ namespace Vendor_App
         {
             isTransactionListVisible = !isTransactionListVisible;
             TransactionListView.IsVisible = isTransactionListVisible;
-            ToggleTransactionButton.Text = isTransactionListVisible ? "Transactions for Selected Events ?" : "Transactions for Selected Events ?";
+            ToggleTransactionButton.Text = isTransactionListVisible ? "Transactions for Selected Events ▲" : "Transactions for Selected Events ▼";
         }
 
         private async void OnEventsSelected(object sender, SelectionChangedEventArgs e)
@@ -117,7 +117,7 @@ namespace Vendor_App
 
                 double totalFees = await LoadFeesForSelectedEvents(selectedEvents);
 
-                double FinalTotal = totalIncome - totalFees;
+                
 
                 foreach (var vendorEvent in selectedEvents)
                 {
@@ -130,7 +130,7 @@ namespace Vendor_App
 
                     }
                 }
-
+                double FinalTotal = totalIncome - totalFees;
                 TotalFeesLabel.Text = $"Total for all Fees: {totalFees:C}";
                 SubTotalIncomeLabel.Text = $"Sub Total: {totalIncome:C}";
                 TotalIncomeLabel.Text = $"Final Total: {FinalTotal:C}";
