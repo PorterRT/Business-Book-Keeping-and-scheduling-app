@@ -7,13 +7,18 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
 
-            <!-- Multi-Select Event Picker -->
-            
-            <Label Text="Select Events:" FontAttributes="Bold" />
+            <!-- Button to Toggle Event Selection Visibility -->
+            <Button x:Name="ToggleEventButton"
+                    Text="Select Events ▼" 
+                    FontAttributes="Bold"
+                    Clicked="OnToggleEventSelectionClicked" />
+
+            <!-- Multi-Select Event Picker (Initially Collapsed) -->
             <CollectionView x:Name="EventCollectionView"
                             ItemsSource="{Binding Events}"
                             SelectionMode="Multiple"
-                            SelectionChanged="OnEventsSelected">
+                            IsVisible="False"  
+                SelectionChanged="OnEventsSelected">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="10">
@@ -23,11 +28,14 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <!-- Header for Transactions -->
-            <Label Text="Transactions for Selected Events" FontAttributes="Bold" FontSize="Medium" />
+            <!-- Button to Toggle Transaction List Visibility -->
+            <Button x:Name="ToggleTransactionButton"
+                    Text="Transactions for Selected Events ▼"
+                    FontAttributes="Bold"
+                    Clicked="OnToggleTransactionListClicked" />
 
-            <!-- List of Transactions -->
-            <ListView x:Name="TransactionListView" ItemsSource="{Binding DisplayedTransactions}">
+            <!-- List of Transactions (Initially Collapsed) -->
+            <ListView x:Name="TransactionListView" ItemsSource="{Binding DisplayedTransactions}" IsVisible="False">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -43,8 +51,7 @@
             </ListView>
 
             <!-- Financial Totals -->
-            
-            <Label x:Name="TotalIncomeLabel" Text="0.00" />
+            <Label x:Name="TotalIncomeLabel" Text="Total Income: 0.00" />
 
         </VerticalStackLayout>
     </ScrollView>

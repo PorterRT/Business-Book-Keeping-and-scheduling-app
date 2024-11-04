@@ -17,6 +17,9 @@ namespace Vendor_App
         public ObservableCollection<VendorEvents> Events { get; set; }
         public ObservableCollection<Transaction> DisplayedTransactions { get; set; }
 
+        private bool isEventCollectionVisible = false;
+        private bool isTransactionListVisible = false;
+
         public FinanceBreakdown()
         {
             InitializeComponent();
@@ -53,6 +56,22 @@ namespace Vendor_App
             {
                 await DisplayAlert("Error", $"Failed to load events: {ex.Message}", "OK");
             }
+        }
+
+        // Toggle visibility for Event Collection
+        private void OnToggleEventSelectionClicked(object sender, EventArgs e)
+        {
+            isEventCollectionVisible = !isEventCollectionVisible;
+            EventCollectionView.IsVisible = isEventCollectionVisible;
+            ToggleEventButton.Text = isEventCollectionVisible ? "Select Events ?" : "Select Events ?";
+        }
+
+        // Toggle visibility for Transaction List
+        private void OnToggleTransactionListClicked(object sender, EventArgs e)
+        {
+            isTransactionListVisible = !isTransactionListVisible;
+            TransactionListView.IsVisible = isTransactionListVisible;
+            ToggleTransactionButton.Text = isTransactionListVisible ? "Transactions for Selected Events ?" : "Transactions for Selected Events ?";
         }
 
         private async void OnEventsSelected(object sender, SelectionChangedEventArgs e)
