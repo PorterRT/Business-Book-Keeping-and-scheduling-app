@@ -58,7 +58,7 @@ public class SQLiteVendorEventRepository : IVendorEventRepository
     public Task<float> GetFeeForVendorEventAsync(VendorEvents vendorEvent)
     {
         return _database.ExecuteScalarAsync<float>(
-            "SELECT Fee FROM VendorEvents WHERE VendorEventId = ?", vendorEvent.VendorEventId);
+            "SELECT Fee FROM Vendor_events WHERE VendorEventId = ?", vendorEvent.VendorEventId);
     }
 
     public Task DeleteVendorEventAsync(VendorEvents vendorEvent)
