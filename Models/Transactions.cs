@@ -12,6 +12,8 @@ namespace Vendor_App.Models
         public string paymentType { get; set; } // Card or Cash 
         public double Amount { get; set; } // Amount of the transaction 
 
+        public double ProcessingFee { get; set; } // Processing fee for the transaction
+
         public DateTime Date { get; set; } // Date of the transaction 
 
         public DateTime Time { get; set; } // Time of the transaction

@@ -18,6 +18,8 @@ Feature 4: Vendor Network to talk with other vendors about events, what is happe
 
 Start of breakdown page begun, Make sure to add the fee, add dates to the events, Make the VendorEvent easier to view and select and have filters to select them 
 
+Add TransactionProcessing fee to each type
+
 
 Rider, Vs Studio, .Net Maui, C#, Xaml, SQLite
 

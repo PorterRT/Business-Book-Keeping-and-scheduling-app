@@ -11,6 +11,7 @@
         public ObservableCollection<VendorEvents> Events { get; set; }
 
         private double total = 0;
+        private double processingFee = 0;
 
         public MainPage()
         {
@@ -102,6 +103,36 @@
                 LoadTransactionsForVendorEvent(selectedEvent); // Reload the transactions for the selected event
             }
         }
+
+        private double CalulateProcessingFees(double Amount)
+        {
+            if (PaymentTypePicker.SelectedItem.ToString() == "Square")
+            {
+                processingFee = (Amount * 0.026) + 0.10;
+            }
+            else if (PaymentTypePicker.SelectedItem.ToString() == "Venmo")
+            {
+                processingFee = (Amount * 0.019) + 0.10;
+            }
+            else if (PaymentTypePicker.SelectedItem.ToString() == "Cash App")
+            {
+                processingFee = Amount * 0.0275;
+            }
+            else if (PaymentTypePicker.SelectedItem.ToString() == "Apple Pay")
+            {
+                processingFee = 0.00;
+            }
+            else if (PaymentTypePicker.SelectedItem.ToString() == "Credit Card")
+            {
+                processingFee = (Amount * 0.03); // this is a place holder may need to get each card companies fee
+            }
+            else if (PaymentTypePicker.SelectedItem.ToString() == "Cash")
+            {
+                processingFee = 0.00;
+            }
+            return processingFee;
+        }
+
         // Event handler for the button click to add a transaction which uploads the transaction to the database
         private async void OnAddTransactionClicked(object sender, EventArgs e)
         {
@@ -133,6 +164,7 @@
                 {
                     paymentType = PaymentTypePicker.SelectedItem.ToString(),
                     Amount = amount,
+                    ProcessingFee = CalulateProcessingFees(amount),
                     Date = TransactionDatePicker.Date,
                     Time = DateTime.Now,
                     VendorEventId = selectedEvent.VendorEventId // Foreign key reference to the selected event
