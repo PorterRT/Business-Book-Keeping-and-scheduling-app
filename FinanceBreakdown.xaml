@@ -51,7 +51,9 @@
             </ListView>
 
             <!-- Financial Totals -->
-            <Label x:Name="SubTotalIncomeLabel" Text="Total Income: 0.00" />
+            <Label x:Name="TotalFeesLabel"/>
+            <Label x:Name="SubTotalIncomeLabel" />
+            <Label x:Name="TotalIncomeLabel"/>
 
         </VerticalStackLayout>
     </ScrollView>
