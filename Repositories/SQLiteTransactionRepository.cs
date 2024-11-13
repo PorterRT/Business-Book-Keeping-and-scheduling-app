@@ -77,6 +77,15 @@ namespace Vendor_App.Repositories
                             .ToListAsync();
         }
 
+       public async Task<List<double>> GetProcessingFeesForVendorEventAsync(int vendorEventId)
+        {
+            var transactions = await _database.Table<Transaction>()
+                                .Where(t => t.VendorEventId == vendorEventId)
+                                .ToListAsync();
+
+            return transactions.Select(t => t.ProcessingFee).ToList();
+        }
+
 
     }
 }

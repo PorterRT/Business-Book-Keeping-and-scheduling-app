@@ -51,6 +51,8 @@
             </ListView>
 
             <!-- Financial Totals -->
+            <Label x:Name="TotalProcessingFeesLabel"/>
+            <Label x:Name="TotalEventFeesLabel"/>
             <Label x:Name="TotalFeesLabel"/>
             <Label x:Name="SubTotalIncomeLabel" />
             <Label x:Name="TotalIncomeLabel"/>

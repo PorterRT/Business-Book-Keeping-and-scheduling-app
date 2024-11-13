@@ -78,22 +78,23 @@
         {
             // Get the selected events
             var selectedEvents = e.CurrentSelection.Cast<VendorEvents>().ToList();
-            await LoadFeesForSelectedEvents(selectedEvents);
+            await LoadVendorFeesForSelectedEvents(selectedEvents);
+            await LoadProcessingFeesForSelectedEvents(selectedEvents);
             await LoadTransactionsForSelectedEvents(selectedEvents);
         }
 
-        private async Task<double> LoadFeesForSelectedEvents(List<VendorEvents> selectedEvents)
+        private async Task<double> LoadVendorFeesForSelectedEvents(List<VendorEvents> selectedEvents)
         {
-            double totalFees = 0;
+            double totalVenFees = 0;
 
             foreach (var vendorEvent in selectedEvents)
             {
                 try
                 {
                     // Attempt to get the fee for the current event
-                    float vendorFee = await _vendorEventRepository.GetFeeForVendorEventAsync(vendorEvent);
+                    double vendorFee = await _vendorEventRepository.GetFeeForVendorEventAsync(vendorEvent);
                     Console.WriteLine($"Fee for event {vendorEvent.VendorEventId}: {vendorFee}");
-                    totalFees += vendorFee;
+                    totalVenFees += vendorFee;
                 }
                 catch (Exception ex)
                 {
@@ -103,9 +104,30 @@
                 }
             }
 
-            Console.WriteLine($"Total fees for selected events: {totalFees}");
-            return totalFees;
+            Console.WriteLine($"Total fees for selected events: {totalVenFees}");
+            return totalVenFees;
         }
+        private async Task<double> LoadProcessingFeesForSelectedEvents(List<VendorEvents> selectedEvents){
+            double totalProcessingFees = 0;
+
+            foreach (var vendorEvent in selectedEvents)
+            {
+                try
+                {
+                    List<double> ProcessingFee = await _transactionRepository.GetProcessingFeesForVendorEventAsync(vendorEvent.VendorEventId);
+                    Console.WriteLine($"Processing Fee for event {vendorEvent.VendorEventId}: {ProcessingFee}");
+                    totalProcessingFees = ProcessingFee.Sum();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error retrieving processing fee for event {vendorEvent.VendorEventId}: {ex.Message}");
+                    await DisplayAlert("Error", $"Failed to retrieve processing fee for event {vendorEvent.VendorEventId}: {ex.Message}", "OK");
+                }
+
+        }
+        return totalProcessingFees;
+        }
+
 
 
         private async Task LoadTransactionsForSelectedEvents(List<VendorEvents> selectedEvents)
@@ -114,9 +136,9 @@
             {
                 DisplayedTransactions.Clear();
                 double totalIncome = 0;
-
-                double totalFees = await LoadFeesForSelectedEvents(selectedEvents);
-
+                double totalVenFees = await LoadVendorFeesForSelectedEvents(selectedEvents);
+                double totalProcessingFees = await LoadProcessingFeesForSelectedEvents(selectedEvents);
+                double totalFees = totalVenFees + totalProcessingFees;
                 
 
                 foreach (var vendorEvent in selectedEvents)
@@ -131,6 +153,8 @@
                     }
                 }
                 double FinalTotal = totalIncome - totalFees;
+                TotalEventFeesLabel.Text = $"Total for all Event Fees: {totalVenFees:C}";
+                TotalProcessingFeesLabel.Text = $"Total for all Processing Fees: {totalProcessingFees:C}";
                 TotalFeesLabel.Text = $"Total for all Fees: {totalFees:C}";
                 SubTotalIncomeLabel.Text = $"Sub Total: {totalIncome:C}";
                 TotalIncomeLabel.Text = $"Final Total: {FinalTotal:C}";
