@@ -7,9 +7,22 @@
     Shell.FlyoutBehavior="Disabled"
     Title="Vendor_App">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <TabBar>
+        <Tab Title="Home">
+            <ShellContent ContentTemplate="{DataTemplate local:MainPage}"
+                Route="MainPage" />
+        </Tab>
+        <Tab Title="Finance">
+            <ShellContent ContentTemplate="{DataTemplate local:FinanceBreakdown}"
+                Route="FinanceBreakdown" />
+        </Tab>
+
+        <Tab Title="Events">
+            <ShellContent ContentTemplate="{DataTemplate local:VendorEventViewer}"
+                Route="VendorEventViewer" />
+        </Tab>
+
+        
+    </TabBar>
 
 </Shell>

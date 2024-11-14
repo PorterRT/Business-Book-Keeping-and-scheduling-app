@@ -6,7 +6,8 @@
         {
             InitializeComponent();
 
-            new NavigationPage(new MainPage());
+            //MainPage = new AppShell();
+           // new NavigationPage(new MainPage());
         }
     }
 }

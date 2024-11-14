@@ -80,18 +80,6 @@
             <!-- Total Amount Display -->
             <Label x:Name="TotalAmountLabel" Text="Total: 0.00" FontSize="Large" HorizontalOptions="Center"/>
 
-            <!-- Button to navigate to Vendor Event Manager -->
-            <Button Text="Vendor Event Manager"
-                    Clicked="OnNavigateToVendorEventManagerClicked"/>
-
-            <!-- Button to navigate to Vendor Viewer -->
-            <Button Text="Vendor Event Viewer"
-                    Clicked="OnNavigateToOrderEventViewerClicked"/>
-            
-            <!--Button to Navigate to the Finance Breakdown-->
-            <Button Text="Vendor Event Breakdown"
-                    Clicked="OnNavigateToFinanceBreakdownClicked"/>
-
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

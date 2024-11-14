@@ -44,6 +44,8 @@
                                 <Label Text="{Binding Date, StringFormat='{0:MM/dd/yyyy}'}" />
                                 <Label Text="{Binding paymentType}" />
                                 <Label Text="{Binding Amount, StringFormat='{}{0:C}'}" />
+                                <Label Text="Processing Fee: " />
+                                <Label Text="{Binding ProcessingFee, StringFormat='{}{0:C}'}" />
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>

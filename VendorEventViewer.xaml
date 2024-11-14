@@ -42,5 +42,8 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+               <!-- Button to navigate to Vendor Event Manager -->
+            <Button Text="Add Event"
+                    Clicked="OnNavigateToVendorEventManagerClicked"/>
     </StackLayout>
 </ContentPage>

@@ -261,49 +261,8 @@
             // Load vendor events for the selected date
             await LoadVendorEventsByDate(e.NewDate);
         }
-
-        // Event handler for the button click to navigate to VendorEventManager
-        private async void OnNavigateToVendorEventManagerClicked(object sender, EventArgs e)
-        {
-            try
-            {
-                // Attempt to navigate to VendorEventManager
-                await Navigation.PushAsync(new VendorEventManager());
-            }
-            catch (Exception ex)
-            {
-                // Display the exception message for debugging
-                await DisplayAlert("Navigation Error", ex.Message, "OK");
-                Console.WriteLine($"Navigation Error: {ex}");
-            }
-        }
-
-        private async void OnNavigateToOrderEventViewerClicked(object sender, EventArgs e)
-        {
-            try
-            {
-                await Navigation.PushAsync(new VendorEventViewer());
-            }
-            catch (Exception ex)
-            {
-                // Display the exception message for debugging
-                await DisplayAlert("Navigation Error", ex.Message, "OK");
-                Console.WriteLine($"Navigation Error: {ex}");
-            }
-        }
-
-        private async void OnNavigateToFinanceBreakdownClicked(object sender, EventArgs e)
-        {
-            try
-            {
-                await Navigation.PushAsync(new FinanceBreakdown());
-            }
-            catch (Exception ex)
-            {
-                // Display the exception message for debugging
-                await DisplayAlert("Navigation Error", ex.Message, "OK");
-                Console.WriteLine($"Navigation Error: {ex}");
-            }
-        }
+        
+      
+      
     }
 }

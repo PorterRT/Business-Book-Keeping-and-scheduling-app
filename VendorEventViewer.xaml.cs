@@ -120,6 +120,22 @@ namespace Vendor_App
         {
             await Navigation.PushAsync(new VendorEventManager(vendorEvent));
         }
+        
+        // Event handler for the button click to navigate to VendorEventManager
+        private async void OnNavigateToVendorEventManagerClicked(object sender, EventArgs e)
+        {
+            try
+            {
+                // Attempt to navigate to VendorEventManager
+                await Navigation.PushAsync(new VendorEventManager());
+            }
+            catch (Exception ex)
+            {
+                // Display the exception message for debugging
+                await DisplayAlert("Navigation Error", ex.Message, "OK");
+                Console.WriteLine($"Navigation Error: {ex}");
+            }
+        }
 
         protected override void OnAppearing()
         {
