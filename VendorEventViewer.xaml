@@ -4,6 +4,12 @@
              x:Class="Vendor_App.VendorEventViewer"
              Title="View Vendor Events">
     <StackLayout Padding="10">
+         <Label Text="Select Date Range: " VerticalOptions="Center" />
+            <DatePicker x:Name="StartDatePicker" Date="{Binding StartDate}" />
+            <Label Text="to" VerticalOptions="Center" />
+            <DatePicker x:Name="EndDatePicker" Date="{Binding EndDate}" />
+            <Button Text="Date Filter" Clicked="OnFilterClicked" />
+
         <ListView x:Name="EventsListView"
                   ItemsSource="{Binding Events}"
                   ItemTapped="OnEventTapped">

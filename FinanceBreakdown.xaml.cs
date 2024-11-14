@@ -40,6 +40,19 @@
             LoadAllEvents();
         }
 
+        private async void OnFilterClicked(object sender, EventArgs e)
+        {
+            DateTime startDate = StartDatePicker.Date;
+            DateTime endDate = EndDatePicker.Date;
+
+            var filteredEvents = await _vendorEventRepository.GetEventsByDateRangeAsync(startDate, endDate);
+            Events.Clear();
+            foreach (var vendorEvent in filteredEvents)
+            {
+                Events.Add(vendorEvent);
+            }
+        }
+
         private async void LoadAllEvents()
         {
             try

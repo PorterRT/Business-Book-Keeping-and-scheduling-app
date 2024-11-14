@@ -44,6 +44,19 @@ namespace Vendor_App
             }
         }
 
+        private async void OnFilterClicked(object sender, EventArgs e)
+        {
+            DateTime startDate = StartDatePicker.Date;
+            DateTime endDate = EndDatePicker.Date;
+
+            var filteredEvents = await _vendorEventRepository.GetEventsByDateRangeAsync(startDate, endDate);
+            Events.Clear();
+            foreach (var vendorEvent in filteredEvents)
+            {
+                Events.Add(vendorEvent);
+            }
+        }
+
         // Method to load all vendor events
         private async Task LoadAllVendorEventsAsync()
         {

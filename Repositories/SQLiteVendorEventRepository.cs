@@ -80,5 +80,13 @@ public class SQLiteVendorEventRepository : IVendorEventRepository
         return result;
     }
 
+    public Task<List<VendorEvents>> GetEventsByDateRangeAsync(DateTime startDate, DateTime endDate)
+    {
+        return _database.Table<VendorEvents>()
+                        .Where(e => e.EventDate >= startDate && e.EventDate <= endDate)
+                        .ToListAsync();
+    }
+
+
 
 }

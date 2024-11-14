@@ -5,7 +5,13 @@
              Title="Finance Breakdown">
 
     <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="15">
+        <VerticalStackLayout Spacing="10" Padding="10">
+            <Label Text="Select Date Range: " VerticalOptions="Center" />
+            <DatePicker x:Name="StartDatePicker" Date="{Binding StartDate}" />
+            <Label Text="to" VerticalOptions="Center" />
+            <DatePicker x:Name="EndDatePicker" Date="{Binding EndDate}" />
+            <Button Text="Date Filter" Clicked="OnFilterClicked" />
+
 
             <!-- Button to Toggle Event Selection Visibility -->
             <Button x:Name="ToggleEventButton"

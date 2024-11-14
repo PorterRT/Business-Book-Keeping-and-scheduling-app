@@ -86,6 +86,13 @@ namespace Vendor_App.Repositories
             return transactions.Select(t => t.ProcessingFee).ToList();
         }
 
+        public async Task<List<Transaction>> GetTransactionsByDateRangeAsync(DateTime startDate, DateTime endDate)
+        {
+            return await _database.Table<Transaction>()
+                            .Where(t => t.Date >= startDate && t.Date <= endDate)
+                            .ToListAsync();
+        }
+
 
     }
 }

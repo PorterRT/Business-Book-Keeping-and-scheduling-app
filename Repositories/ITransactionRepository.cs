@@ -21,5 +21,7 @@ namespace Vendor_App.Repositories
 
         public Task<List<double>> GetProcessingFeesForVendorEventAsync(int vendorEventId);
 
+        public Task <List<Transaction>>GetTransactionsByDateRangeAsync(DateTime startDate, DateTime endDate);
+
     }
 }

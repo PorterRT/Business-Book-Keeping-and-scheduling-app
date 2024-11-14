@@ -18,7 +18,9 @@ namespace Vendor_App.Repositories;
         
         Task<List<VendorEvents>> GetVendorEventsByDateAsync(DateTime date);
 
-    Task<List<string>> GetVendorEventNamesByDateAsync(DateTime date);
+        Task<List<string>> GetVendorEventNamesByDateAsync(DateTime date);
+
+        public Task<List<VendorEvents>> GetEventsByDateRangeAsync(DateTime startDate, DateTime endDate);
 
 
     }
