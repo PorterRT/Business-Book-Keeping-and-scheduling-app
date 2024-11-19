@@ -34,5 +34,8 @@
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>We need access to your calendar to add events.</string>
+
 </dict>
 </plist>

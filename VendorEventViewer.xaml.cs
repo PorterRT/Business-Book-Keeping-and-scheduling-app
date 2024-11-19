@@ -89,8 +89,13 @@ namespace Vendor_App
             // Get the selected event
             var selectedEvent = e.Item as VendorEvents;
 
-            // Display the details of the selected event
-            await DisplayAlert("Event Details",
+            // Ensure the event is valid
+            if (selectedEvent == null)
+                return;
+
+            // Display the event details
+            await DisplayAlert(
+                "Event Details",
                 $"Name: {selectedEvent.Name}\n" +
                 $"Date: {selectedEvent.EventDate.ToShortDateString()}\n" +
                 $"Address: {selectedEvent.Address}\n" +
@@ -98,16 +103,29 @@ namespace Vendor_App
                 $"Start Time: {selectedEvent.StartTime.ToShortTimeString()}\n" +
                 $"End Time: {selectedEvent.EndTime.ToShortTimeString()}\n" +
                 $"Fee: {selectedEvent.Fee}\n" +
-                $"Recurring: {selectedEvent.Recurring}\n"+ 
+                $"Recurring: {selectedEvent.Recurring}\n" +
                 $"Fee Is Paid: {selectedEvent.FeePaid}\n" +
                 $"Email: {selectedEvent.Email}\n" +
                 $"Phone Number: {selectedEvent.PhoneNumber}\n" +
                 $"Description: {selectedEvent.Description}",
-                "OK");
+                "OK"
+            );
+
+            // Attempt to add to calendar (this part might fail without permissions)
+            try
+            {
+                OnAddToCalendar(selectedEvent);
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Could not add to calendar: {ex.Message}", "OK");
+            }
 
             // Deselect the item (so the user can tap it again)
             ((ListView)sender).SelectedItem = null;
         }
+
+
         private async void OnDeleteVendorEvent(VendorEvents vendorEvent)
         {
             bool confirm = await DisplayAlert("Confirm Delete", $"Are you sure you want to delete {vendorEvent.Name}?", "Yes", "No");
@@ -133,6 +151,40 @@ namespace Vendor_App
         {
             await Navigation.PushAsync(new VendorEventManager(vendorEvent));
         }
+
+        private async void OnAddToCalendar(VendorEvents vendorEvent)
+        {
+            try
+            {
+                // Ensure the DependencyService has been registered and implemented correctly
+                var calendarService = DependencyService.Get<ICalendarService>();
+
+                if (calendarService == null)
+                {
+                    await DisplayAlert("Error", "Calendar service not available.", "OK");
+                    return;
+                    }
+
+            // Call the platform-specific calendar service to add the event
+            await calendarService.AddEventToCalendar(
+                vendorEvent.Name,                // Event title
+                vendorEvent.StartTime,           // Event start date/time
+                vendorEvent.EndTime,             // Event end date/time
+                vendorEvent.SetupTime,           // Event setup time
+                vendorEvent.StartTime,           // Event actual start time
+                vendorEvent.Address              // Event location
+            );
+
+        // Notify the user of success
+            await DisplayAlert("Success", "Event added to your calendar!", "OK");
+        }
+            catch (Exception ex)
+        {
+        // Show error details in an alert
+        await DisplayAlert("Error", $"Failed to add event to calendar: {ex.Message}", "OK");
+        }
+    }
+
         
         // Event handler for the button click to navigate to VendorEventManager
         private async void OnNavigateToVendorEventManagerClicked(object sender, EventArgs e)
