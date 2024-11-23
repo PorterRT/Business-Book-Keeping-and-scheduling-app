@@ -2,7 +2,10 @@ using Android.Content;
 using Android.Provider;
 using Vendor_App;
 using System;
-using DeviceInterfaces;
+using System.Threading.Tasks;
+using Microsoft.Maui.ApplicationModel; // For Permissions API
+using AndroidX.Core.Content; // AndroidX replacements
+using AndroidX.Core.App;
 
 [assembly: Dependency(typeof(CalendarService))]
 public class CalendarService : ICalendarService
@@ -11,17 +14,11 @@ public class CalendarService : ICalendarService
     {
         var context = Android.App.Application.Context;
 
-        // Check if permission is already granted
-        if (Android.Support.V4.Content.ContextCompat.CheckSelfPermission(context, Android.Manifest.Permission.WriteCalendar) != Android.Content.PM.Permission.Granted)
+        // Check if permission is granted
+        var permissionStatus = await Permissions.RequestAsync<Permissions.CalendarWrite>();
+        if (permissionStatus != PermissionStatus.Granted)
         {
-            // Request the permission
-            Android.Support.V4.App.ActivityCompat.RequestPermissions(
-                (Android.App.Activity)Platform.CurrentActivity,
-                new string[] { Android.Manifest.Permission.WriteCalendar },
-                1
-            );
-
-            // Wait for user response
+            // Permission not granted
             return;
         }
 
@@ -29,10 +26,11 @@ public class CalendarService : ICalendarService
         var calendarIntent = new Intent(Intent.ActionInsert)
             .SetData(CalendarContract.Events.ContentUri)
             .PutExtra(CalendarContract.Events.InterfaceConsts.Title, title)
-            .PutExtra(CalendarContract.Events.InterfaceConsts.Description, $"Setup Time: {setUp.ToShortTimeString()}\nStart Time: {startTime.ToShortTimeString()}")
+            .PutExtra(CalendarContract.Events.InterfaceConsts.Description,
+                $"Setup Time: {setUp.ToShortTimeString()}\nStart Time: {startTime.ToShortTimeString()}")
             .PutExtra(CalendarContract.Events.InterfaceConsts.EventLocation, location)
-            .PutExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, ConvertToMilliseconds(startDate))
-            .PutExtra(CalendarContract.EXTRA_EVENT_END_TIME, ConvertToMilliseconds(endDate));
+            .PutExtra(CalendarContract.ExtraEventBeginTime, ConvertToMilliseconds(startDate))
+            .PutExtra(CalendarContract.ExtraEventEndTime, ConvertToMilliseconds(endDate));
 
         calendarIntent.AddFlags(ActivityFlags.NewTask);
         context.StartActivity(calendarIntent);
@@ -42,5 +40,4 @@ public class CalendarService : ICalendarService
     {
         return new DateTimeOffset(dateTime).ToUnixTimeMilliseconds();
     }
-
-    }
+}
