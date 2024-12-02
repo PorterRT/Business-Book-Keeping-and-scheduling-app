@@ -44,9 +44,14 @@
         {
             DateTime startDate = StartDatePicker.Date;
             DateTime endDate = EndDatePicker.Date;
+            
+            // Clear current selection to reset calculations
+            EventCollectionView.SelectedItems.Clear();
 
             var filteredEvents = await _vendorEventRepository.GetEventsByDateRangeAsync(startDate, endDate);
+            
             Events.Clear();
+            
             foreach (var vendorEvent in filteredEvents)
             {
                 Events.Add(vendorEvent);
@@ -167,7 +172,7 @@
                 }
                 double FinalTotal = totalIncome - totalFees;
                 TotalEventFeesLabel.Text = $"Total for all Event Fees: {totalVenFees:C}";
-                TotalProcessingFeesLabel.Text = $"Total for all Processing Fees: {totalProcessingFees:C}";
+                TotalProcessingFeesLabel.Text = $"Total for Estimated Processing Fees: {totalProcessingFees:C}";
                 TotalFeesLabel.Text = $"Total for all Fees: {totalFees:C}";
                 SubTotalIncomeLabel.Text = $"Sub Total: {totalIncome:C}";
                 TotalIncomeLabel.Text = $"Final Total: {FinalTotal:C}";

@@ -18,6 +18,10 @@ namespace Vendor_App
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+            
+#if IOS
+            builder.Services.AddSingleton<ICalendarService, CalendarService>();
+#endif
 
             return builder.Build();
         }

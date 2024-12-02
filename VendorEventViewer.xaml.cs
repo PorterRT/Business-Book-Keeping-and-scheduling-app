@@ -6,11 +6,13 @@ using Microsoft.Maui.Controls;
 using Vendor_App.Models;
 using Vendor_App.Repositories;
 
+
 namespace Vendor_App
 {
     public partial class VendorEventViewer : ContentPage
     {
         private readonly IVendorEventRepository _vendorEventRepository;
+        private readonly ICalendarService _calendarService;
         public ObservableCollection<VendorEvents> Events { get; set; }
 
         public Command<VendorEvents> DeleteCommand { get; }
@@ -26,7 +28,7 @@ namespace Vendor_App
                 // Initialize the repository using the same approach as VendorEventManager
                 string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "vendorEvents.db3");
                 _vendorEventRepository = new SQLiteVendorEventRepository(dbPath);
-
+                _calendarService = new CalendarService();
                 // Initialize the ObservableCollection to hold the events
                 Events = new ObservableCollection<VendorEvents>();
                 EventsListView.ItemsSource = Events; // Bind the ListView to the ObservableCollection
@@ -157,13 +159,13 @@ namespace Vendor_App
             try
             {
                 // Ensure the DependencyService has been registered and implemented correctly
-                var calendarService = DependencyService.Get<ICalendarService>();
-
+                var calendarService = _calendarService;
                 if (calendarService == null)
                 {
                     await DisplayAlert("Error", "Calendar service not available.", "OK");
                     return;
-                    }
+                }
+                
 
             // Call the platform-specific calendar service to add the event
             await calendarService.AddEventToCalendar(

@@ -25,8 +25,8 @@ public class CalendarService : ICalendarService
         newEvent.Location = location;
 
         // Convert DateTime to NSDate
-        newEvent.StartDate = (NSDate)startDate;
-        newEvent.EndDate = (NSDate)endDate;
+        newEvent.StartDate = ConvertToNSDate(startDate);
+        newEvent.EndDate = ConvertToNSDate(endDate);
 
         // Set the event calendar
         newEvent.Calendar = eventStore.DefaultCalendarForNewEvents;
@@ -44,6 +44,20 @@ public class CalendarService : ICalendarService
     {
         throw new Exception($"Failed to add event to calendar: {ex.Message}", ex);
     }
+    }
+    
+    private NSDate ConvertToNSDate(DateTime date)
+    {
+        // Ensure the DateTime has a valid DateTimeKind
+        if (date.Kind == DateTimeKind.Unspecified)
+        {
+            // Default to Local if kind is unspecified
+            date = DateTime.SpecifyKind(date, DateTimeKind.Local);
+        }
+
+        // Convert DateTime to seconds since Unix epoch and create NSDate
+        var secondsSince1970 = (date.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds;
+        return NSDate.FromTimeIntervalSince1970(secondsSince1970);
     }
     };
 

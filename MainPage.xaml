@@ -68,7 +68,7 @@
                                     <Label Text=" " />
                                     <Label Text="{Binding Amount, StringFormat='{}{0:C}'}" />
                                     <Label Text=" " />
-                                    <Label Text="Processing Fee: " />
+                                    <Label Text="Fee: " />
                                     <Label Text="{Binding ProcessingFee, StringFormat='{}{0:C}'}" />
                                 </StackLayout>
                             </SwipeView>

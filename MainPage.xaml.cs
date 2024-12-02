@@ -104,29 +104,29 @@
             }
         }
 
-        private double CalulateProcessingFees(double Amount)
+        public double CalulateProcessingFees(double Amount, string PaymentType)
         {
-            if (PaymentTypePicker.SelectedItem.ToString() == "Square")
+            if (PaymentType == "Square")
             {
                 processingFee = (Amount * 0.026) + 0.10;
             }
-            else if (PaymentTypePicker.SelectedItem.ToString() == "Venmo")
+            else if (PaymentType == "Venmo")
             {
                 processingFee = (Amount * 0.019) + 0.10;
             }
-            else if (PaymentTypePicker.SelectedItem.ToString() == "Cash App")
+            else if (PaymentType == "Cash App")
             {
                 processingFee = Amount * 0.0275;
             }
-            else if (PaymentTypePicker.SelectedItem.ToString() == "Apple Pay")
+            else if (PaymentType == "Apple Pay")
             {
                 processingFee = 0.00;
             }
-            else if (PaymentTypePicker.SelectedItem.ToString() == "Credit Card")
+            else if (PaymentType == "Credit Card")
             {
                 processingFee = (Amount * 0.03); // this is a place holder may need to get each card companies fee
             }
-            else if (PaymentTypePicker.SelectedItem.ToString() == "Cash")
+            else if (PaymentType == "Cash")
             {
                 processingFee = 0.00;
             }
@@ -164,7 +164,7 @@
                 {
                     paymentType = PaymentTypePicker.SelectedItem.ToString(),
                     Amount = amount,
-                    ProcessingFee = CalulateProcessingFees(amount),
+                    ProcessingFee = CalulateProcessingFees(amount, PaymentTypePicker.SelectedItem.ToString()),
                     Date = TransactionDatePicker.Date,
                     Time = DateTime.Now,
                     VendorEventId = selectedEvent.VendorEventId // Foreign key reference to the selected event
@@ -224,10 +224,24 @@
 
             if (!string.IsNullOrEmpty(newPaymentType) && newPaymentType != "Cancel")
             {
+                try
+                {
+                    // Update the transaction with new values
+                    transaction.Amount = double.Parse(newAmount);
+                }
+                catch (FormatException exception)
+                {
+                    // Notify the user about the invalid input
+                    await DisplayAlert("Invalid Input", "Please enter a valid numeric amount.", "OK");
+                    return; // Exit the method to prevent further processing
+                }
+                
                 // Update the transaction with new values
-                transaction.Amount = double.Parse(newAmount);
+               // transaction.Amount = double.Parse(newAmount);
                 // Update the transaction with the selected payment type
                 transaction.paymentType = newPaymentType;
+                
+                transaction.ProcessingFee = CalulateProcessingFees(double.Parse(newAmount), newPaymentType);
 
                 // Save the updated transaction to the database
                 await _transactionRepository.UpdateTransactionAsync(transaction);

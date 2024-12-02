@@ -27,11 +27,18 @@
                 SelectionChanged="OnEventsSelected">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="10">
+                        <Grid Padding="10" ColumnDefinitions="*, Auto">
+                            <!-- Event Name -->
                             <Label Text="{Binding Name}" VerticalOptions="Center" />
+
+                            <!-- Event Date -->
+                            <Label Text="{Binding EventDate, StringFormat='({0:MM/dd/yyyy})'}" 
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="End" />
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
+
             </CollectionView>
 
             <!-- Button to Toggle Transaction List Visibility -->
