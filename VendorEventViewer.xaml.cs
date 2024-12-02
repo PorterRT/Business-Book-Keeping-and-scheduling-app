@@ -165,27 +165,39 @@ namespace Vendor_App
                     await DisplayAlert("Error", "Calendar service not available.", "OK");
                     return;
                 }
-                
 
-            // Call the platform-specific calendar service to add the event
-            await calendarService.AddEventToCalendar(
-                vendorEvent.Name,                // Event title
-                vendorEvent.StartTime,           // Event start date/time
-                vendorEvent.EndTime,             // Event end date/time
-                vendorEvent.SetupTime,           // Event setup time
-                vendorEvent.StartTime,           // Event actual start time
-                vendorEvent.Address              // Event location
-            );
+               var isEventAdded = await calendarService.IsEventAlreadyAdded(
+                    vendorEvent.Name,
+                    vendorEvent.StartTime,
+                    vendorEvent.EndTime);
 
-        // Notify the user of success
-            await DisplayAlert("Success", "Event added to your calendar!", "OK");
-        }
+                if (isEventAdded)
+                {
+                    await DisplayAlert("Info", "This event is already added to your calendar.", "OK");
+                }
+                else
+                {
+
+                    // Call the platform-specific calendar service to add the event
+                    await calendarService.AddEventToCalendar(
+                        vendorEvent.Name, // Event title
+                        vendorEvent.StartTime, // Event start date/time
+                        vendorEvent.EndTime, // Event end date/time
+                        vendorEvent.SetupTime, // Event setup time
+                        vendorEvent.StartTime, // Event actual start time
+                        vendorEvent.Address // Event location
+                    );
+
+                    // Notify the user of success
+                    await DisplayAlert("Success", "Event added to your calendar!", "OK");
+                }
+            }
             catch (Exception ex)
-        {
-        // Show error details in an alert
-        await DisplayAlert("Error", $"Failed to add event to calendar: {ex.Message}", "OK");
+            {
+                // Show error details in an alert
+                await DisplayAlert("Error", $"Failed to add event to calendar: {ex.Message}", "OK");
+            }
         }
-    }
 
         
         // Event handler for the button click to navigate to VendorEventManager

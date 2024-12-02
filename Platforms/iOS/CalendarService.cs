@@ -6,9 +6,13 @@ using Vendor_App;
 public class CalendarService : ICalendarService
 {
     public async Task AddEventToCalendar(string title, DateTime startDate, DateTime endDate, DateTime setUp, DateTime startTime, string location)
-{
+    {
     try
     {
+        if (await IsEventAlreadyAdded(title, startDate, endDate))
+        {
+            throw new Exception("Event is already added to the calendar.");
+        }
         var eventStore = new EKEventStore();
 
         // Request access to the calendar
@@ -59,5 +63,48 @@ public class CalendarService : ICalendarService
         var secondsSince1970 = (date.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalSeconds;
         return NSDate.FromTimeIntervalSince1970(secondsSince1970);
     }
+    public async Task<bool> IsEventAlreadyAdded(string title, DateTime startDate, DateTime endDate)
+    {
+        try
+        {
+            var eventStore = new EKEventStore();
+
+            // Request access to the calendar
+            var (accessGranted, error) = await eventStore.RequestFullAccessToEventsAsync();
+            if (!accessGranted)
+            {
+                throw new Exception("Calendar access not granted.");
+            }
+
+            // Define a date range to search for events
+            var startNSDate = ConvertToNSDate(startDate);
+            var endNSDate = ConvertToNSDate(endDate);
+
+            // Get the default calendar
+            var calendar = eventStore.DefaultCalendarForNewEvents;
+
+            // Fetch events in the date range
+            var predicate = eventStore.PredicateForEvents(startNSDate, endNSDate, new[] { calendar });
+            var matchingEvents = eventStore.EventsMatching(predicate);
+
+            // Check if any event matches the title and start/end dates
+            foreach (var existingEvent in matchingEvents)
+            {
+                if (existingEvent.Title == title &&
+                    existingEvent.StartDate == startNSDate &&
+                    existingEvent.EndDate == endNSDate)
+                {
+                    return true; // Event already exists
+                }
+            }
+
+            return false; // Event does not exist
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Failed to check for existing events: {ex.Message}", ex);
+        }
+    }
+
     };
 

@@ -37,7 +37,10 @@ namespace Vendor_App.Platforms.MacCatalyst
                 throw new Exception($"Failed to save event: {saveError.LocalizedDescription}");
             }
         }
-
+        public Task<bool> IsEventAlreadyAdded(string title, DateTime startDate, DateTime endDate)
+        {
+            return Task.FromResult(true); // fix this later
+        }
         private NSDate ToNSDate(DateTime dateTime)
         {
             // Apple reference date: January 1, 2001

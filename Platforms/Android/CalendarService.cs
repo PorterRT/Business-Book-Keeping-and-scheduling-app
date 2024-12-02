@@ -36,6 +36,12 @@ public class CalendarService : ICalendarService
         context.StartActivity(calendarIntent);
     }
 
+    public Task<bool> IsEventAlreadyAdded(string title, DateTime startDate, DateTime endDate)
+    {
+        return Task.FromResult(false); // fix this later
+    }
+
+
     private long ConvertToMilliseconds(DateTime dateTime)
     {
         return new DateTimeOffset(dateTime).ToUnixTimeMilliseconds();
