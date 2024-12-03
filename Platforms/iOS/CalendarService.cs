@@ -76,23 +76,21 @@ public class CalendarService : ICalendarService
                 throw new Exception("Calendar access not granted.");
             }
 
-            // Define a date range to search for events
+            // Convert DateTime to NSDate
             var startNSDate = ConvertToNSDate(startDate);
             var endNSDate = ConvertToNSDate(endDate);
 
             // Get the default calendar
             var calendar = eventStore.DefaultCalendarForNewEvents;
 
-            // Fetch events in the date range
+            // Fetch events in the specified date range
             var predicate = eventStore.PredicateForEvents(startNSDate, endNSDate, new[] { calendar });
             var matchingEvents = eventStore.EventsMatching(predicate);
 
-            // Check if any event matches the title and start/end dates
+            // Check if any event matches the title
             foreach (var existingEvent in matchingEvents)
             {
-                if (existingEvent.Title == title &&
-                    existingEvent.StartDate == startNSDate &&
-                    existingEvent.EndDate == endNSDate)
+                if (existingEvent.Title == title)
                 {
                     return true; // Event already exists
                 }
@@ -105,6 +103,8 @@ public class CalendarService : ICalendarService
             throw new Exception($"Failed to check for existing events: {ex.Message}", ex);
         }
     }
+
+    
 
     };
 

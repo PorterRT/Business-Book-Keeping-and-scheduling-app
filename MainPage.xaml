@@ -43,39 +43,76 @@
             <Button Text="Add to List" Clicked="OnAddTransactionClicked"/>
 
             <!-- List of Transactions -->
-            <Label Text="Transactions" />
-            <ListView x:Name="TransactionList" ItemsSource="{Binding transactions}">
+            <Label Text="Transactions" FontSize="Medium" Margin="10,0,0,10" />
+
+            <ListView x:Name="TransactionList" ItemsSource="{Binding transactions}" HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <!-- Wrap the transaction in SwipeView-->
                             <SwipeView>
+                                
                                 <SwipeView.LeftItems>
-                                    <SwipeItems>
-                                        <SwipeItem Text="Update" BackgroundColor="DarkGoldenrod" Invoked="OnUpdateSwipeInvoked" CommandParameter="{Binding .}" />
+                                    <SwipeItems Mode="Reveal">
+                                        
+                                        <SwipeItem  Text="Update" BackgroundColor="DarkGoldenrod" 
+                                                   Invoked="OnUpdateSwipeInvoked" 
+                                                   CommandParameter="{Binding .}" />
                                     </SwipeItems>
-                                    
                                 </SwipeView.LeftItems>
                                 <SwipeView.RightItems>
-                                    <SwipeItems>
-                                        <SwipeItem Text="Delete" BackgroundColor="DarkRed" Invoked="OnDeleteSwipeInvoked" CommandParameter="{Binding .}" />
+                                    <SwipeItems Mode="Reveal">
+                                        <SwipeItem Text="Delete" BackgroundColor="DarkRed" 
+                                                   Invoked="OnDeleteSwipeInvoked" 
+                                                   CommandParameter="{Binding .}" />
                                     </SwipeItems>
                                 </SwipeView.RightItems>
-                                <StackLayout Orientation="Horizontal" Padding="10" Spacing="20">
-                                    <Label Text="{Binding Time, StringFormat='{0:h:mm tt}'}" />
-                                    <Label Text=" " />
-                                    <Label Text="{Binding paymentType}" />
-                                    <Label Text=" " />
-                                    <Label Text="{Binding Amount, StringFormat='{}{0:C}'}" />
-                                    <Label Text=" " />
-                                    <Label Text="Fee: " />
-                                    <Label Text="{Binding ProcessingFee, StringFormat='{}{0:C}'}" />
-                                </StackLayout>
+                                
+                                <!-- Transaction Layout -->
+                                <Grid Padding="10" ColumnSpacing="15">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Time -->
+                                    <Label Text="{Binding Time, StringFormat='{0:h:mm tt}'}"
+                                           FontSize="Small"
+                                           Grid.Column="0"
+                                           VerticalOptions="Center" />
+                                    
+                                    <!-- Payment Type -->
+                                    <Label Text="{Binding paymentType}"
+                                           FontSize="Small"
+                                           Grid.Column="1"
+                                           VerticalOptions="Center" />
+                                    
+                                    <!-- Amount -->
+                                    <Label Text="{Binding Amount, StringFormat='{}{0:C}'}"
+                                           FontSize="Small"
+                                           Grid.Column="2"
+                                           HorizontalOptions="End"
+                                           VerticalOptions="Center" />
+                                    
+                                    <!-- Fee -->
+                                    <Label Text="Fee:"
+                                           FontSize="Small"
+                                           Grid.Column="3"
+                                           VerticalOptions="Center" />
+                                    <Label Text="{Binding ProcessingFee, StringFormat='{}{0:C}'}"
+                                           FontSize="Small"
+                                           Grid.Column="4"
+                                           VerticalOptions="Center" />
+                                </Grid>
                             </SwipeView>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+
 
             <!-- Total Amount Display -->
             <Label x:Name="TotalAmountLabel" Text="Total: 0.00" FontSize="Large" HorizontalOptions="Center"/>
