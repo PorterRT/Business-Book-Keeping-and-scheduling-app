@@ -14,26 +14,35 @@ public class CalendarService : ICalendarService
     {
         var context = Android.App.Application.Context;
 
-        // Check if permission is granted
-        var permissionStatus = await Permissions.RequestAsync<Permissions.CalendarWrite>();
-        if (permissionStatus != PermissionStatus.Granted)
+        if (await IsEventAlreadyAdded(title, setUp, endDate))
         {
-            // Permission not granted
-            return;
+            throw new Exception("Event is already added to the calendar.");
         }
+        else
+        {
 
-        // If permission is granted, proceed to add the event
-        var calendarIntent = new Intent(Intent.ActionInsert)
-            .SetData(CalendarContract.Events.ContentUri)
-            .PutExtra(CalendarContract.Events.InterfaceConsts.Title, title)
-            .PutExtra(CalendarContract.Events.InterfaceConsts.Description,
-                $"Setup Time: {setUp.ToShortTimeString()}\nStart Time: {startTime.ToShortTimeString()}")
-            .PutExtra(CalendarContract.Events.InterfaceConsts.EventLocation, location)
-            .PutExtra(CalendarContract.ExtraEventBeginTime, ConvertToMilliseconds(startDate))
-            .PutExtra(CalendarContract.ExtraEventEndTime, ConvertToMilliseconds(endDate));
+            // Check if permission is granted
+            var permissionStatus = await Permissions.RequestAsync<Permissions.CalendarWrite>();
+            if (permissionStatus != PermissionStatus.Granted)
+            {
+                // Permission not granted
+                return;
+            }
 
-        calendarIntent.AddFlags(ActivityFlags.NewTask);
-        context.StartActivity(calendarIntent);
+
+            // If permission is granted, proceed to add the event
+            var calendarIntent = new Intent(Intent.ActionInsert)
+                .SetData(CalendarContract.Events.ContentUri)
+                .PutExtra(CalendarContract.Events.InterfaceConsts.Title, title)
+                .PutExtra(CalendarContract.Events.InterfaceConsts.Description,
+                    $"Setup Time: {setUp.ToShortTimeString()}\nStart Time: {startTime.ToShortTimeString()}")
+                .PutExtra(CalendarContract.Events.InterfaceConsts.EventLocation, location)
+                .PutExtra(CalendarContract.ExtraEventBeginTime, ConvertToMilliseconds(setUp))
+                .PutExtra(CalendarContract.ExtraEventEndTime, ConvertToMilliseconds(endDate));
+
+            calendarIntent.AddFlags(ActivityFlags.NewTask);
+            context.StartActivity(calendarIntent);
+        }
     }
 
     public async Task<bool> IsEventAlreadyAdded(string title, DateTime startDate, DateTime endDate)
