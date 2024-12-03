@@ -15,6 +15,9 @@
         private IVendorEventRepository _vendorEventRepository;
 
         public ObservableCollection<VendorEvents> Events { get; set; }
+        
+        public ObservableCollection<VendorEvents> SelectedEvents { get; set; }
+
         public ObservableCollection<Transaction> DisplayedTransactions { get; set; }
 
         private bool isEventCollectionVisible = false;
@@ -32,6 +35,8 @@
             _vendorEventRepository = new SQLiteVendorEventRepository(eventsDbPath);
 
             Events = new ObservableCollection<VendorEvents>();
+            SelectedEvents = new ObservableCollection<VendorEvents>();
+
             DisplayedTransactions = new ObservableCollection<Transaction>();
 
             BindingContext = this;
@@ -94,11 +99,23 @@
 
         private async void OnEventsSelected(object sender, SelectionChangedEventArgs e)
         {
-            // Get the selected events
-            var selectedEvents = e.CurrentSelection.Cast<VendorEvents>().ToList();
-            await LoadVendorFeesForSelectedEvents(selectedEvents);
-            await LoadProcessingFeesForSelectedEvents(selectedEvents);
-            await LoadTransactionsForSelectedEvents(selectedEvents);
+            try
+            {
+                // Synchronize SelectedEvents with current selections
+                SelectedEvents.Clear();
+                foreach (var selectedEvent in e.CurrentSelection)
+                {
+                    SelectedEvents.Add(selectedEvent as VendorEvents);
+                }
+
+                // Load transactions for the selected events
+                var selectedEventList = SelectedEvents.ToList();
+                await LoadTransactionsForSelectedEvents(selectedEventList);
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to load transactions: {ex.Message}", "OK");
+            }
         }
 
         private async Task<double> LoadVendorFeesForSelectedEvents(List<VendorEvents> selectedEvents)
@@ -152,12 +169,18 @@
         {
             try
             {
+                // Clear existing transactions
                 DisplayedTransactions.Clear();
+
+                // Remove duplicate events
+                selectedEvents = selectedEvents.Distinct().ToList();
+
                 double totalIncome = 0;
+
+                // Calculate fees
                 double totalVenFees = await LoadVendorFeesForSelectedEvents(selectedEvents);
                 double totalProcessingFees = await LoadProcessingFeesForSelectedEvents(selectedEvents);
                 double totalFees = totalVenFees + totalProcessingFees;
-                
 
                 foreach (var vendorEvent in selectedEvents)
                 {
@@ -165,23 +188,29 @@
 
                     foreach (var transaction in transactions)
                     {
-                        DisplayedTransactions.Add(transaction);
+                        // Avoid adding duplicate transactions
+                        if (!DisplayedTransactions.Contains(transaction))
+                        {
+                            DisplayedTransactions.Add(transaction);
                             totalIncome += transaction.Amount;
-
+                        }
                     }
                 }
-                double FinalTotal = totalIncome - totalFees;
+
+                // Calculate final total
+                double finalTotal = totalIncome - totalFees;
+
+                // Update labels
                 TotalEventFeesLabel.Text = $"Total for all Event Fees: {totalVenFees:C}";
                 TotalProcessingFeesLabel.Text = $"Total for Estimated Processing Fees: {totalProcessingFees:C}";
                 TotalFeesLabel.Text = $"Total for all Fees: {totalFees:C}";
                 SubTotalIncomeLabel.Text = $"Sub Total: {totalIncome:C}";
-                TotalIncomeLabel.Text = $"Final Total: {FinalTotal:C}";
-
+                TotalIncomeLabel.Text = $"Final Total: {finalTotal:C}";
             }
             catch (Exception ex)
             {
                 await DisplayAlert("Error", $"Failed to load transactions: {ex.Message}", "OK");
             }
         }
-    }
+}
 }

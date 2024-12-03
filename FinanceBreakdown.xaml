@@ -23,11 +23,27 @@
             <CollectionView x:Name="EventCollectionView"
                             ItemsSource="{Binding Events}"
                             SelectionMode="Multiple"
-                            IsVisible="False"  
-                SelectionChanged="OnEventsSelected">
+                            IsVisible="False"
+                            SelectionChanged="OnEventsSelected">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="10" ColumnDefinitions="*, Auto">
+                            <!-- Apply Visual State for Selected Item -->
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="White" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState x:Name="Selected">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="#E3D9FA" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+
                             <!-- Event Name -->
                             <Label Text="{Binding Name}" VerticalOptions="Center" />
 
@@ -38,7 +54,6 @@
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
-
             </CollectionView>
 
             <!-- Button to Toggle Transaction List Visibility -->
