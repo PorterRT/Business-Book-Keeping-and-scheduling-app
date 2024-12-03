@@ -36,10 +36,52 @@ public class CalendarService : ICalendarService
         context.StartActivity(calendarIntent);
     }
 
-    public Task<bool> IsEventAlreadyAdded(string title, DateTime startDate, DateTime endDate)
+    public async Task<bool> IsEventAlreadyAdded(string title, DateTime startDate, DateTime endDate)
     {
-        return Task.FromResult(false); // fix this later
+        var context = Android.App.Application.Context;
+
+        // Check if permission is granted
+        var permissionStatus = await Permissions.RequestAsync<Permissions.CalendarRead>();
+        if (permissionStatus != PermissionStatus.Granted)
+        {
+            // Permission not granted
+            return false;
+        }
+
+        // Define the URI for events
+        var eventsUri = CalendarContract.Events.ContentUri;
+
+        // Define the query parameters
+        string[] projection = {
+        CalendarContract.Events.InterfaceConsts.Title,
+        CalendarContract.Events.InterfaceConsts.Dtstart,
+        CalendarContract.Events.InterfaceConsts.Dtend
+    };
+
+        string selection = $"{CalendarContract.Events.InterfaceConsts.Title} = ? AND " +
+                           $"{CalendarContract.Events.InterfaceConsts.Dtstart} = ? AND " +
+                           $"{CalendarContract.Events.InterfaceConsts.Dtend} = ?";
+
+        string[] selectionArgs = {
+        title,
+        ConvertToMilliseconds(startDate).ToString(),
+        ConvertToMilliseconds(endDate).ToString()
+    };
+
+        // Perform the query
+        using (var cursor = context.ContentResolver.Query(eventsUri, projection, selection, selectionArgs, null))
+        {
+            if (cursor != null && cursor.MoveToFirst())
+            {
+                // Event already exists
+                return true;
+            }
+        }
+
+        // Event not found
+        return false;
     }
+
 
 
     private long ConvertToMilliseconds(DateTime dateTime)
