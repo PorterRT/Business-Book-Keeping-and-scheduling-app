@@ -84,6 +84,7 @@ namespace Vendor_App
                 await DisplayAlert("Error", $"Failed to load events: {ex.Message}", "OK");
             }
         }
+
         private async void OnEventTapped(object sender, ItemTappedEventArgs e)
         {
             if (e.Item == null) return;
@@ -96,7 +97,7 @@ namespace Vendor_App
                 return;
 
             // Display the event details
-            await DisplayAlert(
+            bool descriptionResponse = await DisplayAlert(
                 "Event Details",
                 $"Name: {selectedEvent.Name}\n" +
                 $"Date: {selectedEvent.EventDate.ToShortDateString()}\n" +
@@ -105,28 +106,23 @@ namespace Vendor_App
                 $"Start Time: {selectedEvent.StartTime.ToShortTimeString()}\n" +
                 $"End Time: {selectedEvent.EndTime.ToShortTimeString()}\n" +
                 $"Fee: {selectedEvent.Fee}\n" +
-                $"Recurring: {selectedEvent.Recurring}\n" +
-                $"Fee Is Paid: {selectedEvent.FeePaid}\n" +
+                $"Recurring: {RecurringMessage(selectedEvent)}\n" +
+                $"Fee Is Paid: {FeePaidMessage(selectedEvent)}\n" +
                 $"Email: {selectedEvent.Email}\n" +
                 $"Phone Number: {selectedEvent.PhoneNumber}\n" +
                 $"Description: {selectedEvent.Description}",
-                "OK"
+                "Add Event to Calendar?",
+                "Close"
             );
 
-            // Attempt to add to calendar (this part might fail without permissions)
-            try
+            // Attempt to add to calendar (this part will fail without permissions)
+            if (descriptionResponse)
             {
-                OnAddToCalendar(selectedEvent);
+                    OnAddToCalendar(selectedEvent);
+                // Deselect the item (so the user can tap it again)
+                ((ListView)sender).SelectedItem = null;
             }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Error", $"Could not add to calendar: {ex.Message}", "OK");
-            }
-
-            // Deselect the item (so the user can tap it again)
-            ((ListView)sender).SelectedItem = null;
         }
-
 
         private async void OnDeleteVendorEvent(VendorEvents vendorEvent)
         {
@@ -160,24 +156,11 @@ namespace Vendor_App
             {
                 // Ensure the DependencyService has been registered and implemented correctly
                 var calendarService = _calendarService;
-                if (calendarService == null)
-                {
-                    await DisplayAlert("Error", "Calendar service not available.", "OK");
-                    return;
-                }
-
                var isEventAdded = await calendarService.IsEventAlreadyAdded(
                     vendorEvent.Name,
                     vendorEvent.StartTime,
                     vendorEvent.EndTime);
-
-                if (isEventAdded)
                 {
-                    await DisplayAlert("Info", "This event is already added to your calendar.", "OK");
-                }
-                else
-                {
-
                     // Call the platform-specific calendar service to add the event
                     await calendarService.AddEventToCalendar(
                         vendorEvent.Name, // Event title
@@ -195,7 +178,7 @@ namespace Vendor_App
             catch (Exception ex)
             {
                 // Show error details in an alert
-                await DisplayAlert("Error", $"Failed to add event to calendar: {ex.Message}", "OK");
+                await DisplayAlert("Error", $"{ex.Message}", "OK");
             }
         }
 
@@ -220,6 +203,37 @@ namespace Vendor_App
         {
             base.OnAppearing();
             LoadAllVendorEventsAsync(); // Refresh the event list whenever the page appears.
+        }
+        
+        private string FeePaidMessage(VendorEvents vendorEvent)
+        {
+            if(vendorEvent.FeePaid)
+            {
+                string FeePaidMsg = "\u2713";
+                return FeePaidMsg;
+            }
+
+            else
+            {
+                //string FeePaidMsg = "\u274C";
+                string FeePaidMsg = "X";
+                return FeePaidMsg;
+            }
+        }
+
+        private string RecurringMessage(VendorEvents vendorEvent)
+        {
+            if (vendorEvent.Recurring)
+            {
+                string RecurringMsg = "\u2713";
+                return RecurringMsg;
+            }
+            else
+            {
+                //string RecurringMsg = "\u274C";
+                string RecurringMsg = "X";
+                return RecurringMsg;
+            }
         }
 
     }

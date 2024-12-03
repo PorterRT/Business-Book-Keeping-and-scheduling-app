@@ -9,7 +9,7 @@ public class CalendarService : ICalendarService
     {
     try
     {
-        if (await IsEventAlreadyAdded(title, startDate, endDate))
+        if (await IsEventAlreadyAdded(title, setUp, endDate))
         {
             throw new Exception("Event is already added to the calendar.");
         }
@@ -25,11 +25,11 @@ public class CalendarService : ICalendarService
         // Create the event
         var newEvent = EKEvent.FromStore(eventStore);
         newEvent.Title = title;
-        newEvent.Notes = $"Setup Time: {setUp.ToShortTimeString()}\nStart Time: {startTime.ToShortTimeString()}";
+        newEvent.Notes = $"Setup Time: {setUp.ToShortTimeString()}\nStart Time: {startTime.ToShortTimeString()}\n";
         newEvent.Location = location;
 
         // Convert DateTime to NSDate
-        newEvent.StartDate = ConvertToNSDate(startDate);
+        newEvent.StartDate = ConvertToNSDate(setUp);
         newEvent.EndDate = ConvertToNSDate(endDate);
 
         // Set the event calendar
