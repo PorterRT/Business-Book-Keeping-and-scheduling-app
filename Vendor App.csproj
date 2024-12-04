@@ -50,6 +50,11 @@
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="8.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Resources\Icons\DateFilterIcon.tiff" />
+    <MauiImage Include="Resources\Icons\datefiltericon.tiff" />
+  </ItemGroup>
+
   
 
 </Project>

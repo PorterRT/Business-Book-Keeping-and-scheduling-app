@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Vendor_App.FinanceBreakdown"
@@ -6,20 +5,32 @@
 
     <ScrollView>
         <VerticalStackLayout Spacing="10" Padding="10">
-            <Label Text="Select Date Range: " VerticalOptions="Center" />
-            <DatePicker x:Name="StartDatePicker" Date="{Binding StartDate}" />
-            <Label Text="to" VerticalOptions="Center" />
-            <DatePicker x:Name="EndDatePicker" Date="{Binding EndDate}" />
-            <Button Text="Date Filter" Clicked="OnFilterClicked" />
 
+            <!-- Date Filter Toggle Button -->
+            <Button x:Name="ToggleDateFilterButton"
+                    ImageSource="datefiltericon.tiff"
+                    Clicked="OnToggleDateFilterClicked"
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="Start" />
 
-            <!-- Button to Toggle Event Selection Visibility -->
+            <!-- Collapsible Date Filter Section -->
+            <VerticalStackLayout x:Name="DateFilterSection" IsVisible="False" Spacing="5">
+                <Label Text="Filter by Date:" VerticalOptions="Center" />
+                <HorizontalStackLayout>
+                    <DatePicker x:Name="StartDatePicker" Date="{Binding StartDate}" />
+                    <Label Text="to" VerticalOptions="Center" />
+                    <DatePicker x:Name="EndDatePicker" Date="{Binding EndDate}" />
+                    <Button Text="Apply" Clicked="OnFilterClicked" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+            <!-- Event Selection Toggle Button -->
             <Button x:Name="ToggleEventButton"
-                    Text="Select Events ▼" 
+                    Text="Select Events ▼"
                     FontAttributes="Bold"
                     Clicked="OnToggleEventSelectionClicked" />
 
-            <!-- Multi-Select Event Picker (Initially Collapsed) -->
+            <!-- Collapsible Event Selection Section -->
             <CollectionView x:Name="EventCollectionView"
                             ItemsSource="{Binding Events}"
                             SelectionMode="Multiple"
@@ -28,26 +39,7 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="10" ColumnDefinitions="*, Auto">
-                            <!-- Apply Visual State for Selected Item -->
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="CommonStates">
-                                    <VisualState x:Name="Normal">
-                                        <VisualState.Setters>
-                                            <Setter Property="BackgroundColor" Value="White" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                    <VisualState x:Name="Selected">
-                                        <VisualState.Setters>
-                                            <Setter Property="BackgroundColor" Value="#E3D9FA" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
-
-                            <!-- Event Name -->
                             <Label Text="{Binding Name}" VerticalOptions="Center" />
-
-                            <!-- Event Date -->
                             <Label Text="{Binding EventDate, StringFormat='({0:MM/dd/yyyy})'}" 
                                    VerticalOptions="Center"
                                    HorizontalOptions="End" />
@@ -56,21 +48,20 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <!-- Button to Toggle Transaction List Visibility -->
+            <!-- Transaction List Toggle Button -->
             <Button x:Name="ToggleTransactionButton"
                     Text="Transactions for Selected Events ▼"
                     FontAttributes="Bold"
                     Clicked="OnToggleTransactionListClicked" />
 
-            <!-- List of Transactions (Initially Collapsed) -->
+            <!-- Collapsible Transaction List Section -->
             <ListView x:Name="TransactionListView" ItemsSource="{Binding DisplayedTransactions}" IsVisible="False">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout Orientation="Horizontal" Padding="10" Spacing="10">
-                                <!-- Display transaction details -->
                                 <Label Text="{Binding Date, StringFormat='{0:MM/dd/yyyy}'}" />
-                                <Label Text="{Binding paymentType}" />
+                                <Label Text="{Binding PaymentType}" />
                                 <Label Text="{Binding Amount, StringFormat='{}{0:C}'}" />
                                 <Label Text="Processing Fee: " />
                                 <Label Text="{Binding ProcessingFee, StringFormat='{}{0:C}'}" />

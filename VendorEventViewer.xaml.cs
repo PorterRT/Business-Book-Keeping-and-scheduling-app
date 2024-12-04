@@ -46,6 +46,10 @@ namespace Vendor_App
             }
         }
 
+        private void OnToggleDateFilterClicked(object sender, EventArgs e)
+        {
+            DateFilterSection.IsVisible = !DateFilterSection.IsVisible;
+        }
         private async void OnFilterClicked(object sender, EventArgs e)
         {
             DateTime startDate = StartDatePicker.Date;

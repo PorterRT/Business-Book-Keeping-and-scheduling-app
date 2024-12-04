@@ -4,12 +4,24 @@
              x:Class="Vendor_App.VendorEventViewer"
              Title="View Vendor Events">
     <StackLayout Padding="10">
-         <Label Text="Select Date Range: " VerticalOptions="Center" />
-            <DatePicker x:Name="StartDatePicker" Date="{Binding StartDate}" />
-            <Label Text="to" VerticalOptions="Center" />
-            <DatePicker x:Name="EndDatePicker" Date="{Binding EndDate}" />
-            <Button Text="Date Filter" Clicked="OnFilterClicked" />
+        
+        <!-- Date Filter Toggle Button -->
+        <Button x:Name="ToggleDateFilterButton"
+                ImageSource="datefiltericon.tiff"
+                Clicked="OnToggleDateFilterClicked"
+                BackgroundColor="Transparent"
+                HorizontalOptions="Start" />
 
+        <!-- Collapsible Date Filter Section -->
+        <VerticalStackLayout x:Name="DateFilterSection" IsVisible="False" Spacing="5">
+            <Label Text="Filter by Date:" VerticalOptions="Center" />
+            <HorizontalStackLayout>
+                <DatePicker x:Name="StartDatePicker" Date="{Binding StartDate}" />
+                <Label Text="to" VerticalOptions="Center" />
+                <DatePicker x:Name="EndDatePicker" Date="{Binding EndDate}" />
+                <Button Text="Apply" Clicked="OnFilterClicked" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
         <ListView x:Name="EventsListView"
                   ItemsSource="{Binding Events}"
                   ItemTapped="OnEventTapped">

@@ -1,19 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             BackgroundColor="{DynamicResource BackgroundColor}"
              x:Class="Vendor_App.MainPage">
-
+    
     <ScrollView>
         <VerticalStackLayout
             Padding="10"
             Spacing="15">
+            
 
             <!-- Date Picker for Transaction Date -->
-            <Label Text="Select Date:" />
+            <Label Text="Select Date:" TextColor="{DynamicResource TextColor}"/>
             <DatePicker x:Name="TransactionDatePicker" DateSelected="OnDateSelected"/>
 
             <!-- Events Picker for selecting a Vendor Event -->
-            <Label Text="Select Event:" />
+            <Label Text="Select Event:" TextColor="{DynamicResource TextColor}"/>
             <Picker x:Name="VendorEventPicker"
               Title="Select Vendor Event"
               ItemsSource="{Binding Events}" 
@@ -21,11 +23,11 @@
 
 
             <!-- Label for entering amount -->
-            <Label Text="Enter Amount: " />
+            <Label Text="Enter Amount: " TextColor="{DynamicResource TextColor}"/>
             <Entry x:Name="AmountEntry" Keyboard="Numeric" Placeholder="0.00" />
 
             <!-- Payment Type Picker -->
-            <Label Text="Select Payment Type: " />
+            <Label Text="Select Payment Type: "  />
             <Picker x:Name="PaymentTypePicker">
                 <Picker.ItemsSource>
                     <x:Array Type="{x:Type x:String}">

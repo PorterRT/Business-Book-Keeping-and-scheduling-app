@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using Vendor_App.Models;
     using Vendor_App.Repositories;
+    
     using Microsoft.Maui.Controls;
 
     public partial class FinanceBreakdown : ContentPage
@@ -44,7 +45,11 @@
             // Load all events for selection
             LoadAllEvents();
         }
-
+        // Toggle Date Filter Section
+        private void OnToggleDateFilterClicked(object sender, EventArgs e)
+        {
+            DateFilterSection.IsVisible = !DateFilterSection.IsVisible;
+        }
         private async void OnFilterClicked(object sender, EventArgs e)
         {
             DateTime startDate = StartDatePicker.Date;
