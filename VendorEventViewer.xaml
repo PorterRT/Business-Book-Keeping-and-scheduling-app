@@ -10,16 +10,17 @@
                 ImageSource="datefiltericon.tiff"
                 Clicked="OnToggleDateFilterClicked"
                 BackgroundColor="Transparent"
-                HorizontalOptions="Start" />
+                HorizontalOptions="End" />
 
         <!-- Collapsible Date Filter Section -->
         <VerticalStackLayout x:Name="DateFilterSection" IsVisible="False" Spacing="5">
-            <Label Text="Filter by Date:" VerticalOptions="Center" />
+            <Label Text="Filter by Date:" VerticalOptions="Center" HorizontalOptions="Center"/>
             <HorizontalStackLayout>
-                <DatePicker x:Name="StartDatePicker" Date="{Binding StartDate}" />
-                <Label Text="to" VerticalOptions="Center" />
-                <DatePicker x:Name="EndDatePicker" Date="{Binding EndDate}" />
+                <DatePicker x:Name="StartDatePicker" Date="{Binding StartDate}" HorizontalOptions="Center"/>
+                <Label Text="to" VerticalOptions="Center" HorizontalOptions="Center"/>
+                <DatePicker x:Name="EndDatePicker" Date="{Binding EndDate}" HorizontalOptions="Center"/>
                 <Button Text="Apply" Clicked="OnFilterClicked" />
+                
             </HorizontalStackLayout>
         </VerticalStackLayout>
         <ListView x:Name="EventsListView"

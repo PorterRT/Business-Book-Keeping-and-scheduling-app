@@ -11,7 +11,7 @@
                     ImageSource="datefiltericon.tiff"
                     Clicked="OnToggleDateFilterClicked"
                     BackgroundColor="Transparent"
-                    HorizontalOptions="Start" />
+                    HorizontalOptions="End" />
 
             <!-- Collapsible Date Filter Section -->
             <VerticalStackLayout x:Name="DateFilterSection" IsVisible="False" Spacing="5">
