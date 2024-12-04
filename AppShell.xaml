@@ -9,11 +9,11 @@
     Shell.UnselectedColor="Transparent">
 
     <TabBar>
-        <Tab Title="Home">
+        <Tab Title="Cash Register">
             <ShellContent ContentTemplate="{DataTemplate local:MainPage}"
                           Route="MainPage" />
         </Tab>
-        <Tab Title="Finance">
+        <Tab Title="Earnings/Expenses">
             <ShellContent ContentTemplate="{DataTemplate local:FinanceBreakdown}"
                           Route="FinanceBreakdown" />
         </Tab>
