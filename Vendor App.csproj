@@ -63,6 +63,12 @@
     <MauiImage Include="Resources\Icons\eventsicon.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="CashRegister.xaml.cs">
+      <DependentUpon>CashRegister.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
   
 
 </Project>

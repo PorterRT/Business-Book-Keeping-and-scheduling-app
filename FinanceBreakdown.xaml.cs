@@ -12,8 +12,9 @@
 
     public partial class FinanceBreakdown : ContentPage
     {
-        private ITransactionRepository _transactionRepository;
-        private IVendorEventRepository _vendorEventRepository;
+
+        private readonly IVendorEventRepository _vendorEventRepository;
+        private readonly ITransactionRepository _transactionRepository;
 
         public ObservableCollection<VendorEvents> Events { get; set; }
         
@@ -28,16 +29,15 @@
         {
             InitializeComponent();
 
-            // Initialize repositories and collections
-            string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "transactions.db3");
-            _transactionRepository = new SQLiteTransactionRepository(dbPath);
+            // Initialize database connection
+            var databaseConnection = new DatabaseConnection();
 
-            string eventsDbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "vendorEvents.db3");
-            _vendorEventRepository = new SQLiteVendorEventRepository(eventsDbPath);
-
+            // Initialize repositories
+            _transactionRepository = databaseConnection.VendorDatabaseConnection();
+            _vendorEventRepository = databaseConnection.EventDatabaseConnection();
+            // Initialize collections
             Events = new ObservableCollection<VendorEvents>();
             SelectedEvents = new ObservableCollection<VendorEvents>();
-
             DisplayedTransactions = new ObservableCollection<Transaction>();
 
             BindingContext = this;

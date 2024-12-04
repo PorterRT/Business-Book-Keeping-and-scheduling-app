@@ -4,7 +4,7 @@
     using Vendor_App.Models;
     using Vendor_App.Repositories;
 
-    public partial class MainPage : ContentPage
+    public partial class CashRegister : ContentPage
     {
         private ITransactionRepository _transactionRepository;
         private IVendorEventRepository _vendorEventRepository;
@@ -13,16 +13,15 @@
         private double total = 0;
         private double processingFee = 0;
 
-        public MainPage()
+        public CashRegister()
         {
             InitializeComponent();
 
-            // Set up the local SQLite database path
-            string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "transactions.db3");
-            _transactionRepository = new SQLiteTransactionRepository(dbPath);
+            var databaseConnection = new DatabaseConnection();
 
-            string eventsDbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "vendorEvents.db3");
-            _vendorEventRepository = new SQLiteVendorEventRepository(eventsDbPath);
+            // Initialize repositories
+            _transactionRepository = databaseConnection.VendorDatabaseConnection();
+            _vendorEventRepository = databaseConnection.EventDatabaseConnection();
 
             // Initialize the ObservableCollection for events
             Events = new ObservableCollection<VendorEvents>();

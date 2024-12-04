@@ -25,9 +25,13 @@ namespace Vendor_App
 
             try
             {
-                // Initialize the repository using the same approach as VendorEventManager
-                string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "vendorEvents.db3");
-                _vendorEventRepository = new SQLiteVendorEventRepository(dbPath);
+                // Initialize the database
+                var databaseConnection = new DatabaseConnection();
+
+                // Initialize Vendor Event repository
+                _vendorEventRepository = databaseConnection.EventDatabaseConnection();
+
+                // Initialize the CalendarService. this has an error but works and breaks if i delete the line so dont touch it
                 _calendarService = new CalendarService();
                 // Initialize the ObservableCollection to hold the events
                 Events = new ObservableCollection<VendorEvents>();
