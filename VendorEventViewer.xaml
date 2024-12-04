@@ -14,7 +14,7 @@
 
         <!-- Collapsible Date Filter Section -->
         <VerticalStackLayout x:Name="DateFilterSection" IsVisible="False" Spacing="5">
-            <Label Text="Filter by Date:" VerticalOptions="Center" HorizontalOptions="End"/>
+            <Label Text="Filter by Date:" VerticalOptions="Center" HorizontalOptions="Center"/>
             <HorizontalStackLayout HorizontalOptions="Center">
                 <DatePicker x:Name="StartDatePicker" Date="{Binding StartDate}" HorizontalOptions="Center"/>
                 <Label Text="to" VerticalOptions="Center" HorizontalOptions="Center"/>
