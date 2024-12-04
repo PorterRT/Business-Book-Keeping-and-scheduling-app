@@ -8,19 +8,20 @@
 
             <!-- Date Filter Toggle Button -->
             <Button x:Name="ToggleDateFilterButton"
-                    ImageSource="datefiltericon.tiff"
+                    ImageSource="datefiltericon.png"
                     Clicked="OnToggleDateFilterClicked"
                     BackgroundColor="Transparent"
                     HorizontalOptions="End" />
 
             <!-- Collapsible Date Filter Section -->
             <VerticalStackLayout x:Name="DateFilterSection" IsVisible="False" Spacing="5">
-                <Label Text="Filter by Date:" VerticalOptions="Center" />
-                <HorizontalStackLayout>
-                    <DatePicker x:Name="StartDatePicker" Date="{Binding StartDate}" />
-                    <Label Text="to" VerticalOptions="Center" />
-                    <DatePicker x:Name="EndDatePicker" Date="{Binding EndDate}" />
+                <Label Text="Filter by Date:" VerticalOptions="Center" HorizontalOptions="Center"/>
+                <HorizontalStackLayout HorizontalOptions="Center">
+                    <DatePicker x:Name="StartDatePicker" Date="{Binding StartDate}" HorizontalOptions="Center"/>
+                    <Label Text="to" VerticalOptions="Center" HorizontalOptions="Center"/>
+                    <DatePicker x:Name="EndDatePicker" Date="{Binding EndDate}" HorizontalOptions="End"/>
                     <Button Text="Apply" Clicked="OnFilterClicked" />
+
                 </HorizontalStackLayout>
             </VerticalStackLayout>
 

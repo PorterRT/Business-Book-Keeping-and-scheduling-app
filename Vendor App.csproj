@@ -36,6 +36,8 @@
 
     <!-- Raw Assets -->
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Remove="Resources\Icons\datefiltericon.png" />
+    <None Remove="Resources\Icons\eventsicon.png" />
     <None Remove="Resources\Icons\eventsicon.tiff" />
     <None Remove="Resources\Icons\eventsicon.svg" />
   </ItemGroup>
@@ -54,11 +56,11 @@
 
   <ItemGroup>
     <None Remove="Resources\Icons\DateFilterIcon.tiff" />
-    <MauiImage Include="Resources\Icons\datefiltericon.tiff" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Resources\Icons\eventsicon.tiff" />
+    <MauiImage Include="Resources\Icons\datefiltericon.png" />
+    <MauiImage Include="Resources\Icons\eventsicon.png" />
   </ItemGroup>
 
   
