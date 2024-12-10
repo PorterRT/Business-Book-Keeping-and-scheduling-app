@@ -87,6 +87,13 @@ public class SQLiteVendorEventRepository : IVendorEventRepository
                         .ToListAsync();
     }
 
+    public Task<VendorEvents> GetExpensesByEvent(VendorEvents vendorEvent)
+    {
+        return _database.Table<VendorEvents>()
+                        .Where(e => e.VendorEventId == vendorEvent.VendorEventId)
+                        .FirstOrDefaultAsync();
+    }
+
 
 
 }

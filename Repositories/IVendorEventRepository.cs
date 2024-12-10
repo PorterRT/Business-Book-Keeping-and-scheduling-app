@@ -22,5 +22,7 @@ namespace Vendor_App.Repositories;
 
         public Task<List<VendorEvents>> GetEventsByDateRangeAsync(DateTime startDate, DateTime endDate);
 
+        
 
-    }
+
+}

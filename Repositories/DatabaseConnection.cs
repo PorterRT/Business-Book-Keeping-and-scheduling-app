@@ -11,8 +11,10 @@ namespace Vendor_App.Repositories
     {
         private ITransactionRepository _transactionRepository;
         private IVendorEventRepository _vendorEventRepository;
+        private IExpensesRepository _expensesRepository;
         public string transactionsPath;
         public string eventsDbPath;
+        public string expensesDbPath;
 
         public Vendor_App.Repositories.ITransactionRepository VendorDatabaseConnection()
         {
@@ -25,6 +27,12 @@ namespace Vendor_App.Repositories
         {
             eventsDbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "vendorEvents.db3");
             return _vendorEventRepository = new SQLiteVendorEventRepository(eventsDbPath);
+        }
+
+        public Vendor_App.Repositories.IExpensesRepository ExpensesDatabaseConnection()
+        {
+            expensesDbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "expenses.db3");
+            return _expensesRepository = new SQLiteExpensesRepository(expensesDbPath);
         }
     }
 }

@@ -11,7 +11,7 @@ public class VendorEvents
     public string Name { get; set; }
     
     public float Fee { get; set; }
-    
+
     public string Address { get; set; }
     
     public DateTime EventDate { get; set; }
