@@ -41,6 +41,7 @@ namespace Vendor_App
 
                 UpdateCommand = new Command<VendorEvents>(OnUpdateVendorEvent);
 
+
                 // Load all events to display
               //  LoadAllVendorEventsAsync();
             }
@@ -143,7 +144,10 @@ namespace Vendor_App
                     await _vendorEventRepository.DeleteVendorEventAsync(vendorEvent);
 
                     // Remove the event from the ObservableCollection to update the UI
-                    Events.Remove(vendorEvent);
+                    if (Events.Contains(vendorEvent))
+                    {
+                        Events.Remove(vendorEvent);
+                    }
 
                     await DisplayAlert("Success", "Event deleted successfully", "OK");
                 }
@@ -153,6 +157,7 @@ namespace Vendor_App
                 }
             }
         }
+
         private async void OnUpdateVendorEvent(VendorEvents vendorEvent)
         {
             await Navigation.PushAsync(new VendorEventManager(vendorEvent));

@@ -14,6 +14,8 @@ namespace Vendor_App.Models
 
         public double ProcessingFee { get; set; } // Processing fee for the transaction
 
+        public double Tip { get; set; } // for a tip amount
+
         public DateTime Date { get; set; } // Date of the transaction 
 
         public DateTime Time { get; set; } // Time of the transaction

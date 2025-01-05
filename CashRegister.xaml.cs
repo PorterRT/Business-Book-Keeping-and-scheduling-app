@@ -1,6 +1,7 @@
 ﻿namespace Vendor_App
 {
     using System.Collections.ObjectModel;
+    using System.Xml.Linq;
     using Vendor_App.Models;
     using Vendor_App.Repositories;
 
@@ -122,7 +123,11 @@
             else
             {
                 var transactions = await _transactionRepository.GetTransactionsByVendorEventAsync(vendorEvent.VendorEventId);
-                total = transactions.Sum(t => t.Amount);
+                total = transactions.Sum(t => t.Amount + t.Tip);
+                if (FeeEstimateSwitch.IsToggled)
+                {
+                    total += transactions.Sum(t => t.ProcessingFee);
+                }
                 TotalAmountLabel.Text = $"Total: {total:C}";
             }
         }
@@ -137,32 +142,61 @@
         }
 
         public double CalulateProcessingFees(double Amount, string PaymentType)
+        {  
+
+            switch (PaymentType)
+            {
+                case "Square":
+                    {
+                        processingFee = (Amount * 0.026) + 0.10;
+                        break;
+                    }
+                case "Venmo":
+                    {
+                        processingFee = (Amount * 0.019) + 0.10;
+                        break;
+                    }
+                case "Cash App":
+                    {
+                        processingFee = Amount * 0.0275;
+                        break;
+                    }
+                case "Apple Pay":
+                    {
+                        processingFee = 0.00;
+                        break;
+                    }
+                case "Credit Card":
+                    {
+                        processingFee = (Amount * 0.03); // this is a place holder may need to get each card companies fee
+                        break;
+                    }
+                case "Cash":
+                    {
+                        processingFee = 0.00;
+                        break;
+                    }
+                default:
+                    {
+                        processingFee = 0.00;
+                        break;
+
+                    }
+            }
+                    return processingFee;
+            
+            }
+
+        private void OnFeeEstimateToggled(object sender, ToggledEventArgs e)
         {
-            if (PaymentType == "Square")
+            bool IsFeeToggled = e.Value;
+            // Update the total amount when the switch is toggled
+            var selectedEvent = (VendorEvents)VendorEventPicker.SelectedItem;
+            if (selectedEvent != null)
             {
-                processingFee = (Amount * 0.026) + 0.10;
+                UpdateTotalEventAmount(selectedEvent);
             }
-            else if (PaymentType == "Venmo")
-            {
-                processingFee = (Amount * 0.019) + 0.10;
-            }
-            else if (PaymentType == "Cash App")
-            {
-                processingFee = Amount * 0.0275;
-            }
-            else if (PaymentType == "Apple Pay")
-            {
-                processingFee = 0.00;
-            }
-            else if (PaymentType == "Credit Card")
-            {
-                processingFee = (Amount * 0.03); // this is a place holder may need to get each card companies fee
-            }
-            else if (PaymentType == "Cash")
-            {
-                processingFee = 0.00;
-            }
-            return processingFee;
+            
         }
 
         // Event handler for the button click to add a transaction which uploads the transaction to the database
@@ -171,7 +205,7 @@
             if (!TransactionExpenseSwitch.IsToggled)
             {
 
-                if (double.TryParse(AmountEntry.Text, out double amount))
+                if (double.TryParse(AmountEntry.Text, out double amount) && double.TryParse(TipAmountEntry.Text, out double tipAmount))
                 {
                     try
                     {
@@ -199,7 +233,8 @@
                     {
                         paymentType = PaymentTypePicker.SelectedItem.ToString(),
                         Amount = amount,
-                        ProcessingFee = CalulateProcessingFees(amount, PaymentTypePicker.SelectedItem.ToString()),
+                        Tip = tipAmount, // Set the tip amount
+                        ProcessingFee = CalulateProcessingFees(amount + tipAmount, PaymentTypePicker.SelectedItem.ToString()),
                         Date = TransactionDatePicker.Date,
                         Time = DateTime.Now,
                         VendorEventId = selectedEvent.VendorEventId // Foreign key reference to the selected event
@@ -213,6 +248,7 @@
 
                     // Clear inputs
                     AmountEntry.Text = string.Empty;
+                    TipAmountEntry.Text = string.Empty; 
                     PaymentTypePicker.SelectedIndex = -1;
                 }
                 else
@@ -306,6 +342,11 @@
                                                             "Enter new amount:",
                                                             initialValue: transaction.Amount.ToString(),
                                                             keyboard: Keyboard.Numeric);
+
+                string newTipAmount = await DisplayPromptAsync("Update Transaction",
+                                                            "Enter new Tip:",
+                                                            initialValue: transaction.Tip.ToString(),
+                                                            keyboard: Keyboard.Numeric);
                 // Get the original payment type
                 string originalPaymentType = transaction.paymentType;
 
@@ -342,6 +383,18 @@
                     {
                         // Notify the user about the invalid input
                         await DisplayAlert("Invalid Input", "Please enter a valid numeric amount.", "OK");
+                        return; // Exit the method to prevent further processing
+                    }
+
+                    try
+                    {
+                        transaction.Tip = double.Parse(newTipAmount);
+                    }
+                    catch (FormatException exception)
+                    {
+
+                        // Notify the user about the invalid input
+                        await DisplayAlert("Invalid Input", "Please enter a valid numeric TIP amount.", "OK");
                         return; // Exit the method to prevent further processing
                     }
 
@@ -413,9 +466,14 @@
             UserExpenseLabel.IsVisible = isExpense;
             ExpenseLabelEntry.IsVisible = isExpense;
             ExpenseListLabel.IsVisible = isExpense;
-            ExpensesList.IsVisible = isExpense; // Corrected line
+            ExpensesList.IsVisible = isExpense; 
             TransactionList.IsVisible = !isExpense;
             TransactionListLabel.IsVisible = !isExpense;
+            FeeEstimateSwitch.IsVisible = !isExpense;
+            FeeEstimateSwitchLabel.IsVisible = !isExpense;
+            TipEntryLabel.IsVisible = !isExpense;
+            TipAmountEntry.IsVisible = !isExpense;
+
 
             if (isExpense)
             {
