@@ -27,6 +27,7 @@ namespace Vendor_App.Models
         {
             paymentType = string.Empty; // Default to empty string
             Amount = 0.0; // Default to zero
+            Tip = 0.0;
             Date = Date; // Default to current date
         }
 

@@ -17,5 +17,9 @@ namespace Vendor_App.Models
         public string Label { get; set; } // Label for the Expense
         public int VendorEventId { get; set; } // Foreign key to VendorEvents
 
+        public bool IsTaxDeductible { get; set; } // marks if the expense is a tax deducation
+
+        public string TaxDeductionDisplayMarks => IsTaxDeductible ? "✓" : "X";
+
     }
 }

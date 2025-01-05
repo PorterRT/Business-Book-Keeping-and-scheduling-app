@@ -16,7 +16,7 @@
         private double total = 0;
         private double processingFee = 0;
         private double Expenses = 0;
-
+     
         public CashRegister()
         {
             InitializeComponent();
@@ -40,6 +40,9 @@
 
             // Set the default date to today
             TransactionDatePicker.Date = DateTime.Today;
+
+            // Set the default Tip amount to 0.00
+            TipAmountEntry.Text = "0.00";
 
             // Load the events and transactions
             LoadVendorEventsByDate(TransactionDatePicker.Date);
@@ -199,6 +202,12 @@
             
         }
 
+        private void OnTaxExpenseToggled(object sender, ToggledEventArgs t)
+        {
+            bool IsTaxExpense = t.Value;
+
+        }
+
         // Event handler for the button click to add a transaction which uploads the transaction to the database
         private async void OnAddTransactionClicked(object sender, EventArgs e)
         {
@@ -248,8 +257,13 @@
 
                     // Clear inputs
                     AmountEntry.Text = string.Empty;
-                    TipAmountEntry.Text = string.Empty; 
+                    TipAmountEntry.Text = "0.00"; // Reset the tip amount to default
                     PaymentTypePicker.SelectedIndex = -1;
+
+                    // Unfocus the entry fields to hide the keyboard
+                    AmountEntry.Unfocus();
+                    TipAmountEntry.Unfocus();
+                    PaymentTypePicker.Unfocus();
                 }
                 else
                 {
@@ -281,6 +295,7 @@
                             Amount = amount,
                             Label = ExpenseLabelEntry.Text,
                             Date = TransactionDatePicker.Date,
+                            IsTaxDeductible = TaxDeductibleSwitch.IsToggled, // Set the tax-deductible status
                             VendorEventId = selectedEvent.VendorEventId
                         };
 
@@ -291,6 +306,13 @@
                         Console.WriteLine($"Expense saved. Now loading expenses for event.");
 
                         LoadExpensesForVendorEvent(selectedEvent);
+
+                        AmountEntry.Text = string.Empty;
+                        ExpenseLabelEntry.Text = string.Empty;
+                        TaxDeductibleSwitch.IsToggled = false;
+
+                        AmountEntry.Unfocus();
+                        ExpenseLabelEntry.Unfocus();
                     }
 
                     else
@@ -316,6 +338,16 @@
                                                             "Enter new amount:",
                                                             initialValue: expense.Amount.ToString(),
                                                             keyboard: Keyboard.Numeric);
+
+                // Display the current label in a prompt for the user to update
+                string newLabel = await DisplayPromptAsync("Update Expense",
+                                                           "Enter new label:",
+                                                           initialValue: expense.Label);
+
+                // Display the current tax-deductible status in a prompt for the user to update
+                bool newIsTaxDeductible = await DisplayAlert("Update Expense",
+                                                             "Is this expense tax-deductible?",
+                                                             "Yes", "No");
                 try
                 {
                     // Update the expense with new values
@@ -325,6 +357,25 @@
                 {
                     // Notify the user about the invalid input
                     await DisplayAlert("Invalid Input", "Please enter a valid numeric amount.", "OK");
+                    return; // Exit the method to prevent further processing
+                }
+                try
+                {
+                    expense.Label = newLabel;
+                }
+                catch (FormatException exception)
+                {
+                    await DisplayAlert("Invalid Input", "Please enter a valid Labal amount.", "OK");
+                    return; // Exit the method to prevent further processing
+                }
+
+                try
+                {
+                    expense.IsTaxDeductible = newIsTaxDeductible;
+                }
+                catch (FormatException exception)
+                {
+                    await DisplayAlert("Invalid Input", "Please enter a valid tax deducation value.", "OK");
                     return; // Exit the method to prevent further processing
                 }
                 // Save the updated expense to the database
@@ -484,10 +535,6 @@
                 LoadTransactionsForVendorEvent((VendorEvents)VendorEventPicker.SelectedItem);
             }
         }
-
-
-
-
 
     }
 }
