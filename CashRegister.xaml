@@ -21,9 +21,9 @@
               ItemDisplayBinding="{Binding Name}" />
 
             <!-- Switch for toggling between transactions and expenses -->
-            <Switch x:Name="TransactionExpenseSwitch" Toggled="OnTransactionExpenseToggled" />
             <Label Text="Sales" x:Name="TransactionLabel" />
             <Label Text="Expenses" x:Name="ExpenseLabel" IsVisible="False" />
+            <Switch x:Name="TransactionExpenseSwitch" Toggled="OnTransactionExpenseToggled" />
 
             <!-- Label for entering amount -->
             <Label Text="Enter Amount: " TextColor="{DynamicResource TextColor}"/>
