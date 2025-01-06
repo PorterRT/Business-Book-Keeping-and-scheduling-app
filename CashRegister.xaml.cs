@@ -42,7 +42,7 @@
             TransactionDatePicker.Date = DateTime.Today;
 
             // Set the default Tip amount to 0.00
-            TipAmountEntry.Text = "0.00";
+           // TipAmountEntry.Text = "0.00";
 
             // Load the events and transactions
             LoadVendorEventsByDate(TransactionDatePicker.Date);
@@ -129,7 +129,7 @@
                 total = transactions.Sum(t => t.Amount + t.Tip);
                 if (FeeEstimateSwitch.IsToggled)
                 {
-                    total += transactions.Sum(t => t.ProcessingFee);
+                    total -= transactions.Sum(t => t.ProcessingFee);
                 }
                 TotalAmountLabel.Text = $"Total: {total:C}";
             }
@@ -214,56 +214,69 @@
             if (!TransactionExpenseSwitch.IsToggled)
             {
 
-                if (double.TryParse(AmountEntry.Text, out double amount) && double.TryParse(TipAmountEntry.Text, out double tipAmount))
+                if (double.TryParse(AmountEntry.Text, out double amount))
                 {
-                    try
+                    if (double.TryParse(TipAmountEntry.Text, out double tipAmount) || string.IsNullOrEmpty(TipAmountEntry.Text))
                     {
-                        if (PaymentTypePicker.SelectedItem == null)
+                        if (string.IsNullOrEmpty(TipAmountEntry.Text))
                         {
-                            throw new Exception("Please select a payment type");
+                            tipAmount = 0.00;
                         }
+                        try
+                        {
+                            if (PaymentTypePicker.SelectedItem == null)
+                            {
+                                throw new Exception("Please select a payment type");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            await DisplayAlert("Error", ex.Message, "OK");
+                            return;
+                        }
+
+                        // Get the selected event from the picker
+                        var selectedEvent = (VendorEvents)VendorEventPicker.SelectedItem;
+                        if (selectedEvent == null)
+                        {
+                            await DisplayAlert("Error", "Please select a vendor event", "OK");
+                            return;
+                        }
+
+                        // Create a new transaction, linking it to the selected event's VendorEventId
+                        var transaction = new Transaction
+                        {
+                            paymentType = PaymentTypePicker.SelectedItem.ToString(),
+                            Amount = amount,
+                            Tip = tipAmount, // Set the tip amount
+                            ProcessingFee = CalulateProcessingFees(amount + tipAmount, 
+                                PaymentTypePicker.SelectedItem.ToString()),
+                            Date = TransactionDatePicker.Date,
+                            Time = DateTime.Now,
+                            VendorEventId = selectedEvent.VendorEventId // Foreign key reference to the selected event
+                        };
+
+                        // Save the transaction to the database
+                        await _transactionRepository.SaveTransactionAsync(transaction);
+
+                        // Reload the transactions to refresh the list and total
+                        LoadTransactionsForVendorEvent(selectedEvent);
+
+                        // Clear inputs
+                        AmountEntry.Text = string.Empty;
+                        TipAmountEntry.Text = string.Empty; // Reset the tip amount to default
+                        PaymentTypePicker.SelectedIndex = -1;
+
+                        // Unfocus the entry fields to hide the keyboard
+                        AmountEntry.Unfocus();
+                        TipAmountEntry.Unfocus();
+                        PaymentTypePicker.Unfocus();
                     }
-                    catch (Exception ex)
+
+                    else
                     {
-                        await DisplayAlert("Error", ex.Message, "OK");
-                        return;
+                        await DisplayAlert("Invalid Tip Amount", "Please enter a valid amount", "OK");
                     }
-
-                    // Get the selected event from the picker
-                    var selectedEvent = (VendorEvents)VendorEventPicker.SelectedItem;
-                    if (selectedEvent == null)
-                    {
-                        await DisplayAlert("Error", "Please select a vendor event", "OK");
-                        return;
-                    }
-
-                    // Create a new transaction, linking it to the selected event's VendorEventId
-                    var transaction = new Transaction
-                    {
-                        paymentType = PaymentTypePicker.SelectedItem.ToString(),
-                        Amount = amount,
-                        Tip = tipAmount, // Set the tip amount
-                        ProcessingFee = CalulateProcessingFees(amount + tipAmount, PaymentTypePicker.SelectedItem.ToString()),
-                        Date = TransactionDatePicker.Date,
-                        Time = DateTime.Now,
-                        VendorEventId = selectedEvent.VendorEventId // Foreign key reference to the selected event
-                    };
-
-                    // Save the transaction to the database
-                    await _transactionRepository.SaveTransactionAsync(transaction);
-
-                    // Reload the transactions to refresh the list and total
-                    LoadTransactionsForVendorEvent(selectedEvent);
-
-                    // Clear inputs
-                    AmountEntry.Text = string.Empty;
-                    TipAmountEntry.Text = "0.00"; // Reset the tip amount to default
-                    PaymentTypePicker.SelectedIndex = -1;
-
-                    // Unfocus the entry fields to hide the keyboard
-                    AmountEntry.Unfocus();
-                    TipAmountEntry.Unfocus();
-                    PaymentTypePicker.Unfocus();
                 }
                 else
                 {

@@ -7,7 +7,6 @@
     using System.Threading.Tasks;
     using Vendor_App.Models;
     using Vendor_App.Repositories;
-    
     using Microsoft.Maui.Controls;
 
     public partial class FinanceBreakdown : ContentPage

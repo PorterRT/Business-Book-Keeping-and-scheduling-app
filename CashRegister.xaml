@@ -50,6 +50,10 @@
 
             <Label Text=" Expense Label:" x:Name="UserExpenseLabel" IsVisible="False"/>
             <Entry x:Name="ExpenseLabelEntry" Placeholder="Enter expense label" IsVisible="False" />
+            
+            <!--Tax Deductible expense mark-->
+            <Label Text="Tax Deductible" IsVisible="{Binding Source={x:Reference TransactionExpenseSwitch}, Path=IsToggled}" />
+            <Switch x:Name="TaxDeductibleSwitch" IsToggled="False" IsVisible="{Binding Source={x:Reference TransactionExpenseSwitch}, Path=IsToggled}" />
 
             <!-- Add to List Button -->
             <Button Text="Add to List" Clicked="OnAddTransactionClicked"/>
@@ -58,10 +62,6 @@
             <Label Text="Include Fee Estimates" x:Name="FeeEstimateSwitchLabel" TextColor="{DynamicResource TextColor}" IsVisible="True"/>
             <Switch x:Name="FeeEstimateSwitch" Toggled="OnFeeEstimateToggled" IsVisible="True" IsEnabled="True"/>
             
-            <!--Tax Deductible expense mark-->
-            <Label Text="Tax Deductible" IsVisible="{Binding Source={x:Reference TransactionExpenseSwitch}, Path=IsToggled}" />
-            <Switch x:Name="TaxDeductibleSwitch" IsToggled="False" IsVisible="{Binding Source={x:Reference TransactionExpenseSwitch}, Path=IsToggled}" />
-
             <!-- List of Transactions -->
             <Label Text="Transactions" x:Name="TransactionListLabel" FontSize="Medium" Margin="10,0,0,10" IsVisible="True"/>
 
