@@ -8,66 +8,89 @@
     using Vendor_App.Models;
     using Vendor_App.Repositories;
     using Microsoft.Maui.Controls;
+    using System.Windows.Input;
+    using System.ComponentModel;
 
-    public partial class FinanceBreakdown : ContentPage
+    public partial class FinanceBreakdown : ContentPage, INotifyPropertyChanged
     {
-
         private readonly IVendorEventRepository _vendorEventRepository;
         private readonly ITransactionRepository _transactionRepository;
 
         public ObservableCollection<VendorEvents> Events { get; set; }
-        
         public ObservableCollection<VendorEvents> SelectedEvents { get; set; }
-
         public ObservableCollection<Transaction> DisplayedTransactions { get; set; }
 
+        private bool _isRefreshing;
         private bool isEventCollectionVisible = false;
         private bool isTransactionListVisible = false;
+
+        public ICommand RefreshCommand { get; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool IsRefreshing
+        {
+            get => _isRefreshing;
+            set
+            {
+                if (_isRefreshing != value)
+                {
+                    _isRefreshing = value;
+                    OnPropertyChanged(nameof(IsRefreshing));
+                }
+            }
+        }
 
         public FinanceBreakdown()
         {
             InitializeComponent();
 
-            // Initialize database connection
-            var databaseConnection = new DatabaseConnection();
-
             // Initialize repositories
-            _transactionRepository = databaseConnection.VendorDatabaseConnection();
+            var databaseConnection = new DatabaseConnection();
             _vendorEventRepository = databaseConnection.EventDatabaseConnection();
+            _transactionRepository = databaseConnection.VendorDatabaseConnection();
+
             // Initialize collections
             Events = new ObservableCollection<VendorEvents>();
             SelectedEvents = new ObservableCollection<VendorEvents>();
             DisplayedTransactions = new ObservableCollection<Transaction>();
 
+            // Initialize RefreshCommand
+            RefreshCommand = new Command(async () => await RefreshCommandAsync());
+
             BindingContext = this;
 
-            // Load all events for selection
+            // Load initial events
             LoadAllEvents();
         }
-        // Toggle Date Filter Section
-        private void OnToggleDateFilterClicked(object sender, EventArgs e)
-        {
-            DateFilterSection.IsVisible = !DateFilterSection.IsVisible;
-        }
-        private async void OnFilterClicked(object sender, EventArgs e)
-        {
-            DateTime startDate = StartDatePicker.Date;
-            DateTime endDate = EndDatePicker.Date;
-            
-            // Clear current selection to reset calculations
-            EventCollectionView.SelectedItems.Clear();
 
-            var filteredEvents = await _vendorEventRepository.GetEventsByDateRangeAsync(startDate, endDate);
-            
-            Events.Clear();
-            
-            foreach (var vendorEvent in filteredEvents)
+        private async Task RefreshCommandAsync()
+        {
+            IsRefreshing = true; // Start refreshing state
+
+            try
             {
-                Events.Add(vendorEvent);
+                // Reload all events
+                await LoadAllEvents();
+
+                // If events are selected, reload transactions
+                if (SelectedEvents.Any())
+                {
+                    var selectedEvents = SelectedEvents.ToList();
+                    await LoadTransactionsForSelectedEvents(selectedEvents);
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to refresh data: {ex.Message}", "OK");
+            }
+            finally
+            {
+                IsRefreshing = false; // Stop refreshing state
             }
         }
 
-        private async void LoadAllEvents()
+        private async Task LoadAllEvents()
         {
             try
             {
@@ -85,36 +108,20 @@
             }
         }
 
-        // Toggle visibility for Event Collection
-        private void OnToggleEventSelectionClicked(object sender, EventArgs e)
-        {
-            isEventCollectionVisible = !isEventCollectionVisible;
-            EventCollectionView.IsVisible = isEventCollectionVisible;
-            ToggleEventButton.Text = isEventCollectionVisible ? "Select Events ▲" : "Select Events ▼";
-        }
-
-        // Toggle visibility for Transaction List
-        private void OnToggleTransactionListClicked(object sender, EventArgs e)
-        {
-            isTransactionListVisible = !isTransactionListVisible;
-            TransactionListView.IsVisible = isTransactionListVisible;
-            ToggleTransactionButton.Text = isTransactionListVisible ? "Transactions for Selected Events ▲" : "Transactions for Selected Events ▼";
-        }
-
-        private async void OnEventsSelected(object sender, SelectionChangedEventArgs e)
+        private async Task LoadTransactionsForSelectedEvents(List<VendorEvents> selectedEvents)
         {
             try
             {
-                // Synchronize SelectedEvents with current selections
-                SelectedEvents.Clear();
-                foreach (var selectedEvent in e.CurrentSelection)
-                {
-                    SelectedEvents.Add(selectedEvent as VendorEvents);
-                }
+                DisplayedTransactions.Clear();
 
-                // Load transactions for the selected events
-                var selectedEventList = SelectedEvents.ToList();
-                await LoadTransactionsForSelectedEvents(selectedEventList);
+                foreach (var vendorEvent in selectedEvents)
+                {
+                    var transactions = await _transactionRepository.GetTransactionsByVendorEventAsync(vendorEvent.VendorEventId);
+                    foreach (var transaction in transactions)
+                    {
+                        DisplayedTransactions.Add(transaction);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -130,7 +137,6 @@
             {
                 try
                 {
-                    // Attempt to get the fee for the current event
                     double vendorFee = await _vendorEventRepository.GetFeeForVendorEventAsync(vendorEvent);
                     Console.WriteLine($"Fee for event {vendorEvent.VendorEventId}: {vendorFee}");
                     totalVenFees += vendorFee;
@@ -138,83 +144,97 @@
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error retrieving fee for event {vendorEvent.VendorEventId}: {ex.Message}");
-                    // Optionally, you could display an alert if a fee fails to load, or skip to the next
                     await DisplayAlert("Error", $"Failed to retrieve fee for event {vendorEvent.VendorEventId}: {ex.Message}", "OK");
                 }
             }
 
-            Console.WriteLine($"Total fees for selected events: {totalVenFees}");
             return totalVenFees;
         }
-        private async Task<double> LoadProcessingFeesForSelectedEvents(List<VendorEvents> selectedEvents){
+
+        private async Task<double> LoadProcessingFeesForSelectedEvents(List<VendorEvents> selectedEvents)
+        {
             double totalProcessingFees = 0;
 
             foreach (var vendorEvent in selectedEvents)
             {
                 try
                 {
-                    List<double> ProcessingFee = await _transactionRepository.GetProcessingFeesForVendorEventAsync(vendorEvent.VendorEventId);
-                    Console.WriteLine($"Processing Fee for event {vendorEvent.VendorEventId}: {ProcessingFee}");
-                    totalProcessingFees = ProcessingFee.Sum();
+                    var processingFees = await _transactionRepository.GetProcessingFeesForVendorEventAsync(vendorEvent.VendorEventId);
+                    totalProcessingFees += processingFees.Sum();
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error retrieving processing fee for event {vendorEvent.VendorEventId}: {ex.Message}");
                     await DisplayAlert("Error", $"Failed to retrieve processing fee for event {vendorEvent.VendorEventId}: {ex.Message}", "OK");
                 }
+            }
 
+            return totalProcessingFees;
         }
-        return totalProcessingFees;
+
+        private void OnToggleDateFilterClicked(object sender, EventArgs e)
+        {
+            DateFilterSection.IsVisible = !DateFilterSection.IsVisible;
         }
 
-
-
-        private async Task LoadTransactionsForSelectedEvents(List<VendorEvents> selectedEvents)
+        private async void OnFilterClicked(object sender, EventArgs e)
         {
             try
             {
-                // Clear existing transactions
-                DisplayedTransactions.Clear();
+                DateTime startDate = StartDatePicker.Date;
+                DateTime endDate = EndDatePicker.Date;
 
-                // Remove duplicate events
-                selectedEvents = selectedEvents.Distinct().ToList();
+                EventCollectionView.SelectedItems.Clear();
+                var filteredEvents = await _vendorEventRepository.GetEventsByDateRangeAsync(startDate, endDate);
 
-                double totalIncome = 0;
-
-                // Calculate fees
-                double totalVenFees = await LoadVendorFeesForSelectedEvents(selectedEvents);
-                double totalProcessingFees = await LoadProcessingFeesForSelectedEvents(selectedEvents);
-                double totalFees = totalVenFees + totalProcessingFees;
-
-                foreach (var vendorEvent in selectedEvents)
+                Events.Clear();
+                foreach (var vendorEvent in filteredEvents)
                 {
-                    var transactions = await _transactionRepository.GetTransactionsByVendorEventAsync(vendorEvent.VendorEventId);
+                    Events.Add(vendorEvent);
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to filter events: {ex.Message}", "OK");
+            }
+        }
 
-                    foreach (var transaction in transactions)
-                    {
-                        // Avoid adding duplicate transactions
-                        if (!DisplayedTransactions.Contains(transaction))
-                        {
-                            DisplayedTransactions.Add(transaction);
-                            totalIncome += transaction.Amount;
-                        }
-                    }
+        private void OnToggleEventSelectionClicked(object sender, EventArgs e)
+        {
+            isEventCollectionVisible = !isEventCollectionVisible;
+            EventCollectionView.IsVisible = isEventCollectionVisible;
+            ToggleEventButton.Text = isEventCollectionVisible ? "Select Events ▲" : "Select Events ▼";
+        }
+
+        private void OnToggleTransactionListClicked(object sender, EventArgs e)
+        {
+            isTransactionListVisible = !isTransactionListVisible;
+            TransactionListView.IsVisible = isTransactionListVisible;
+            ToggleTransactionButton.Text = isTransactionListVisible ? "Transactions for Selected Events ▲" : "Transactions for Selected Events ▼";
+        }
+
+        private async void OnEventsSelected(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                SelectedEvents.Clear();
+                foreach (var selectedEvent in e.CurrentSelection)
+                {
+                    SelectedEvents.Add(selectedEvent as VendorEvents);
                 }
 
-                // Calculate final total
-                double finalTotal = totalIncome - totalFees;
-
-                // Update labels
-                TotalEventFeesLabel.Text = $"Total for all Event Fees: {totalVenFees:C}";
-                TotalProcessingFeesLabel.Text = $"Total for Estimated Processing Fees: {totalProcessingFees:C}";
-                TotalFeesLabel.Text = $"Total for all Fees: {totalFees:C}";
-                SubTotalIncomeLabel.Text = $"Sub Total: {totalIncome:C}";
-                TotalIncomeLabel.Text = $"Final Total: {finalTotal:C}";
+                var selectedEventList = SelectedEvents.ToList();
+                await LoadTransactionsForSelectedEvents(selectedEventList);
             }
             catch (Exception ex)
             {
                 await DisplayAlert("Error", $"Failed to load transactions: {ex.Message}", "OK");
             }
         }
-}
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
 }

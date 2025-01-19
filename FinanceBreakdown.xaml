@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Vendor_App.FinanceBreakdown"
              Title="Finance Breakdown">
-
+    <RefreshView Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
     <ScrollView>
         <VerticalStackLayout Spacing="10" Padding="10">
 
@@ -81,4 +81,5 @@
 
         </VerticalStackLayout>
     </ScrollView>
+        </RefreshView>
 </ContentPage>

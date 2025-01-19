@@ -23,6 +23,7 @@
                 
             </HorizontalStackLayout>
         </VerticalStackLayout>
+        <RefreshView Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
         <ListView x:Name="EventsListView"
                   ItemsSource="{Binding Events}"
                   ItemTapped="OnEventTapped">
@@ -61,8 +62,10 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+            </RefreshView>
                <!-- Button to navigate to Vendor Event Manager -->
             <Button Text="Add Event"
                     Clicked="OnNavigateToVendorEventManagerClicked"/>
     </StackLayout>
+    
 </ContentPage>

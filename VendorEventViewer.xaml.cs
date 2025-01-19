@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
+using System.Windows.Input;
+using System.ComponentModel;
 using Vendor_App.Models;
 using Vendor_App.Repositories;
 
@@ -17,10 +19,28 @@ namespace Vendor_App
 
         public Command<VendorEvents> DeleteCommand { get; }
         public Command<VendorEvents> UpdateCommand { get; }
+        
+        public ICommand RefreshCommand { get; set; }
+        private bool _isRefreshing;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public bool IsRefreshing
+        {
+            get => _isRefreshing;
+            set
+            {
+                if (_isRefreshing != value)
+                {
+                    _isRefreshing = value;
+                    OnPropertyChanged(nameof(IsRefreshing));
+                }
+            }
+        }
 
         public VendorEventViewer()
         {
             InitializeComponent();
+            RefreshCommand = new Command(async () => await RefreshCommandAsync());
             this.BindingContext = this;
 
             try
@@ -65,6 +85,25 @@ namespace Vendor_App
             foreach (var vendorEvent in filteredEvents)
             {
                 Events.Add(vendorEvent);
+            }
+        }
+        
+        private async Task RefreshCommandAsync()
+        {
+            IsRefreshing = true;
+
+            try
+            {
+                // Refresh the Picker's data (Vendor Events)
+                await LoadAllVendorEventsAsync();
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", "Failed to refresh data: " + ex.Message, "OK");
+            }
+            finally
+            {
+                IsRefreshing = false; // Ensure refreshing stops
             }
         }
 
