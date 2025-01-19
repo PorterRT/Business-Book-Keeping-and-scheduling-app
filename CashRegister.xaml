@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{DynamicResource BackgroundColor}"
              x:Class="Vendor_App.CashRegister">
-
+            
+    <RefreshView Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
     <ScrollView>
         <VerticalStackLayout
             Padding="10"
@@ -64,7 +65,7 @@
             
             <!-- List of Transactions -->
             <Label Text="Transactions" x:Name="TransactionListLabel" FontSize="Medium" Margin="10,0,0,10" IsVisible="True"/>
-
+    
             <ListView x:Name="TransactionList" ItemsSource="{Binding transactions}" HasUnevenRows="True" IsVisible="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -146,10 +147,9 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-
+            
             <!-- List of Expenses -->
             <Label Text="Expenses" x:Name="ExpenseListLabel" FontSize="Medium" Margin="10,0,0,10" IsVisible="False"/>
-
             <ListView x:Name="ExpensesList" ItemsSource="{Binding ExpensesList}" HasUnevenRows="True" IsVisible="False">
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -225,6 +225,7 @@
 
         </VerticalStackLayout>
     </ScrollView>
+        </RefreshView>
 </ContentPage>
 
 

@@ -1,6 +1,8 @@
 ﻿namespace Vendor_App
 {
     using System.Collections.ObjectModel;
+    using System.Windows.Input;
+    using System.ComponentModel;
     using System.Xml.Linq;
     using Vendor_App.Models;
     using Vendor_App.Repositories;
@@ -10,6 +12,22 @@
         private ITransactionRepository _transactionRepository;
         private IVendorEventRepository _vendorEventRepository;
         private IExpensesRepository _expensesRepository;
+        public ICommand RefreshCommand { get; set; }
+        private bool _isRefreshing;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public bool IsRefreshing
+        {
+            get => _isRefreshing;
+            set
+            {
+                if (_isRefreshing != value)
+                {
+                    _isRefreshing = value;
+                    OnPropertyChanged(nameof(IsRefreshing));
+                }
+            }
+        }
         public ObservableCollection<VendorEvents> Events { get; set; }
         public ObservableCollection<Expenses> ExpenseList { get; set; }
 
@@ -35,7 +53,8 @@
             ExpenseList = new ObservableCollection<Expenses>();
             ExpensesList.ItemsSource = ExpenseList; // Bind the ListView to the ObservableCollection
 
-
+            RefreshCommand = new Command(async () => await RefreshCommandAsync());
+            
             BindingContext = this;
 
             // Set the default date to today
@@ -48,7 +67,31 @@
             LoadVendorEventsByDate(TransactionDatePicker.Date);
             VendorEventPicker.SelectedIndexChanged += OnVendorEventSelected;
         }
+        private async Task RefreshCommandAsync()
+        {
+            IsRefreshing = true;
 
+            try
+            {
+                // Refresh the Picker's data (Vendor Events)
+                await LoadVendorEventsByDate(DateTime.Today);
+
+                // Refresh Transactions and Expenses for the selected event, if any
+                if (VendorEventPicker.SelectedItem is VendorEvents selectedEvent)
+                {
+                     await LoadTransactionsForVendorEvent(selectedEvent);
+                     await LoadExpensesForVendorEvent(selectedEvent);
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", "Failed to refresh data: " + ex.Message, "OK");
+            }
+            finally
+            {
+                IsRefreshing = false; // Ensure refreshing stops
+            }
+        }
         private async Task LoadVendorEventsByDate(DateTime selectedDate)
         {
             try
@@ -82,7 +125,7 @@
             }
         }
 
-        private async void LoadTransactionsForVendorEvent(VendorEvents vendorEvent)
+        private async Task LoadTransactionsForVendorEvent(VendorEvents vendorEvent)
         {
             if (vendorEvent == null)
             {
@@ -100,7 +143,7 @@
             await UpdateTotalEventAmount(vendorEvent);
         }
 
-        private async void LoadExpensesForVendorEvent(VendorEvents vendorEvent)
+        private async Task LoadExpensesForVendorEvent(VendorEvents vendorEvent)
         {
             if (vendorEvent == null)
             {
