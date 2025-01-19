@@ -9,6 +9,10 @@
     Shell.UnselectedColor="Transparent">
 
     <TabBar>
+        <Tab Title="Events" Icon="eventsicon.png">
+            <ShellContent ContentTemplate="{DataTemplate local:VendorEventViewer}"
+                          Route="VendorEventViewer" />
+        </Tab>
         <Tab Title="Cash Register">
             <ShellContent ContentTemplate="{DataTemplate local:CashRegister}"
                           Route="CashRegister" />
@@ -17,9 +21,6 @@
             <ShellContent ContentTemplate="{DataTemplate local:FinanceBreakdown}"
                           Route="FinanceBreakdown" />
         </Tab>
-        <Tab Title="Events" Icon="eventsicon.png">
-            <ShellContent ContentTemplate="{DataTemplate local:VendorEventViewer}"
-                          Route="VendorEventViewer" />
-        </Tab>
+       
     </TabBar>
 </Shell>
