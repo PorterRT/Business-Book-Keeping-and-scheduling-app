@@ -36,8 +36,15 @@ public class SQLiteVendorEventRepository : IVendorEventRepository
     public Task<VendorEvents> GetVendorEventByNameAsync(string name)
     {
         return _database.Table<VendorEvents>()
-            .Where(v => v.Name == name)
+            .Where(v => v.Name.ToLower() == name.ToLower() )
             .FirstOrDefaultAsync();    
+    }
+    
+    public Task<List<VendorEvents>>GetVendorEventByNameSearchAsync(string name)
+    {
+        return _database.Table<VendorEvents>()
+            .Where(v => v.Name.ToLower().Contains(name.ToLower()) || v.Name == name )
+            .ToListAsync();    
     }
 
     public async Task<List<VendorEvents>> GetVendorEventsByDateAsync(DateTime date)

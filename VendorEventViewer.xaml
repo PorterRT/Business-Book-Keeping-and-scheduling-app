@@ -4,13 +4,20 @@
              x:Class="Vendor_App.VendorEventViewer"
              Title="View Vendor Events">
     <StackLayout Padding="10">
-        
+        <SearchBar
+            Placeholder="Search Events"
+            BackgroundColor="White"
+            TextColor="Black"
+            TextChanged="OnSearchTextChanged"
+            x:Name="EventSearch"
+            />
         <!-- Date Filter Toggle Button -->
         <Button x:Name="ToggleDateFilterButton"
                 ImageSource="datefiltericon.png"
                 Clicked="OnToggleDateFilterClicked"
                 BackgroundColor="Transparent"
-                HorizontalOptions="End" />
+                HorizontalOptions="End" 
+                />
 
         <!-- Collapsible Date Filter Section -->
         <VerticalStackLayout x:Name="DateFilterSection" IsVisible="False" Spacing="5">
@@ -19,7 +26,10 @@
                 <DatePicker x:Name="StartDatePicker" Date="{Binding StartDate}" HorizontalOptions="Center"/>
                 <Label Text="to" VerticalOptions="Center" HorizontalOptions="Center"/>
                 <DatePicker x:Name="EndDatePicker" Date="{Binding EndDate}" HorizontalOptions="End"/>
-                <Button Text="Apply" Clicked="OnFilterClicked" />
+                <Button Text="Apply" Clicked="OnFilterClicked" Padding="15" />
+                
+                <Button Text="Reset" Clicked="OnResetDateFilterClicked" />
+
                 
             </HorizontalStackLayout>
         </VerticalStackLayout>

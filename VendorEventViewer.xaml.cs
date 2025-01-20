@@ -70,6 +70,38 @@ namespace Vendor_App
                 DisplayAlert("Error", $"Failed to initialize: {ex.Message}", "OK");
             }
         }
+        
+        private async void OnSearchTextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                // Get the search text
+                string searchText = EventSearch.Text?.Trim();
+
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    // Use the repository to filter events
+                    var filteredEvents = await _vendorEventRepository.GetVendorEventByNameSearchAsync(searchText);
+
+                    // Update the observable collection
+                    Events.Clear();
+                    foreach (var vendorEvent in filteredEvents)
+                    {
+                        Events.Add(vendorEvent);
+                    }
+                }
+                else
+                {
+                    // If search text is empty, load all events
+                    await LoadAllVendorEventsAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to search events: {ex.Message}", "OK");
+            }
+        }
+
 
         private void OnToggleDateFilterClicked(object sender, EventArgs e)
         {
@@ -87,6 +119,19 @@ namespace Vendor_App
                 Events.Add(vendorEvent);
             }
         }
+        private async void OnResetDateFilterClicked(object sender, EventArgs e)
+        {
+            // Reset the date pickers to default values (e.g., the last month and today)
+            StartDatePicker.Date = DateTime.Today.AddMonths(-1); // Default start date
+            EndDatePicker.Date = DateTime.Today; // Default end date
+
+            // Reload all vendor events
+            await LoadAllVendorEventsAsync();
+
+            // Optionally hide the filter section after reset
+            DateFilterSection.IsVisible = false;
+        }
+
         
         private async Task RefreshCommandAsync()
         {
@@ -94,6 +139,10 @@ namespace Vendor_App
 
             try
             {
+                // Clear filters (if any) and reload events
+                EventSearch.Text = string.Empty;
+                StartDatePicker.Date = DateTime.Today.AddMonths(-1);
+                EndDatePicker.Date = DateTime.Today;
                 // Refresh the Picker's data (Vendor Events)
                 await LoadAllVendorEventsAsync();
             }
