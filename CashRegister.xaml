@@ -13,7 +13,7 @@
             <!-- Date Picker for Transaction Date -->
             <Frame Padding="5"
                    CornerRadius="10"
-                   BorderColor="MediumPurple"
+                   BorderColor="#502BD4"
                    BackgroundColor="White"
                    Margin="0,10,0,10">
                 <VerticalStackLayout Spacing="5">
@@ -30,7 +30,7 @@
             <!-- Events Picker for selecting a Vendor Event -->
             <Frame Padding="5"
                    CornerRadius="10"
-                   BorderColor="MediumPurple"
+                   BorderColor="#502BD4"
                    BackgroundColor="White"
                    Margin="0,10,0,10">
                 <VerticalStackLayout Spacing="5"
