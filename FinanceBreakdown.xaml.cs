@@ -11,16 +11,24 @@
     using System.Windows.Input;
     using System.ComponentModel;
 
+    
     public partial class FinanceBreakdown : ContentPage, INotifyPropertyChanged
     {
         private readonly IVendorEventRepository _vendorEventRepository;
         private readonly ITransactionRepository _transactionRepository;
+        private readonly IExpensesRepository _expensesRepository;
+
 
         public ObservableCollection<VendorEvents> Events { get; set; }
         public ObservableCollection<VendorEvents> SelectedEvents { get; set; }
         public ObservableCollection<Transaction> DisplayedTransactions { get; set; }
+        
+        public ObservableCollection<Expenses> DisplayedExpenses { get; set; }
 
         private bool _isRefreshing;
+        private bool _isFeeEstimateEnabled;
+
+
         private bool isEventCollectionVisible = false;
         private bool isTransactionListVisible = false;
 
@@ -49,11 +57,12 @@
             var databaseConnection = new DatabaseConnection();
             _vendorEventRepository = databaseConnection.EventDatabaseConnection();
             _transactionRepository = databaseConnection.VendorDatabaseConnection();
-
+            _expensesRepository = databaseConnection.ExpensesDatabaseConnection();
             // Initialize collections
             Events = new ObservableCollection<VendorEvents>();
             SelectedEvents = new ObservableCollection<VendorEvents>();
             DisplayedTransactions = new ObservableCollection<Transaction>();
+            DisplayedExpenses = new ObservableCollection<Expenses>(); // Initialize expenses collection
 
             // Initialize RefreshCommand
             RefreshCommand = new Command(async () => await RefreshCommandAsync());
@@ -64,21 +73,42 @@
             LoadAllEvents();
         }
 
+        
         private async Task RefreshCommandAsync()
         {
-            IsRefreshing = true; // Start refreshing state
+            IsRefreshing = true;
 
             try
             {
+                // Clear all collections
+                Events.Clear();
+                SelectedEvents.Clear();
+                DisplayedTransactions.Clear();
+                DisplayedExpenses.Clear();
+            
+                // Reset financial totals
+                TotalSales = 0;
+                TotalExpenses = 0;
+                TotalProcessingFees = 0;
+                TotalVendorFees = 0;
+                TotalTaxDeductibleExpenses = 0;
+                NetProfit = 0;
+                TaxableIncome = 0;
+
+                // Clear the selection in the EventCollectionView
+                if (EventCollectionView != null)
+                {
+                    EventCollectionView.SelectedItems?.Clear();
+                }
+
+                // Notify UI of all changes
+                OnPropertyChanged(nameof(Events));
+                OnPropertyChanged(nameof(SelectedEvents));
+                OnPropertyChanged(nameof(DisplayedTransactions));
+                OnPropertyChanged(nameof(DisplayedExpenses));
+
                 // Reload all events
                 await LoadAllEvents();
-
-                // If events are selected, reload transactions
-                if (SelectedEvents.Any())
-                {
-                    var selectedEvents = SelectedEvents.ToList();
-                    await LoadTransactionsForSelectedEvents(selectedEvents);
-                }
             }
             catch (Exception ex)
             {
@@ -86,10 +116,9 @@
             }
             finally
             {
-                IsRefreshing = false; // Stop refreshing state
+                IsRefreshing = false;
             }
         }
-
         private async Task LoadAllEvents()
         {
             try
@@ -113,23 +142,82 @@
             try
             {
                 DisplayedTransactions.Clear();
+                TotalSales = 0;
+                TotalProcessingFees = 0;
 
                 foreach (var vendorEvent in selectedEvents)
                 {
                     var transactions = await _transactionRepository.GetTransactionsByVendorEventAsync(vendorEvent.VendorEventId);
                     foreach (var transaction in transactions)
                     {
+                        transaction.ProcessingFee = (IsFeeEstimateEnabled && transaction.ProcessingFee > 0.00) 
+                            ? transaction.ProcessingFee 
+                            : 0;
                         DisplayedTransactions.Add(transaction);
+                    
+                        TotalSales += transaction.Amount;
+                        TotalProcessingFees += transaction.ProcessingFee;
                     }
                 }
+
+                OnPropertyChanged(nameof(DisplayedTransactions));
+                OnPropertyChanged(nameof(TotalSales));
+                OnPropertyChanged(nameof(TotalProcessingFees));
+                CalculateFinancials();
             }
             catch (Exception ex)
             {
                 await DisplayAlert("Error", $"Failed to load transactions: {ex.Message}", "OK");
             }
         }
+        
+        private async Task LoadExpensesForSelectedEvents(List<VendorEvents> selectedEvents)
+        {
+            try
+            {
+                DisplayedExpenses.Clear();
+                TotalExpenses = 0;
+                TotalTaxDeductibleExpenses = 0;
 
-        private async Task<double> LoadVendorFeesForSelectedEvents(List<VendorEvents> selectedEvents)
+                foreach (var vendorEvent in selectedEvents)
+                {
+                    var expenses = await _expensesRepository.GetExpensesForEventAsync(vendorEvent.VendorEventId);
+                    foreach (var expense in expenses)
+                    {
+                        DisplayedExpenses.Add(expense);
+                        TotalExpenses += expense.Amount;
+
+                        if (expense.IsTaxDeductible)
+                        {
+                            TotalTaxDeductibleExpenses += expense.Amount;
+                        }
+                    }
+                }
+
+                OnPropertyChanged(nameof(DisplayedExpenses));
+                CalculateFinancials(); // 🔥 Recalculate Net Profit
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Failed to load expenses: {ex.Message}", "OK");
+            }
+        }
+        
+        private void CalculateFinancials()
+        {
+            NetProfit = TotalSales -  (TotalExpenses + TotalVendorFees); // Revenue minus expenses
+            TaxableIncome = TotalSales - TotalTaxDeductibleExpenses; // Taxable earnings
+
+            // Ensure UI updates
+            OnPropertyChanged(nameof(NetProfit));
+            OnPropertyChanged(nameof(TaxableIncome));
+            OnPropertyChanged(nameof(TotalSales));
+            OnPropertyChanged(nameof(TotalExpenses));
+            OnPropertyChanged(nameof(TotalProcessingFees));
+            OnPropertyChanged(nameof(TotalTaxDeductibleExpenses));
+        }
+
+        private async Task LoadVendorFeesForSelectedEvents(List<VendorEvents> selectedEvents)
         {
             double totalVenFees = 0;
 
@@ -148,7 +236,7 @@
                 }
             }
 
-            return totalVenFees;
+            TotalVendorFees = totalVenFees;  // 🔥 Update the property
         }
 
         private async Task<double> LoadProcessingFeesForSelectedEvents(List<VendorEvents> selectedEvents)
@@ -170,6 +258,49 @@
             }
 
             return totalProcessingFees;
+        }
+        
+        public bool IsFeeEstimateEnabled
+        {
+            get => _isFeeEstimateEnabled;
+            set
+            {
+                if (_isFeeEstimateEnabled != value)
+                {
+                    _isFeeEstimateEnabled = value;
+                    OnPropertyChanged(nameof(IsFeeEstimateEnabled));
+                    UpdateProcessingFeeVisibility();
+                    RefreshCommandAsync();
+                }
+            }
+        }
+        
+        private void UpdateProcessingFeeVisibility()
+        {
+            if (DisplayedTransactions == null) return;
+
+            foreach (var transaction in DisplayedTransactions)
+            {
+                // If the toggle is ON, keep the original processing fee; otherwise, hide it.
+                transaction.ProcessingFee = IsFeeEstimateEnabled ? transaction.ProcessingFee : 0.00;
+            }
+
+            // Notify the UI that DisplayedTransactions has changed
+            OnPropertyChanged(nameof(DisplayedTransactions));
+        }
+        
+        private void OnFeeEstimateToggleChanged(object sender, ToggledEventArgs e)
+        {
+            bool isFeeEstimateEnabled = e.Value;
+
+            // Loop through transactions and update ProcessingFee
+            foreach (var transaction in DisplayedTransactions)
+            {
+                transaction.ProcessingFee = isFeeEstimateEnabled ? transaction.ProcessingFee : 0.00;
+            }
+
+            // Notify UI that transactions were updated
+            OnPropertyChanged(nameof(DisplayedTransactions));
         }
 
         private void OnToggleDateFilterClicked(object sender, EventArgs e)
@@ -212,23 +343,57 @@
             TransactionListView.IsVisible = isTransactionListVisible;
             ToggleTransactionButton.Text = isTransactionListVisible ? "Transactions for Selected Events ▲" : "Transactions for Selected Events ▼";
         }
+        
+        private void OnToggleExpensesListClicked(object sender, EventArgs e)
+        {
+            ExpensesListView.IsVisible = !ExpensesListView.IsVisible;
+            ToggleExpensesButton.Text = ExpensesListView.IsVisible ? "Expenses for Selected Events ▲" : "Expenses for Selected Events ▼";
+        }
 
         private async void OnEventsSelected(object sender, SelectionChangedEventArgs e)
         {
             try
             {
+                // Clear existing data first
+                DisplayedTransactions.Clear();
+                DisplayedExpenses.Clear();
                 SelectedEvents.Clear();
+            
+                // Reset financial totals
+                TotalSales = 0;
+                TotalExpenses = 0;
+                TotalProcessingFees = 0;
+                TotalVendorFees = 0;
+                TotalTaxDeductibleExpenses = 0;
+                NetProfit = 0;
+                TaxableIncome = 0;
+
+                // Add the newly selected events
                 foreach (var selectedEvent in e.CurrentSelection)
                 {
-                    SelectedEvents.Add(selectedEvent as VendorEvents);
+                    if (selectedEvent is VendorEvents vendorEvent)
+                    {
+                        SelectedEvents.Add(vendorEvent);
+                    }
                 }
 
-                var selectedEventList = SelectedEvents.ToList();
-                await LoadTransactionsForSelectedEvents(selectedEventList);
+                // Only load new data if there are selected events
+                if (SelectedEvents.Any())
+                {
+                    var selectedEventList = SelectedEvents.ToList();
+                    await LoadTransactionsForSelectedEvents(selectedEventList);
+                    await LoadExpensesForSelectedEvents(selectedEventList);
+                    await LoadVendorFeesForSelectedEvents(selectedEventList);
+                }
+
+                // Ensure UI is updated
+                OnPropertyChanged(nameof(DisplayedTransactions));
+                OnPropertyChanged(nameof(DisplayedExpenses));
+                OnPropertyChanged(nameof(SelectedEvents));
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", $"Failed to load transactions: {ex.Message}", "OK");
+                await DisplayAlert("Error", $"Failed to load data: {ex.Message}", "OK");
             }
         }
 
@@ -236,5 +401,55 @@
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        
+        
+        private double _totalSales;
+        private double _totalExpenses;
+        private double _netProfit;
+        private double _totalProcessingFees;
+        private double _totalTaxDeductibleExpenses;
+        private double _taxableIncome;
+        private double _totalVendorFees;
+        public double TotalVendorFees
+        {
+            get => _totalVendorFees;
+            set { _totalVendorFees = value; OnPropertyChanged(nameof(TotalVendorFees)); }
+        }
+        public double TotalSales
+        {
+            get => _totalSales;
+            set { _totalSales = value; OnPropertyChanged(nameof(TotalSales)); }
+        }
+
+        public double TotalExpenses
+        {
+            get => _totalExpenses;
+            set { _totalExpenses = value; OnPropertyChanged(nameof(TotalExpenses)); }
+        }
+
+        public double NetProfit
+        {
+            get => _netProfit;
+            set { _netProfit = value; OnPropertyChanged(nameof(NetProfit)); }
+        }
+
+        public double TotalProcessingFees
+        {
+            get => _totalProcessingFees;
+            set { _totalProcessingFees = value; OnPropertyChanged(nameof(TotalProcessingFees)); }
+        }
+
+        public double TotalTaxDeductibleExpenses
+        {
+            get => _totalTaxDeductibleExpenses;
+            set { _totalTaxDeductibleExpenses = value; OnPropertyChanged(nameof(TotalTaxDeductibleExpenses)); }
+        }
+
+        public double TaxableIncome
+        {
+            get => _taxableIncome;
+            set { _taxableIncome = value; OnPropertyChanged(nameof(TaxableIncome)); }
+        }
     }
+    
 }
