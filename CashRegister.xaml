@@ -2,255 +2,275 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              BackgroundColor="{DynamicResource BackgroundColor}"
-             x:Class="Vendor_App.CashRegister">
-            
-    <RefreshView Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="10"
-            Spacing="15">
+             x:Class="Vendor_App.CashRegister"
+             Title="Cash Register">
+    <Grid>
+        <RefreshView Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
+            <ScrollView>
+                <VerticalStackLayout
+                    Padding="10"
+                    Spacing="15">
 
-            <!-- Date Picker for Transaction Date -->
-            <Frame Padding="5"
-                   CornerRadius="10"
-                   BorderColor="#502BD4"
-                   BackgroundColor="White"
-                   Margin="0,10,0,10">
-                <VerticalStackLayout Spacing="5">
-                    <!-- DatePicker centered horizontally -->
-                    <DatePicker x:Name="TransactionDatePicker"
-                                DateSelected="OnDateSelected"
-                                Format="MM/dd/yyyy"
-                                TextColor="{DynamicResource TextColor}"
-                                HorizontalOptions="Center"
-                                VerticalOptions="Center" />
+                    <!-- Date Picker for Transaction Date -->
+                    <Frame Padding="5"
+                           CornerRadius="10"
+                           BorderColor="#502BD4"
+                           BackgroundColor="White"
+                           Margin="0,10,0,10">
+                        <VerticalStackLayout Spacing="5">
+                            <!-- DatePicker centered horizontally -->
+                            <DatePicker x:Name="TransactionDatePicker"
+                                        DateSelected="OnDateSelected"
+                                        Format="MM/dd/yyyy"
+                                        TextColor="{DynamicResource TextColor}"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center" />
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- Events Picker for selecting a Vendor Event -->
+                    <Frame Padding="5"
+                           CornerRadius="10"
+                           BorderColor="#502BD4"
+                           BackgroundColor="White"
+                           Margin="0,10,0,10">
+                        <VerticalStackLayout Spacing="5"
+                                             VerticalOptions="Center"
+                                             HorizontalOptions="Center">
+                            <Picker x:Name="VendorEventPicker"
+                                    Title="Select Vendor Event"
+                                    ItemsSource="{Binding Events}"
+                                    ItemDisplayBinding="{Binding Name}"
+                                    HorizontalTextAlignment="Center" 
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- HorizontalStackLayout for Switches -->
+                    <HorizontalStackLayout Spacing="20" HorizontalOptions="Center" VerticalOptions="Center">
+                        <!-- Sales/Expenses Switch -->
+                        <VerticalStackLayout Spacing="5">
+                            <Grid WidthRequest="90">  <!-- Set a width to ensure stability -->
+                                <Label x:Name="TransactionLabel" Text="Sales" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                            </Grid>
+                            <Switch x:Name="TransactionExpenseSwitch" Toggled="OnTransactionExpenseToggled" HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+
+                        <!-- Fee Estimate Switch -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Include Fee Estimates" x:Name="FeeEstimateSwitchLabel" TextColor="{DynamicResource TextColor}" HorizontalOptions="Center" />
+                            <Switch x:Name="FeeEstimateSwitch" Toggled="OnFeeEstimateToggled" HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+
+                        <!-- Tax Deductible Switch -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Tax Deductible" x:Name="TaxDeductibleLabel" HorizontalOptions="Center" IsVisible="{Binding Source={x:Reference TransactionExpenseSwitch}, Path=IsToggled}" />
+                            <Switch x:Name="TaxDeductibleSwitch" IsToggled="False" HorizontalOptions="Center" IsVisible="{Binding Source={x:Reference TransactionExpenseSwitch}, Path=IsToggled}" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+
+                    <!-- Label for entering amount -->
+                    <Label Text="Enter Amount: " TextColor="{DynamicResource TextColor}"/>
+                    <Entry x:Name="AmountEntry" Keyboard="Numeric" Placeholder="0.00" />
+
+                    <!-- Tip amount entry and label -->
+                    <Label Text="Enter Tip Amount: " TextColor="{DynamicResource TextColor}" x:Name="TipEntryLabel" IsVisible="True"/>
+                    <Entry x:Name="TipAmountEntry" Keyboard="Numeric" Placeholder="0.00" IsVisible="True"/>
+
+                    <!-- Payment Type Picker -->
+                    <Label Text="Select Payment Type: " x:Name="PaymentTypeLabel" IsVisible="True" />
+                    <Picker x:Name="PaymentTypePicker" IsVisible="True">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:String}">
+                                <x:String>Cash</x:String>
+                                <x:String>Credit Card</x:String>
+                                <x:String>Square</x:String>
+                                <x:String>Venmo</x:String>
+                                <x:String>Cash App</x:String>
+                                <x:String>Apple Pay</x:String>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+
+                    <!-- Expense Label Entry -->
+                    <Label Text="Expense Label:" x:Name="UserExpenseLabel" IsVisible="False"/>
+                    <Entry x:Name="ExpenseLabelEntry" Placeholder="Enter expense label" IsVisible="False" />
+
+                    <!-- List of Transactions -->
+                    <Label Text="Transactions" x:Name="TransactionListLabel" FontSize="Medium" Margin="10,0,0,10" IsVisible="True"/>
+                    <ListView x:Name="TransactionList" ItemsSource="{Binding transactions}" HasUnevenRows="True" IsVisible="True">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <!-- Wrap the transaction in SwipeView -->
+                                    <SwipeView>
+                                        <SwipeView.LeftItems>
+                                            <SwipeItems Mode="Reveal">
+                                                <SwipeItem Text="Update" BackgroundColor="DarkGoldenrod" 
+                                                           Invoked="OnUpdateSwipeInvoked" 
+                                                           CommandParameter="{Binding .}" />
+                                            </SwipeItems>
+                                        </SwipeView.LeftItems>
+                                        <SwipeView.RightItems>
+                                            <SwipeItems Mode="Reveal">
+                                                <SwipeItem Text="Delete" BackgroundColor="DarkRed" 
+                                                           Invoked="OnDeleteSwipeInvoked" 
+                                                           CommandParameter="{Binding .}" />
+                                            </SwipeItems>
+                                        </SwipeView.RightItems>
+
+                                        <!-- Transaction Layout -->
+                                        <Grid Padding="10" ColumnSpacing="5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Time -->
+                                            <Label Text="{Binding Time, StringFormat='{0:h:mm tt}'}"
+                                                   FontSize="Small"
+                                                   Grid.Column="0"
+                                                   VerticalOptions="Center" />
+
+                                            <!-- Payment Type -->
+                                            <Label Text="{Binding paymentType}"
+                                                   FontSize="Small"
+                                                   Grid.Column="1"
+                                                   VerticalOptions="Center" />
+
+                                            <!-- Amount -->
+                                            <Label Text="{Binding Amount, StringFormat='{}{0:C}'}"
+                                                   FontSize="Small"
+                                                   Grid.Column="2"
+                                                   HorizontalOptions="End"
+                                                   VerticalOptions="Center" />
+
+                                            <!-- Tip -->
+                                            <Label Text="Tip: "
+                                                   FontSize="Small"
+                                                   Grid.Column="3"
+                                                   VerticalOptions="Center"/>
+
+                                            <Label Text="{Binding Tip, StringFormat='{}{0:C}'}"
+                                                   FontSize="Small"
+                                                   Grid.Column="4"
+                                                   HorizontalOptions="End"
+                                                   VerticalOptions="Center" />
+
+                                            <!-- Fee -->
+                                            <Label Text="Fee:"
+                                                   FontSize="Small"
+                                                   Grid.Column="5"
+                                                   VerticalOptions="Center"
+                                                   IsVisible="{Binding Source={x:Reference FeeEstimateSwitch}, Path=IsToggled}"/>
+                                            <Label Text="{Binding ProcessingFee, StringFormat='{}{0:C}'}"
+                                                   FontSize="Small"
+                                                   Grid.Column="6"
+                                                   VerticalOptions="Center"
+                                                   IsVisible="{Binding Source={x:Reference FeeEstimateSwitch}, Path=IsToggled}"/>
+                                        </Grid>
+                                    </SwipeView>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <!-- List of Expenses -->
+                    <Label Text="Expenses" x:Name="ExpenseListLabel" FontSize="Medium" Margin="10,0,0,10" IsVisible="False"/>
+                    <ListView x:Name="ExpensesList" ItemsSource="{Binding ExpensesList}" HasUnevenRows="True" IsVisible="False">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <!-- Wrap the transaction in SwipeView -->
+                                    <SwipeView>
+                                        <SwipeView.LeftItems>
+                                            <SwipeItems Mode="Reveal">
+                                                <SwipeItem Text="Update" BackgroundColor="DarkGoldenrod" 
+                                                           Invoked="OnUpdateSwipeInvoked" 
+                                                           CommandParameter="{Binding .}" />
+                                            </SwipeItems>
+                                        </SwipeView.LeftItems>
+                                        <SwipeView.RightItems>
+                                            <SwipeItems Mode="Reveal">
+                                                <SwipeItem Text="Delete" BackgroundColor="DarkRed" 
+                                                           Invoked="OnDeleteSwipeInvoked" 
+                                                           CommandParameter="{Binding .}" />
+                                            </SwipeItems>
+                                        </SwipeView.RightItems>
+
+                                        <!-- Transaction Layout -->
+                                        <Grid Padding="10" ColumnSpacing="5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Time -->
+                                            <Label Text="{Binding Date, StringFormat='{0:MM/dd/yyyy}'}"
+                                                   FontSize="Small"
+                                                   Grid.Column="0"
+                                                   VerticalOptions="Center" />
+
+                                            <!-- Payment Type -->
+                                            <Label Text="{Binding Label}"
+                                                   FontSize="Small"
+                                                   Grid.Column="1"
+                                                   VerticalOptions="Center" />
+
+                                            <!-- Amount -->
+                                            <Label Text="{Binding Amount, StringFormat='{}{0:C}'}"
+                                                   FontSize="Small"
+                                                   Grid.Column="2"
+                                                   HorizontalOptions="End"
+                                                   VerticalOptions="Center" />
+
+                                            <!-- Tax Deductible -->
+                                            <Label Text="Tax Deductible: "
+                                                   FontSize="Small"
+                                                   Grid.Column="3"
+                                                   VerticalOptions="Center"
+                                                   IsVisible="{Binding OnTransactionExpenseToggled}"/>   
+                                            <Label Text="{Binding TaxDeductionDisplayMarks}"
+                                                   FontSize="Small"
+                                                   Grid.Column="4"
+                                                   VerticalOptions="Center"
+                                                   IsVisible="{Binding OnTransactionExpenseToggled}"/>
+                                        </Grid>
+                                    </SwipeView>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <!-- Total Amount Display -->
+                    <Label x:Name="TotalAmountLabel" Text="Total: 0.00" FontSize="Large" HorizontalOptions="Center"/>
+
                 </VerticalStackLayout>
-            </Frame>
-
-            <!-- Events Picker for selecting a Vendor Event -->
-            <Frame Padding="5"
-                   CornerRadius="10"
-                   BorderColor="#502BD4"
-                   BackgroundColor="White"
-                   Margin="0,10,0,10">
-                <VerticalStackLayout Spacing="5"
-                                     VerticalOptions="Center"
-                                     HorizontalOptions="Center">
-                    <Picker x:Name="VendorEventPicker"
-                            Title="Select Vendor Event"
-                            ItemsSource="{Binding Events}"
-                            ItemDisplayBinding="{Binding Name}"
-                            HorizontalTextAlignment="Center" 
-                            HorizontalOptions="Center"
-                            VerticalOptions="Center"/>
-                </VerticalStackLayout>
-            </Frame>
-
-            <!-- Switch for toggling between transactions and expenses -->
-            <Label Text="Sales" x:Name="TransactionLabel" />
-            <Label Text="Expenses" x:Name="ExpenseLabel" IsVisible="False" />
-            <Switch x:Name="TransactionExpenseSwitch" Toggled="OnTransactionExpenseToggled" />
-
-            <!-- Label for entering amount -->
-            <Label Text="Enter Amount: " TextColor="{DynamicResource TextColor}"/>
-            <Entry x:Name="AmountEntry" Keyboard="Numeric" Placeholder="0.00" />
-
-            <!--Tip amount entry and label-->
-            <Label Text="Enter Tip Amount: " TextColor="{DynamicResource TextColor}" x:Name="TipEntryLabel" IsVisible="True"/>
-            <Entry x:Name="TipAmountEntry" Keyboard="Numeric" Placeholder="0.00" IsVisible="True"/>
-
-            <!-- Payment Type Picker -->
-            <Label Text="Select Payment Type: " x:Name="PaymentTypeLabel" IsVisible="True" />
-            <Picker x:Name="PaymentTypePicker" IsVisible="True">
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>Cash</x:String>
-                        <x:String>Credit Card</x:String>
-                        <x:String>Square</x:String>
-                        <x:String>Venmo</x:String>
-                        <x:String>Cash App</x:String>
-                        <x:String>Apple Pay</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
-            </Picker>
-
-            <Label Text=" Expense Label:" x:Name="UserExpenseLabel" IsVisible="False"/>
-            <Entry x:Name="ExpenseLabelEntry" Placeholder="Enter expense label" IsVisible="False" />
-            
-            <!--Tax Deductible expense mark-->
-            <Label Text="Tax Deductible" IsVisible="{Binding Source={x:Reference TransactionExpenseSwitch}, Path=IsToggled}" />
-            <Switch x:Name="TaxDeductibleSwitch" IsToggled="False" IsVisible="{Binding Source={x:Reference TransactionExpenseSwitch}, Path=IsToggled}" />
-
-            <!-- Add to List Button -->
-            <Button Text="Add to List" Clicked="OnAddTransactionClicked"/>
-
-            <!-- fee display Toggle-->
-            <Label Text="Include Fee Estimates" x:Name="FeeEstimateSwitchLabel" TextColor="{DynamicResource TextColor}" IsVisible="True"/>
-            <Switch x:Name="FeeEstimateSwitch" Toggled="OnFeeEstimateToggled" IsVisible="True" IsEnabled="True"/>
-            
-            <!-- List of Transactions -->
-            <Label Text="Transactions" x:Name="TransactionListLabel" FontSize="Medium" Margin="10,0,0,10" IsVisible="True"/>
-    
-            <ListView x:Name="TransactionList" ItemsSource="{Binding transactions}" HasUnevenRows="True" IsVisible="True">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <!-- Wrap the transaction in SwipeView-->
-                            <SwipeView>
-
-                                <SwipeView.LeftItems>
-                                    <SwipeItems Mode="Reveal">
-                                        <SwipeItem Text="Update" BackgroundColor="DarkGoldenrod" 
-                                                   Invoked="OnUpdateSwipeInvoked" 
-                                                   CommandParameter="{Binding .}" />
-                                    </SwipeItems>
-                                </SwipeView.LeftItems>
-                                <SwipeView.RightItems>
-                                    <SwipeItems Mode="Reveal">
-                                        <SwipeItem Text="Delete" BackgroundColor="DarkRed" 
-                                                   Invoked="OnDeleteSwipeInvoked" 
-                                                   CommandParameter="{Binding .}" />
-                                    </SwipeItems>
-                                </SwipeView.RightItems>
-
-                                <!-- Transaction Layout -->
-                                <Grid Padding="10" ColumnSpacing="5">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <!-- Time -->
-                                    <Label Text="{Binding Time, StringFormat='{0:h:mm tt}'}"
-                                           FontSize="Small"
-                                           Grid.Column="0"
-                                           VerticalOptions="Center" />
-
-                                    <!-- Payment Type -->
-                                    <Label Text="{Binding paymentType}"
-                                           FontSize="Small"
-                                           Grid.Column="1"
-                                           VerticalOptions="Center" />
-
-                                    <!-- Amount -->
-                                    <Label Text="{Binding Amount, StringFormat='{}{0:C}'}"
-                                           FontSize="Small"
-                                           Grid.Column="2"
-                                           HorizontalOptions="End"
-                                           VerticalOptions="Center" />
-                                    <!-- Tip -->
-                                    <Label Text="Tip: "
-                                           FontSize="Small"
-                                           Grid.Column="3"
-                                           VerticalOptions="Center"/>
-
-                                    <Label Text="{Binding Tip, StringFormat='{}{0:C}'}"
-                                           FontSize="Small"
-                                           Grid.Column="4"
-                                           HorizontalOptions="End"
-                                           VerticalOptions="Center" />
-
-                                    <!-- Fee -->
-                                    <Label Text=" Fee:"
-                                           FontSize="Small"
-                                           Grid.Column="5"
-                                           VerticalOptions="Center"
-                                           IsVisible="{Binding Source={x:Reference FeeEstimateSwitch}, Path=IsToggled}"/>
-                                    <Label Text="{Binding ProcessingFee, StringFormat='{}{0:C}'}"
-                                           FontSize="Small"
-                                           Grid.Column="6"
-                                           VerticalOptions="Center"
-                                           IsVisible="{Binding Source={x:Reference FeeEstimateSwitch}, Path=IsToggled}"/>
-                                </Grid>
-                            </SwipeView>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            
-            <!-- List of Expenses -->
-            <Label Text="Expenses" x:Name="ExpenseListLabel" FontSize="Medium" Margin="10,0,0,10" IsVisible="False"/>
-            <ListView x:Name="ExpensesList" ItemsSource="{Binding ExpensesList}" HasUnevenRows="True" IsVisible="False">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <!-- Wrap the transaction in SwipeView-->
-                            <SwipeView>
-
-                                <SwipeView.LeftItems>
-                                    <SwipeItems Mode="Reveal">
-                                        <SwipeItem Text="Update" BackgroundColor="DarkGoldenrod" 
-                                                   Invoked="OnUpdateSwipeInvoked" 
-                                                   CommandParameter="{Binding .}" />
-                                    </SwipeItems>
-                                </SwipeView.LeftItems>
-                                <SwipeView.RightItems>
-                                    <SwipeItems Mode="Reveal">
-                                        <SwipeItem Text="Delete" BackgroundColor="DarkRed" 
-                                                   Invoked="OnDeleteSwipeInvoked" 
-                                                   CommandParameter="{Binding .}" />
-                                    </SwipeItems>
-                                </SwipeView.RightItems>
-
-                                <!-- Transaction Layout -->
-                                <Grid Padding="10" ColumnSpacing="5">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <!-- Time -->
-                                    <Label Text="{Binding Date, StringFormat='{0:MM/dd/yyyy}'}"
-                                           FontSize="Small"
-                                           Grid.Column="0"
-                                           VerticalOptions="Center" />
-
-                                    <!-- Payment Type -->
-                                    <Label Text="{Binding Label}"
-                                           FontSize="Small"
-                                           Grid.Column="1"
-                                           VerticalOptions="Center" />
-
-                                    <!-- Amount -->
-                                    <Label Text="{Binding Amount, StringFormat='{}{0:C}'}"
-                                           FontSize="Small"
-                                           Grid.Column="2"
-                                           HorizontalOptions="End"
-                                           VerticalOptions="Center" />
-                                    
-                                    <!-- Tax Deductible -->
-                                    <Label Text="Tax Deductible: "
-                                           FontSize="Small"
-                                           Grid.Column="3"
-                                           VerticalOptions="Center"
-                                           IsVisible="{Binding OnTransactionExpenseToggled}"/>   
-                                    
-                                    <Label Text="{Binding TaxDeductionDisplayMarks}"
-                                           FontSize="Small"
-                                           Grid.Column="4"
-                                           VerticalOptions="Center"
-                                           IsVisible="{Binding OnTransactionExpenseToggled}"/>
-                                </Grid>
-                            </SwipeView>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-
-            <!-- Total Amount Display -->
-            <Label x:Name="TotalAmountLabel" Text="Total: 0.00" FontSize="Large" HorizontalOptions="Center"/>
-
-        </VerticalStackLayout>
-    </ScrollView>
+            </ScrollView>
         </RefreshView>
+
+        <!-- Add to list button -->
+        <Button 
+            Text="+"
+            FontAttributes="Bold"
+            FontSize="24"
+            TextColor="White"
+            BackgroundColor="#6750A4"
+            CornerRadius="25"
+            HeightRequest="50"
+            WidthRequest="50"
+            HorizontalOptions="Center"
+            VerticalOptions="End"
+            Margin="0,0,0,30"
+            Clicked="OnAddTransactionClicked"/>
+    </Grid>
 </ContentPage>
-
-

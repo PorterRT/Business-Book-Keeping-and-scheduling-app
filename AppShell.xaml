@@ -17,7 +17,7 @@
             <ShellContent ContentTemplate="{DataTemplate local:CashRegister}"
                           Route="CashRegister" />
         </Tab>
-        <Tab Title="Earnings/Expenses">
+        <Tab Title="Summary">
             <ShellContent ContentTemplate="{DataTemplate local:FinanceBreakdown}"
                           Route="FinanceBreakdown" />
         </Tab>

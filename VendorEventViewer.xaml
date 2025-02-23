@@ -2,80 +2,91 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:Vendor_App"
              x:Class="Vendor_App.VendorEventViewer"
-             Title="View Vendor Events">
-    <StackLayout Padding="10">
-        <SearchBar
-            Placeholder="Search Events"
-            BackgroundColor="White"
-            TextColor="Black"
-            TextChanged="OnSearchTextChanged"
-            x:Name="EventSearch"
-            />
-        <!-- Date Filter Toggle Button -->
-        <Button x:Name="ToggleDateFilterButton"
-                ImageSource="datefiltericon.png"
-                Clicked="OnToggleDateFilterClicked"
-                BackgroundColor="Transparent"
-                HorizontalOptions="End" 
-                />
+             Title="Events">
+    <Grid>
+        <!-- Main Content -->
+        <StackLayout Padding="10">
+            <SearchBar
+                Placeholder="Search Events"
+                BackgroundColor="White"
+                TextColor="Black"
+                TextChanged="OnSearchTextChanged"
+                x:Name="EventSearch" />
 
-        <!-- Collapsible Date Filter Section -->
-        <VerticalStackLayout x:Name="DateFilterSection" IsVisible="False" Spacing="5">
-            <Label Text="Filter by Date:" VerticalOptions="Center" HorizontalOptions="Center"/>
-            <HorizontalStackLayout HorizontalOptions="Center">
-                <DatePicker x:Name="StartDatePicker" Date="{Binding StartDate}" HorizontalOptions="Center"/>
-                <Label Text="to" VerticalOptions="Center" HorizontalOptions="Center"/>
-                <DatePicker x:Name="EndDatePicker" Date="{Binding EndDate}" HorizontalOptions="End"/>
-                <Button Text="Apply" Clicked="OnFilterClicked" Padding="15" />
-                
-                <Button Text="Reset" Clicked="OnResetDateFilterClicked" />
+            <!-- Date Filter Toggle Button -->
+            <Button x:Name="ToggleDateFilterButton"
+                    ImageSource="datefiltericon.png"
+                    Clicked="OnToggleDateFilterClicked"
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="End" />
 
-                
-            </HorizontalStackLayout>
-        </VerticalStackLayout>
-        <RefreshView Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
-        <ListView x:Name="EventsListView"
-                  ItemsSource="{Binding Events}"
-                  ItemTapped="OnEventTapped">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <SwipeView>
-                            <SwipeView.LeftItems>
-                                <SwipeItems>
-                                    <SwipeItem Text="Update"
-                                               BackgroundColor="DarkGoldenrod" 
-                                               Command="{Binding Source={RelativeSource AncestorType={x:Type local:VendorEventViewer}}, Path= UpdateCommand}"
-                                               CommandParameter="{Binding .}"/>
-                                </SwipeItems>
-                            </SwipeView.LeftItems>
-                            
-                            <SwipeView.RightItems>
-                                <SwipeItems>
-                                    <SwipeItem Text="Delete"
-                                               IconImageSource="delete.png"
-                                               BackgroundColor="DarkRed"
-                                               Command="{Binding Source={RelativeSource AncestorType={x:Type local:VendorEventViewer}}, Path=DeleteCommand}"
-                                               CommandParameter="{Binding .}"/>
-                                </SwipeItems>
-                            </SwipeView.RightItems>
-                            <Grid Padding="1">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Label Text="{Binding Name}" FontAttributes="Bold" />
-                                <Label Grid.Row="1" Text="{Binding EventDate, StringFormat='Event on {0:MM/dd/yyyy}'}" FontSize="Small" />
-                            </Grid>
-                        </SwipeView>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+            <!-- Collapsible Date Filter Section -->
+            <VerticalStackLayout x:Name="DateFilterSection" IsVisible="False" Spacing="5">
+                <Label Text="Filter by Date:" VerticalOptions="Center" HorizontalOptions="Center"/>
+                <HorizontalStackLayout HorizontalOptions="Center">
+                    <DatePicker x:Name="StartDatePicker" Date="{Binding StartDate}" HorizontalOptions="Center"/>
+                    <Label Text="to" VerticalOptions="Center" HorizontalOptions="Center"/>
+                    <DatePicker x:Name="EndDatePicker" Date="{Binding EndDate}" HorizontalOptions="End"/>
+                    <Button Text="Apply" Clicked="OnFilterClicked" Padding="15" />
+                    <Button Text="Reset" Clicked="OnResetDateFilterClicked" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+
+            <!-- List of Events -->
+            <RefreshView Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
+                <ListView x:Name="EventsListView"
+                          ItemsSource="{Binding Events}"
+                          ItemTapped="OnEventTapped">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <SwipeView>
+                                    <SwipeView.LeftItems>
+                                        <SwipeItems>
+                                            <SwipeItem Text="Update"
+                                                       BackgroundColor="DarkGoldenrod" 
+                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type local:VendorEventViewer}}, Path=UpdateCommand}"
+                                                       CommandParameter="{Binding .}"/>
+                                        </SwipeItems>
+                                    </SwipeView.LeftItems>
+                                    <SwipeView.RightItems>
+                                        <SwipeItems>
+                                            <SwipeItem Text="Delete"
+                                                       IconImageSource="delete.png"
+                                                       BackgroundColor="DarkRed"
+                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type local:VendorEventViewer}}, Path=DeleteCommand}"
+                                                       CommandParameter="{Binding .}"/>
+                                        </SwipeItems>
+                                    </SwipeView.RightItems>
+                                    <Grid Padding="1">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                        <Label Grid.Row="1" Text="{Binding EventDate, StringFormat='Event on {0:MM/dd/yyyy}'}" FontSize="Small" />
+                                    </Grid>
+                                </SwipeView>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </RefreshView>
-               <!-- Button to navigate to Vendor Event Manager -->
-            <Button Text="Add Event"
-                    Clicked="OnNavigateToVendorEventManagerClicked"/>
-    </StackLayout>
-    
+        </StackLayout>
+
+        <!-- add event Button -->
+        <Button 
+            Text="+"
+            FontAttributes="Bold"
+            FontSize="24"
+            TextColor="White"
+            BackgroundColor="#6750A4"
+            CornerRadius="25"
+            HeightRequest="50"
+            WidthRequest="50"
+            HorizontalOptions="Center"
+            VerticalOptions="End"
+            Margin="0,0,0,30"
+            Clicked="OnNavigateToVendorEventManagerClicked"/>
+    </Grid>
 </ContentPage>

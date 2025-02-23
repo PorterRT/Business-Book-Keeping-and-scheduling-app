@@ -566,10 +566,9 @@
         private void OnTransactionExpenseToggled(object sender, ToggledEventArgs e)
         {
             bool isExpense = e.Value;
-            TransactionLabel.IsVisible = !isExpense;
+            TransactionLabel.Text = e.Value ? "Expenses" : "Sales";
             PaymentTypeLabel.IsVisible = !isExpense;
             PaymentTypePicker.IsVisible = !isExpense;
-            ExpenseLabel.IsVisible = isExpense;
             UserExpenseLabel.IsVisible = isExpense;
             ExpenseLabelEntry.IsVisible = isExpense;
             ExpenseListLabel.IsVisible = isExpense;

@@ -105,8 +105,20 @@
 
 
                 <!--Save Button-->
-                <Button Text="Save" Clicked="OnAddVendorEventClicked" CornerRadius="10" 
-                        Margin="0,10,0,0" BackgroundColor="MediumPurple" TextColor="White"/>
+                <Button 
+                    Text="+"
+                    FontAttributes="Bold"
+                    FontSize="24"
+                    TextColor="White"
+                    BackgroundColor="#6750A4"
+                    CornerRadius="25"
+                    HeightRequest="50"
+                    WidthRequest="50"
+                    HorizontalOptions="Center"
+                    VerticalOptions="End"
+                    Margin="0,0,0,30"
+                 Clicked="OnAddVendorEventClicked" />
+                     
                 
             </VerticalStackLayout>
             
