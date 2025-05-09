@@ -61,7 +61,8 @@
 
   <ItemGroup>
     <MauiImage Include="Resources\Icons\datefiltericon.png" />
-    <MauiImage Include="Resources\Icons\eventsicon.png" />
+    <MauiImage Include="Resources\Icons\eventi.svg" BaseSize="40,62" />
+    <MauiImage Include="Resources\Icons\cashregister.svg" BaseSize="42,88"/>
   </ItemGroup>
 
   <ItemGroup>
