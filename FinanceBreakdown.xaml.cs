@@ -10,6 +10,7 @@
     using Microsoft.Maui.Controls;
     using System.Windows.Input;
     using System.ComponentModel;
+    using Utillites;
 
     
     public partial class FinanceBreakdown : ContentPage, INotifyPropertyChanged
@@ -88,6 +89,7 @@
             
                 // Reset financial totals
                 TotalSales = 0;
+                TotalTips = 0;
                 TotalExpenses = 0;
                 TotalProcessingFees = 0;
                 TotalVendorFees = 0;
@@ -143,6 +145,7 @@
             {
                 DisplayedTransactions.Clear();
                 TotalSales = 0;
+                TotalTips = 0;
                 TotalProcessingFees = 0;
 
                 foreach (var vendorEvent in selectedEvents)
@@ -156,6 +159,7 @@
                         DisplayedTransactions.Add(transaction);
                     
                         TotalSales += transaction.Amount;
+                        TotalTips += transaction.Tip;
                         TotalProcessingFees += transaction.ProcessingFee;
                     }
                 }
@@ -184,6 +188,7 @@
                     var expenses = await _expensesRepository.GetExpensesForEventAsync(vendorEvent.VendorEventId);
                     foreach (var expense in expenses)
                     {
+                        
                         DisplayedExpenses.Add(expense);
                         TotalExpenses += expense.Amount;
 
@@ -205,8 +210,8 @@
         
         private void CalculateFinancials()
         {
-            NetProfit = TotalSales -  (TotalExpenses + TotalVendorFees); // Revenue minus expenses
-            TaxableIncome = TotalSales - TotalTaxDeductibleExpenses; // Taxable earnings
+            NetProfit = (TotalSales + TotalTips) - (TotalExpenses + TotalVendorFees + TotalProcessingFees); // Revenue minus expenses
+            TaxableIncome = (TotalSales + TotalTips) - TotalTaxDeductibleExpenses; // Taxable earnings
 
             // Ensure UI updates
             OnPropertyChanged(nameof(NetProfit));
@@ -236,7 +241,7 @@
                 }
             }
 
-            TotalVendorFees = totalVenFees;  // 🔥 Update the property
+            TotalVendorFees = totalVenFees;  //Update the property
         }
 
         private async Task<double> LoadProcessingFeesForSelectedEvents(List<VendorEvents> selectedEvents)
@@ -390,6 +395,30 @@
             }
         }
 
+        private async void OnExportClicked(object sender, EventArgs e)
+        {
+            if (SelectedEvents == null || !SelectedEvents.Any())
+            {
+                await DisplayAlert("No Events Selected", "Please select one or more events to export data.", "OK");
+                return; // Stop the export process
+            }
+            // After the change, using the class properties
+            await Navigation.PushAsync(new CSVExport(
+                Events.ToList(), // Convert ObservableCollection to List
+                DisplayedTransactions.ToList(), // Convert ObservableCollection to List
+                DisplayedExpenses.ToList(), // Convert ObservableCollection to List
+                TotalSales,
+                TotalTips,
+                TotalExpenses,
+                NetProfit,
+                TotalProcessingFees,
+                TotalTaxDeductibleExpenses,
+                TaxableIncome,
+                TotalVendorFees
+            ));
+        }
+
+
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -397,6 +426,7 @@
         
         
         private double _totalSales;
+        private double _totalTips;
         private double _totalExpenses;
         private double _netProfit;
         private double _totalProcessingFees;
@@ -413,7 +443,11 @@
             get => _totalSales;
             set { _totalSales = value; OnPropertyChanged(nameof(TotalSales)); }
         }
-
+        public double TotalTips
+        {
+            get => _totalTips;
+            set { _totalTips = value; OnPropertyChanged(nameof(TotalTips)); }
+        }
         public double TotalExpenses
         {
             get => _totalExpenses;

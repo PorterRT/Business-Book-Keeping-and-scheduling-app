@@ -316,7 +316,7 @@ namespace Vendor_App
 
             else
             {
-                //string FeePaidMsg = "\u274C";
+               
                 string FeePaidMsg = "X";
                 return FeePaidMsg;
             }
@@ -331,7 +331,7 @@ namespace Vendor_App
             }
             else
             {
-                //string RecurringMsg = "\u274C";
+                
                 string RecurringMsg = "X";
                 return RecurringMsg;
             }

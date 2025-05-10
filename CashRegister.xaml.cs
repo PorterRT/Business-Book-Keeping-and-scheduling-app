@@ -76,14 +76,14 @@
         private async Task RefreshCommandAsync()
         {
             IsRefreshing = true;
-
             try
             {
+                 
                 // Refresh the Picker's data (Vendor Events)
-                await LoadVendorEventsByDate(DateTime.Today);
+                await LoadVendorEventsByDate(TransactionDatePicker.Date);
 
                 // Refresh Transactions and Expenses for the selected event, if any
-                if (VendorEventPicker.SelectedItem is VendorEvents selectedEvent)
+                 if ((VendorEventPicker.SelectedItem is VendorEvents selectedEvent))
                 {
                      await LoadTransactionsForVendorEvent(selectedEvent);
                      await LoadExpensesForVendorEvent(selectedEvent);
@@ -243,6 +243,7 @@
         {
             _isFeeToggled = !_isFeeToggled;
             FeeEstimateSwitch.Source = _isFeeToggled ? "colorcredit.png" : "greycredit.png";
+            FeeInTransactionVisible.IsToggled = FeeEstimateSwitch.Source.ToString().Contains("colorcredit.png");
             // Update the total amount when the switch is toggled
             var selectedEvent = (VendorEvents)VendorEventPicker.SelectedItem;
             if (selectedEvent != null)

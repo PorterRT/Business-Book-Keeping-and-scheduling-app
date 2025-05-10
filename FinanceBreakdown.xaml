@@ -80,7 +80,8 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
 
                                 <Label Text="{Binding Date, StringFormat='{0:MM/dd/yyyy}'}"
                                        FontSize="Small"
@@ -92,22 +93,26 @@
                                        Grid.Column="1"
                                        HorizontalOptions="End"
                                        VerticalOptions="Center" />
-
-                                <Label Text="{Binding PaymentType}"
+                                <Label Text="{Binding Tip, StringFormat='{}{0:C}'}"
+                                        FontSize="Small"
+                                        Grid.Column="2"
+                                        HorizontalOptions="End"
+                                        VerticalOptions="Center" /> 
+                                    <Label Text="{Binding PaymentType}"
                                        FontSize="Small"
-                                       Grid.Column="2"
+                                       Grid.Column="3"
                                        VerticalOptions="Center" />
 
                                 <!-- Processing Fee Label (Hidden when Toggle is OFF or Fee is 0.00) -->
                                 <Label Text="Processing Fee:"
                                        FontSize="Small"
-                                       Grid.Column="3"
+                                       Grid.Column="4"
                                        VerticalOptions="Center"
                                        IsVisible="{Binding Source={x:Reference FeeEstimateSwitch}, Path=IsToggled}" />
 
                                 <Label Text="{Binding ProcessingFee, StringFormat='{0:C}'}"
                                        FontSize="Small"
-                                       Grid.Column="4"
+                                       Grid.Column="5"
                                        VerticalOptions="Center"
                                        IsVisible="{Binding Source={x:Reference FeeEstimateSwitch}, Path=IsToggled}" />
                             </Grid>
@@ -154,11 +159,23 @@
                                        VerticalOptions="Center" />
 
                                 <!-- Always show '✔' or '✖' instead of hiding it -->
-                                <Label Text="{Binding IsTaxDeductible}"
-                                       FontSize="Small"
+                                    <Label FontSize="Small"
                                        Grid.Column="3"
-                                       VerticalOptions="Center" />
-                            </Grid>
+                                       VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" 
+                                        Binding="{Binding IsTaxDeductible}" 
+                                        Value="True">
+                                                <Setter Property="Text" Value=" &#x2713;"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" 
+                                         Binding="{Binding IsTaxDeductible}" 
+                                         Value="False">
+                                                <Setter Property="Text" Value="X" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -175,7 +192,8 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -194,38 +212,49 @@
             <Label Text="{Binding TotalSales, StringFormat='${0:N2}'}"
                    Grid.Row="1" Grid.Column="1" FontAttributes="Bold" FontSize="Small" HorizontalTextAlignment="End" />
 
-            <!-- Total Expenses -->
-            <Label Text="Total Expenses:" Grid.Row="2" Grid.Column="0" FontSize="Small" />
-            <Label Text="{Binding TotalExpenses, StringFormat='${0:N2}'}"
+            <Label Text="Total Tips:" Grid.Row="2" Grid.Column="0" FontSize="Small"/>
+                   <Label Text="{Binding TotalTips, StringFormat='${0:N2}'}"
                    Grid.Row="2" Grid.Column="1" FontAttributes="Bold" FontSize="Small" HorizontalTextAlignment="End" />
 
-            <!-- Net Profit -->
-            <Label Text="Net Profit:" Grid.Row="3" Grid.Column="0" FontSize="Small" />
-            <Label Text="{Binding NetProfit, StringFormat='${0:N2}'}"
+                        <!-- Total Expenses -->
+            <Label Text="Total Expenses:" Grid.Row="3" Grid.Column="0" FontSize="Small" />
+            <Label Text="{Binding TotalExpenses, StringFormat='${0:N2}'}"
                    Grid.Row="3" Grid.Column="1" FontAttributes="Bold" FontSize="Small" HorizontalTextAlignment="End" />
 
-            <!-- Vendor Event Fees -->
-            <Label Text="Vendor Event Fees:" Grid.Row="4" Grid.Column="0" FontSize="Small" />
-            <Label Text="{Binding TotalVendorFees, StringFormat='${0:N2}'}"
+            <!-- Net Profit -->
+            <Label Text="Net Profit:" Grid.Row="4" Grid.Column="0" FontSize="Small" />
+            <Label Text="{Binding NetProfit, StringFormat='${0:N2}'}"
                    Grid.Row="4" Grid.Column="1" FontAttributes="Bold" FontSize="Small" HorizontalTextAlignment="End" />
 
-            <!-- Processing Fees -->
-            <Label Text="Processing Fees:" Grid.Row="5" Grid.Column="0" FontSize="Small" />
-            <Label Text="{Binding TotalProcessingFees, StringFormat='${0:N2}'}"
+            <!-- Vendor Event Fees -->
+            <Label Text="Vendor Event Fees:" Grid.Row="5" Grid.Column="0" FontSize="Small" />
+            <Label Text="{Binding TotalVendorFees, StringFormat='${0:N2}'}"
                    Grid.Row="5" Grid.Column="1" FontAttributes="Bold" FontSize="Small" HorizontalTextAlignment="End" />
 
-            <!-- Tax Deductible Expenses -->
-            <Label Text="Tax Deductible Expenses:" Grid.Row="6" Grid.Column="0" FontSize="Small" />
-            <Label Text="{Binding TotalTaxDeductibleExpenses, StringFormat='${0:N2}'}"
+            <!-- Processing Fees -->
+            <Label Text="Processing Fees:" Grid.Row="6" Grid.Column="0" FontSize="Small" />
+            <Label Text="{Binding TotalProcessingFees, StringFormat='${0:N2}'}"
                    Grid.Row="6" Grid.Column="1" FontAttributes="Bold" FontSize="Small" HorizontalTextAlignment="End" />
 
-            <!-- Taxable Income -->
-            <Label Text="Taxable Income:" Grid.Row="7" Grid.Column="0" FontSize="Small" />
-            <Label Text="{Binding TaxableIncome, StringFormat='${0:N2}'}"
+            <!-- Tax Deductible Expenses -->
+            <Label Text="Tax Deductible Expenses:" Grid.Row="7" Grid.Column="0" FontSize="Small" />
+            <Label Text="{Binding TotalTaxDeductibleExpenses, StringFormat='${0:N2}'}"
                    Grid.Row="7" Grid.Column="1" FontAttributes="Bold" FontSize="Small" HorizontalTextAlignment="End" />
+
+            <!-- Taxable Income -->
+            <Label Text="Taxable Income:" Grid.Row="8" Grid.Column="0" FontSize="Small" />
+            <Label Text="{Binding TaxableIncome, StringFormat='${0:N2}'}"
+                   Grid.Row="8" Grid.Column="1" FontAttributes="Bold" FontSize="Small" HorizontalTextAlignment="End" />
         </Grid>
     </Frame>
-    </VerticalStackLayout>
+                <Button 
+    Text="Export CSV"
+    Clicked="OnExportClicked"
+    BackgroundColor="DarkGreen"
+    TextColor="White"
+    Margin="10"/>
+
+            </VerticalStackLayout>
     </ScrollView>
         </RefreshView>
 </ContentPage>

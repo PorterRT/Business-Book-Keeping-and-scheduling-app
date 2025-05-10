@@ -8,7 +8,7 @@
         <RefreshView Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
             <ScrollView>
                 <VerticalStackLayout
-                    Padding="10"
+                    Padding="35"
                     Spacing="15">
 
                     <!-- Date Picker for Transaction Date -->
@@ -80,6 +80,7 @@
                                          WidthRequest="60"
                                          HeightRequest="60"
                                             Source="greycredit.png" />
+                            <Switch x:Name="FeeInTransactionVisible" IsToggled="False" HorizontalOptions="Center" IsVisible="False" />
                         </VerticalStackLayout>
 
                         <!-- Tax Deductible Switch -->
@@ -187,12 +188,12 @@
                                                    FontSize="Small"
                                                    Grid.Column="5"
                                                    VerticalOptions="Center"
-                                                   IsVisible="{Binding Source={x:Reference FeeEstimateSwitch}, Path=IsToggled}"/>
+                                                   IsVisible="{Binding IsToggled, Source={x:Reference FeeInTransactionVisible}}"/>
                                             <Label Text="{Binding ProcessingFee, StringFormat='{}{0:C}'}"
                                                    FontSize="Small"
                                                    Grid.Column="6"
                                                    VerticalOptions="Center"
-                                                   IsVisible="{Binding Source={x:Reference FeeEstimateSwitch}, Path=IsToggled}"/>
+                                                   IsVisible="{Binding IsToggled, Source={x:Reference FeeInTransactionVisible}}"/>
                                         </Grid>
                                     </SwipeView>
                                 </ViewCell>
@@ -271,9 +272,10 @@
                     </ListView>
 
                     <!-- Total Amount Display -->
-                    <Label x:Name="TotalAmountLabel" Text="Total: 0.00" FontSize="Large" HorizontalOptions="Center"/>
+                    <Label x:Name="TotalAmountLabel" Text="Total: 0.00" FontSize="Large" HorizontalOptions="Center" Padding="70"/>
 
                 </VerticalStackLayout>
+                
             </ScrollView>
         </RefreshView>
 
@@ -291,5 +293,6 @@
             VerticalOptions="End"
             Margin="0,0,0,30"
             Clicked="OnAddTransactionClicked"/>
+        
     </Grid>
 </ContentPage>
