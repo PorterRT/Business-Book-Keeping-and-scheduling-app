@@ -47,10 +47,13 @@
                         </VerticalStackLayout>
                     </Frame>
 
-                    <!-- HorizontalStackLayout for Switches -->
-                    <HorizontalStackLayout Spacing="20" HorizontalOptions="Center" VerticalOptions="Center">
+                    <!-- Grid for buttons and toggles -->
+                    <Grid ColumnDefinitions="Auto,Auto,Auto" 
+                      HorizontalOptions="Center"
+                      ColumnSpacing="20"
+                      RowDefinitions="Auto,Auto">   
                         <!-- Sales/Expenses Switch -->
-                        <VerticalStackLayout Spacing="5">
+                        <VerticalStackLayout Grid.Column="0" Spacing="5">
                             <Grid WidthRequest="90">  <!-- Set a width to ensure stability -->
                                 <Label x:Name="TransactionLabel" Text="Sales" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
                             </Grid>
@@ -65,7 +68,7 @@
                         </VerticalStackLayout>
 
                         <!-- Fee Estimate Switch -->
-                        <VerticalStackLayout Spacing="5">
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
                           
                             <Grid WidthRequest="90">
                                 <Label Text="Include Fee Estimates" x:Name="FeeEstimateSwitchLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
@@ -80,11 +83,11 @@
                         </VerticalStackLayout>
 
                         <!-- Tax Deductible Switch -->
-                        <VerticalStackLayout Spacing="5">
-                            <Label Text="Tax Deductible" x:Name="TaxDeductibleLabel" HorizontalOptions="Center" IsVisible="{Binding Source={x:Reference TransactionExpenseSwitch}}" />
-                            <Switch x:Name="TaxDeductibleSwitch" IsToggled="False" HorizontalOptions="Center" IsVisible="{Binding Source={x:Reference TransactionExpenseSwitch}}" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                            <Label Text="Tax Deductible" x:Name="TaxDeductibleLabel" HorizontalOptions="Center" IsVisible="False"/>
+                            <Switch x:Name="TaxDeductibleSwitch" IsToggled="False" HorizontalOptions="Center" IsVisible="False" />
                         </VerticalStackLayout>
-                    </HorizontalStackLayout>
+                    </Grid>
 
                     <!-- Label for entering amount -->
                     <Label Text="Enter Amount: " TextColor="{DynamicResource TextColor}"/>

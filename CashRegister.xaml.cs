@@ -36,6 +36,7 @@
         private double Expenses = 0;
         private bool _isExpenseToggled = false;
         private bool _isFeeToggled = false;
+
         public CashRegister()
         {
             InitializeComponent();
@@ -61,9 +62,12 @@
             // Set the default date to today
             TransactionDatePicker.Date = DateTime.Today;
 
+            //default for tax label and switch
+            TaxDeductibleLabel.IsVisible = false;
+            TaxDeductibleSwitch.IsVisible = false;
 
             // Set the default Tip amount to 0.00
-           // TipAmountEntry.Text = "0.00";
+            // TipAmountEntry.Text = "0.00";
 
             // Load the events and transactions
             LoadVendorEventsByDate(TransactionDatePicker.Date);
@@ -568,9 +572,8 @@
 
         private void OnTransactionExpenseToggled(object sender, EventArgs e)
         {
-
             _isExpenseToggled = !_isExpenseToggled; // Toggle the state
-           // _isFeeToggled = !_isFeeToggled; // Toggle the state
+         
 
 
             TransactionExpenseSwitch.Source = _isExpenseToggled ? "minuscash.png" : "addcash.png";
@@ -583,7 +586,8 @@
                     ExpensesList.IsVisible = _isExpenseToggled;
                     TransactionList.IsVisible = !_isExpenseToggled;
                     TransactionListLabel.IsVisible = !_isExpenseToggled;
-             
+                    TaxDeductibleLabel.IsVisible = _isExpenseToggled;
+                    TaxDeductibleSwitch.IsVisible = _isExpenseToggled;
                     FeeEstimateSwitch.IsVisible = !_isExpenseToggled;
                     FeeEstimateSwitchLabel.IsVisible = !_isExpenseToggled;
                     TipEntryLabel.IsVisible = !_isExpenseToggled;
