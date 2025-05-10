@@ -6,7 +6,7 @@
     using System.Xml.Linq;
     using Vendor_App.Models;
     using Vendor_App.Repositories;
-
+    using Utillites;
     public partial class CashRegister : ContentPage
     {
         private ITransactionRepository _transactionRepository;
@@ -34,7 +34,8 @@
         private double total = 0;
         private double processingFee = 0;
         private double Expenses = 0;
-     
+        private bool _isExpenseToggled = false;
+        private bool _isFeeToggled = false;
         public CashRegister()
         {
             InitializeComponent();
@@ -59,6 +60,7 @@
 
             // Set the default date to today
             TransactionDatePicker.Date = DateTime.Today;
+
 
             // Set the default Tip amount to 0.00
            // TipAmountEntry.Text = "0.00";
@@ -160,7 +162,7 @@
 
         private async Task UpdateTotalEventAmount(VendorEvents vendorEvent)
         {
-            if (TransactionExpenseSwitch.IsToggled)
+            if (TransactionExpenseSwitch.Source.ToString().Contains("minuscash.png"))
             {
                 var expenses = await _expensesRepository.GetExpensesForEventAsync(vendorEvent.VendorEventId);
                 Expenses = expenses.Sum(e => e.Amount);
@@ -170,7 +172,7 @@
             {
                 var transactions = await _transactionRepository.GetTransactionsByVendorEventAsync(vendorEvent.VendorEventId);
                 total = transactions.Sum(t => t.Amount + t.Tip);
-                if (FeeEstimateSwitch.IsToggled)
+                if (FeeEstimateSwitch.Source.ToString().Contains("greycredit.png"))
                 {
                     total -= transactions.Sum(t => t.ProcessingFee);
                 }
@@ -233,9 +235,10 @@
             
             }
 
-        private void OnFeeEstimateToggled(object sender, ToggledEventArgs e)
+        private void OnFeeEstimateToggled(object sender, EventArgs e)
         {
-            bool IsFeeToggled = e.Value;
+            _isFeeToggled = !_isFeeToggled;
+            FeeEstimateSwitch.Source = _isFeeToggled ? "colorcredit.png" : "greycredit.png";
             // Update the total amount when the switch is toggled
             var selectedEvent = (VendorEvents)VendorEventPicker.SelectedItem;
             if (selectedEvent != null)
@@ -254,7 +257,7 @@
         // Event handler for the button click to add a transaction which uploads the transaction to the database
         private async void OnAddTransactionClicked(object sender, EventArgs e)
         {
-            if (!TransactionExpenseSwitch.IsToggled)
+            if (!(TransactionExpenseSwitch.Source.ToString().Contains("minuscash.png")))
             {
 
                 if (double.TryParse(AmountEntry.Text, out double amount))
@@ -326,7 +329,7 @@
                     await DisplayAlert("Invalid Amount", "Please enter a valid amount", "OK");
                 }
             }
-            else if (TransactionExpenseSwitch.IsToggled)
+            else if (TransactionExpenseSwitch.Source.ToString().Contains("minuscash.png"))
             {
                 if (double.TryParse(AmountEntry.Text, out double amount))
                 {
@@ -385,7 +388,7 @@
         // update transaction
         private async void OnUpdateSwipeInvoked(object sender, EventArgs e)
         {
-            if (TransactionExpenseSwitch.IsToggled)
+            if (TransactionExpenseSwitch.Source.ToString().Contains("minuscash.png"))
             {
                 var swipeItem = (SwipeItem)sender;
                 var expense = (Expenses)swipeItem.CommandParameter;
@@ -525,7 +528,7 @@
         // Delete a transaction
         private async void OnDeleteSwipeInvoked(object sender, EventArgs e)
         {
-            if (TransactionExpenseSwitch.IsToggled)
+            if (TransactionExpenseSwitch.Source.ToString().Contains("minuscash.png"))
             {
                 var DeleteExpense = (SwipeItem)sender;
                 var expense = (Expenses)DeleteExpense.CommandParameter;
@@ -563,32 +566,39 @@
             await LoadVendorEventsByDate(e.NewDate);
         }
 
-        private void OnTransactionExpenseToggled(object sender, ToggledEventArgs e)
+        private void OnTransactionExpenseToggled(object sender, EventArgs e)
         {
-            bool isExpense = e.Value;
-            TransactionLabel.Text = e.Value ? "Expenses" : "Sales";
-            PaymentTypeLabel.IsVisible = !isExpense;
-            PaymentTypePicker.IsVisible = !isExpense;
-            UserExpenseLabel.IsVisible = isExpense;
-            ExpenseLabelEntry.IsVisible = isExpense;
-            ExpenseListLabel.IsVisible = isExpense;
-            ExpensesList.IsVisible = isExpense; 
-            TransactionList.IsVisible = !isExpense;
-            TransactionListLabel.IsVisible = !isExpense;
-            FeeEstimateSwitch.IsVisible = !isExpense;
-            FeeEstimateSwitchLabel.IsVisible = !isExpense;
-            TipEntryLabel.IsVisible = !isExpense;
-            TipAmountEntry.IsVisible = !isExpense;
+
+            _isExpenseToggled = !_isExpenseToggled; // Toggle the state
+           // _isFeeToggled = !_isFeeToggled; // Toggle the state
 
 
-            if (isExpense)
-            {
-                LoadExpensesForVendorEvent((VendorEvents)VendorEventPicker.SelectedItem);
-            }
-            else
-            {
-                LoadTransactionsForVendorEvent((VendorEvents)VendorEventPicker.SelectedItem);
-            }
+            TransactionExpenseSwitch.Source = _isExpenseToggled ? "minuscash.png" : "addcash.png";
+                    TransactionLabel.Text = _isExpenseToggled ? "Expenses" : "Sales";
+                    PaymentTypeLabel.IsVisible = !_isExpenseToggled;
+                    PaymentTypePicker.IsVisible = !_isExpenseToggled;
+                    UserExpenseLabel.IsVisible = _isExpenseToggled;
+                    ExpenseLabelEntry.IsVisible = _isExpenseToggled;
+                    ExpenseListLabel.IsVisible = _isExpenseToggled;
+                    ExpensesList.IsVisible = _isExpenseToggled;
+                    TransactionList.IsVisible = !_isExpenseToggled;
+                    TransactionListLabel.IsVisible = !_isExpenseToggled;
+             
+                    FeeEstimateSwitch.IsVisible = !_isExpenseToggled;
+                    FeeEstimateSwitchLabel.IsVisible = !_isExpenseToggled;
+                    TipEntryLabel.IsVisible = !_isExpenseToggled;
+                    TipAmountEntry.IsVisible = !_isExpenseToggled;
+
+                    if (_isExpenseToggled)
+                    {
+                        LoadExpensesForVendorEvent((VendorEvents)VendorEventPicker.SelectedItem);
+                    }
+                    else
+                    {
+                        LoadTransactionsForVendorEvent((VendorEvents)VendorEventPicker.SelectedItem);
+                    }
+                
+            
         }
 
     }

@@ -62,7 +62,13 @@
   <ItemGroup>
     <MauiImage Include="Resources\Icons\datefiltericon.png" />
     <MauiImage Include="Resources\Icons\eventi.svg" BaseSize="40,62" />
-    <MauiImage Include="Resources\Icons\cashregister.svg" BaseSize="42,88"/>
+    <MauiImage Include="Resources\Icons\cashregister.svg" BaseSize="42,88" />
+	<MauiImage Include="Resources\Icons\summaryclipboard.svg" BaseSize="42,88" />
+	<MauiImage Include="Resources\Icons\addcash.svg" BaseSize="42,88" />
+	<MauiImage Include="Resources\Icons\minuscash.svg" BaseSize="64,64" />
+	<MauiImage Include="Resources\Icons\greycredit.svg" BaseSize="64,64" />
+	<MauiImage Include="Resources\Icons\colorcredit.svg" BaseSize="64,64" />
+	
   </ItemGroup>
 
   <ItemGroup>

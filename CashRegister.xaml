@@ -52,21 +52,37 @@
                         <!-- Sales/Expenses Switch -->
                         <VerticalStackLayout Spacing="5">
                             <Grid WidthRequest="90">  <!-- Set a width to ensure stability -->
-                                <Label x:Name="TransactionLabel" Text="Sales" HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                                <Label x:Name="TransactionLabel" Text="Sales" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
                             </Grid>
-                            <Switch x:Name="TransactionExpenseSwitch" Toggled="OnTransactionExpenseToggled" HorizontalOptions="Center" />
+                            <ImageButton x:Name="TransactionExpenseSwitch"
+                         Clicked="OnTransactionExpenseToggled"
+                         HorizontalOptions="Center"
+                         BackgroundColor="Transparent"
+                         InputTransparent="False" 
+                         WidthRequest="60"
+                         HeightRequest="60"
+                         Source="addcash.png" />    
                         </VerticalStackLayout>
 
                         <!-- Fee Estimate Switch -->
                         <VerticalStackLayout Spacing="5">
-                            <Label Text="Include Fee Estimates" x:Name="FeeEstimateSwitchLabel" TextColor="{DynamicResource TextColor}" HorizontalOptions="Center" />
-                            <Switch x:Name="FeeEstimateSwitch" Toggled="OnFeeEstimateToggled" HorizontalOptions="Center" />
+                          
+                            <Grid WidthRequest="90">
+                                <Label Text="Include Fee Estimates" x:Name="FeeEstimateSwitchLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                            </Grid>
+                            <ImageButton x:Name="FeeEstimateSwitch"
+                                         Clicked="OnFeeEstimateToggled"
+                                         HorizontalOptions="Center"
+                                         BackgroundColor="Transparent"
+                                         WidthRequest="60"
+                                         HeightRequest="60"
+                                            Source="greycredit.png" />
                         </VerticalStackLayout>
 
                         <!-- Tax Deductible Switch -->
                         <VerticalStackLayout Spacing="5">
-                            <Label Text="Tax Deductible" x:Name="TaxDeductibleLabel" HorizontalOptions="Center" IsVisible="{Binding Source={x:Reference TransactionExpenseSwitch}, Path=IsToggled}" />
-                            <Switch x:Name="TaxDeductibleSwitch" IsToggled="False" HorizontalOptions="Center" IsVisible="{Binding Source={x:Reference TransactionExpenseSwitch}, Path=IsToggled}" />
+                            <Label Text="Tax Deductible" x:Name="TaxDeductibleLabel" HorizontalOptions="Center" IsVisible="{Binding Source={x:Reference TransactionExpenseSwitch}}" />
+                            <Switch x:Name="TaxDeductibleSwitch" IsToggled="False" HorizontalOptions="Center" IsVisible="{Binding Source={x:Reference TransactionExpenseSwitch}}" />
                         </VerticalStackLayout>
                     </HorizontalStackLayout>
 

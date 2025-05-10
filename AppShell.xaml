@@ -17,7 +17,7 @@
             <ShellContent ContentTemplate="{DataTemplate local:CashRegister}"
                           Route="CashRegister" />
         </Tab>
-        <Tab Title="Summary">
+        <Tab Title="Summary" Icon="summaryclipboard.png">
             <ShellContent ContentTemplate="{DataTemplate local:FinanceBreakdown}"
                           Route="FinanceBreakdown" />
         </Tab>

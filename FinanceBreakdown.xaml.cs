@@ -195,7 +195,7 @@
                 }
 
                 OnPropertyChanged(nameof(DisplayedExpenses));
-                CalculateFinancials(); // 🔥 Recalculate Net Profit
+                CalculateFinancials(); // Recalculate Net Profit
             }
             catch (Exception ex)
             {
@@ -259,7 +259,12 @@
 
             return totalProcessingFees;
         }
-        
+        private void OnFeeEstimateClicked(object sender, EventArgs e)
+        {
+            IsFeeEstimateEnabled = !IsFeeEstimateEnabled;
+
+            
+        }
         public bool IsFeeEstimateEnabled
         {
             get => _isFeeEstimateEnabled;
@@ -269,6 +274,7 @@
                 {
                     _isFeeEstimateEnabled = value;
                     OnPropertyChanged(nameof(IsFeeEstimateEnabled));
+                    FeeEstimateSwitch.Source = value ? "colorcredit.png" : "greycredit.png";
                     UpdateProcessingFeeVisibility();
                     RefreshCommandAsync();
                 }
@@ -289,19 +295,6 @@
             OnPropertyChanged(nameof(DisplayedTransactions));
         }
         
-        private void OnFeeEstimateToggleChanged(object sender, ToggledEventArgs e)
-        {
-            bool isFeeEstimateEnabled = e.Value;
-
-            // Loop through transactions and update ProcessingFee
-            foreach (var transaction in DisplayedTransactions)
-            {
-                transaction.ProcessingFee = isFeeEstimateEnabled ? transaction.ProcessingFee : 0.00;
-            }
-
-            // Notify UI that transactions were updated
-            OnPropertyChanged(nameof(DisplayedTransactions));
-        }
 
         private void OnToggleDateFilterClicked(object sender, EventArgs e)
         {

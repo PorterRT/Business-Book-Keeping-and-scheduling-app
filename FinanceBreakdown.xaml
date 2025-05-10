@@ -5,11 +5,21 @@
     <RefreshView Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
     <ScrollView>
         <VerticalStackLayout Spacing="10" Padding="10">
-            
-            <Label Text="Include Fee Estimates" />
-            <Switch x:Name="FeeEstimateSwitch" 
-                    IsToggled="{Binding IsFeeEstimateEnabled, Mode=TwoWay}" />
-            <!-- Date Filter Toggle Button -->
+
+                <VerticalStackLayout Spacing="5">
+
+                    <Grid WidthRequest="90">
+                        <Label Text="Include Fee Estimates" x:Name="FeeEstimateSwitchLabel" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                    </Grid>
+                    <ImageButton x:Name="FeeEstimateSwitch"
+                 Clicked="OnFeeEstimateClicked"
+                 HorizontalOptions="Center"
+                 BackgroundColor="Transparent"
+                 WidthRequest="60"
+                 HeightRequest="60"
+                    Source="greycredit.png" />
+                </VerticalStackLayout>
+                <!-- Date Filter Toggle Button -->
             <Button x:Name="ToggleDateFilterButton"
                     ImageSource="datefiltericon.png"
                     Clicked="OnToggleDateFilterClicked"
