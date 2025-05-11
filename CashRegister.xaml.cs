@@ -176,7 +176,7 @@
             {
                 var transactions = await _transactionRepository.GetTransactionsByVendorEventAsync(vendorEvent.VendorEventId);
                 total = transactions.Sum(t => t.Amount + t.Tip);
-                if (FeeEstimateSwitch.Source.ToString().Contains("greycredit.png"))
+                if (FeeEstimateSwitch.Source.ToString().Contains("colorcredit.png"))
                 {
                     total -= transactions.Sum(t => t.ProcessingFee);
                 }

@@ -15,6 +15,8 @@ public class VendorEvents
     public string Address { get; set; }
     
     public DateTime EventDate { get; set; }
+
+    public DateTime EventEndDate {get; set;}
     
     public DateTime SetupTime { get; set; }
     

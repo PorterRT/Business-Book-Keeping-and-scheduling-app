@@ -198,6 +198,7 @@ namespace Vendor_App
                 "Event Details",
                 $"Name: {selectedEvent.Name}\n" +
                 $"Date: {selectedEvent.EventDate.ToShortDateString()}\n" +
+                $"End Date: {selectedEvent.EventEndDate.ToShortDateString()}\n" +
                 $"Address: {selectedEvent.Address}\n" +
                 $"Setup Time: {selectedEvent.SetupTime.ToShortTimeString()}\n" +
                 $"Start Time: {selectedEvent.StartTime.ToShortTimeString()}\n" +
@@ -265,7 +266,7 @@ namespace Vendor_App
                     // Call the platform-specific calendar service to add the event
                     await calendarService.AddEventToCalendar(
                         vendorEvent.Name, // Event title
-                        vendorEvent.StartTime, // Event start date/time
+                        vendorEvent.EventEndDate, // Event start date/time
                         vendorEvent.EndTime, // Event end date/time
                         vendorEvent.SetupTime, // Event setup time
                         vendorEvent.StartTime, // Event actual start time

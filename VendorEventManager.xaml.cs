@@ -45,6 +45,7 @@ namespace Vendor_App
             EventFeeEntry.Text = vendorEvent.Fee.ToString();
             EventAddressEntry.Text = vendorEvent.Address;
             VendorEventDatePicker.Date = vendorEvent.EventDate;
+            VendorEventEndDatePicker.Date = vendorEvent.EventEndDate;
             EventSetupTimePicker.Time = vendorEvent.SetupTime.TimeOfDay;
             EventStartTimePicker.Time = vendorEvent.StartTime.TimeOfDay;
             EventEndTimePicker.Time = vendorEvent.EndTime.TimeOfDay;
@@ -72,6 +73,7 @@ namespace Vendor_App
                     _currentVendorEvent.Fee = fee;
                     _currentVendorEvent.Address = EventAddressEntry.Text;
                     _currentVendorEvent.EventDate = VendorEventDatePicker.Date;
+                    _currentVendorEvent.EventEndDate = VendorEventEndDatePicker.Date;
                     _currentVendorEvent.SetupTime = VendorEventDatePicker.Date.Add(EventSetupTimePicker.Time);
                     _currentVendorEvent.StartTime = VendorEventDatePicker.Date.Add(EventStartTimePicker.Time);
                     _currentVendorEvent.EndTime = VendorEventDatePicker.Date.Add(EventEndTimePicker.Time);
@@ -106,6 +108,7 @@ namespace Vendor_App
             EventFeeEntry.Text = "";
             EventAddressEntry.Text = "";
             VendorEventDatePicker.Date = DateTime.Today;
+            VendorEventEndDatePicker.Date = DateTime.Today;
             EventSetupTimePicker.Time = TimeSpan.Zero;
             EventStartTimePicker.Time = TimeSpan.Zero;
             EventEndTimePicker.Time = TimeSpan.Zero;

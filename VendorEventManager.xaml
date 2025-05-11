@@ -22,6 +22,14 @@
                         <DatePicker x:Name="VendorEventDatePicker" DateSelected="OnDateSelected"/>
                     </VerticalStackLayout>
                 </Frame>
+                
+                <!--End Date Picker-->
+                <Frame CornerRadius="10" BorderColor="LightGray">
+                    <VerticalStackLayout Spacing="5" Padding="10">
+                        <Label Text="Event End Date" FontSize="Medium"/>
+                        <DatePicker x:Name="VendorEventEndDatePicker" DateSelected="OnDateSelected"/>
+                    </VerticalStackLayout>
+                </Frame>
 
                 <!--Set Up Time-->
                 <Frame CornerRadius="10" BorderColor="LightGray">
