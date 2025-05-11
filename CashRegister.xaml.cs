@@ -574,7 +574,7 @@
         private void OnTransactionExpenseToggled(object sender, EventArgs e)
         {
             _isExpenseToggled = !_isExpenseToggled; // Toggle the state
-         
+            
 
 
             TransactionExpenseSwitch.Source = _isExpenseToggled ? "minuscash.png" : "addcash.png";
@@ -593,6 +593,7 @@
                     FeeEstimateSwitchLabel.IsVisible = !_isExpenseToggled;
                     TipEntryLabel.IsVisible = !_isExpenseToggled;
                     TipAmountEntry.IsVisible = !_isExpenseToggled;
+                    
 
                     if (_isExpenseToggled)
                     {

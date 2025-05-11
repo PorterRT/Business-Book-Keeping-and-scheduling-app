@@ -11,7 +11,7 @@ using Android.Media;
 #if IOS
 using UIKit;
 using Foundation;
-using Microsoft.Maui.Essentials; // For FileSystem
+using Microsoft.Maui; // For FileSystem
 #endif
 using Microsoft.Maui.Storage;
 
@@ -114,7 +114,7 @@ namespace Vendor_App.Utillites
                     File.WriteAllText(tempPath, csvBuilder.ToString());
 
                     var url = NSUrl.FromFilename(tempPath);
-                    var activityItems = NSArray.FromNSObject(url);
+                    var activityItems = new NSObject[] { url };
                     var avc = new UIActivityViewController(activityItems, null);
 
                     var window = GetKeyWindow();
