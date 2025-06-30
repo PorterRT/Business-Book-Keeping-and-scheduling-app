@@ -77,6 +77,12 @@
     </Compile>
   </ItemGroup>
 
-  
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+    <CreatePackage>true</CreatePackage>
+    <CodesignKey>Apple Distribution: Porter Runyon-Trapp (VM52T7FWW3)</CodesignKey>
+    <CodesignProvision>ConVend TestFlight Profile</CodesignProvision>
+    <CodesignEntitlements>Platforms/iOS/Entitlements.plist</CodesignEntitlements>
+  </PropertyGroup>
+
 
 </Project>
