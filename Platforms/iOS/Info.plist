@@ -32,7 +32,7 @@
 	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>We need access to your calendar to save events.</string>
-	<key>CFBundleName</key>
+	<key>CFBundleIdentifierName</key> <string>com.porterrunyontrapp.ConVend</string> <key>CFBundleDisplayName</key>
 	<string>ConVend</string>
 	<key>CFBundleDisplayName</key>
 	<string>ConVend</string>
