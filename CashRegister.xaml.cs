@@ -603,8 +603,7 @@
                     {
                         LoadTransactionsForVendorEvent((VendorEvents)VendorEventPicker.SelectedItem);
                     }
-                
-            
+                            
         }
 
     }
