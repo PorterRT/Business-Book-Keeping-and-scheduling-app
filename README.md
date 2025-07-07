@@ -7,8 +7,8 @@
    - [.NET MAUI Installation](#installing-net-maui)  
    - [Rinse And Repeat](#rinse-and-repeat)  
    - [GPU Optimization](#gpu-acceleration-setup)  
-   - [Android Emulator Setup](#android-emulator-setup)
-   - [TroubleShoot](#troubleshoot)  
+   - [Android Emulator Setup](#installing-the-emulator)
+   - [TroubleShoot](#troubleshooting)  
 # Vendor Management App
 This app was built to help convention and festival vendors (who tend to be small business owners) keep track of their sales, profit, expenses, and schedule for events. It was also built to help people by having all of their vendor needs tracked within one place on their phone or tablet.
 
