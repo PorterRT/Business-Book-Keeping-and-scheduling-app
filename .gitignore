@@ -13,3 +13,6 @@
 # Ignore .tmp files and .bak
 *.tmp
 *.bak
+
+# Ignore vscode folder
+.vscode/

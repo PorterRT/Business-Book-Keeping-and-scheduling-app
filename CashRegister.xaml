@@ -27,7 +27,10 @@
                                         VerticalOptions="Center" /> <!-- Somewhere DynamicResource TextColor is getting a variable that is making the words white -->
                         </VerticalStackLayout>
                     </Frame>
-                    <!-- End of possible issue -->
+                    <!-- 
+                        - Some Variable that is type ResourceDictionary aka IDictionary is being created and being consumed because if that was not the case 
+                        - Then "DynamicResource" would not exist 
+                     -->
 
                     <!-- Events Picker for selecting a Vendor Event -->
                     <Frame Padding="5"
