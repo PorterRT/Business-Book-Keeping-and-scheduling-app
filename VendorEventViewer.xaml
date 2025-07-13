@@ -1,6 +1,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:Vendor_App"
+             BackgroundColor="{DynamicResource BackgroundColor}"
              x:Class="Vendor_App.VendorEventViewer"
              Title="Events">
     <Grid>
@@ -8,8 +9,8 @@
         <StackLayout Padding="10">
             <SearchBar
                 Placeholder="Search Events"
-                BackgroundColor="White"
-                TextColor="Black"
+                BackgroundColor="{DynamicResource FrameBackgroundColor}"
+                TextColor="{DynamicResource TextColor}"
                 TextChanged="OnSearchTextChanged"
                 SearchButtonPressed="OnEventSearchButtonPressed"
                 x:Name="EventSearch" />

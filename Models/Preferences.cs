@@ -27,7 +27,7 @@ namespace Vendor_App.Models
         [PrimaryKey, AutoIncrement]
         public int PreferenceId { get; set; } // Unique identifier for the preference in the database
         public bool IsPreferenceDataSame { get; set; }
-        private ICollection<ResourceDictionary> PreferenceData { get; set; } // This should store the preference data
+        private SortedDictionary<string, object> PreferenceData { get; set; } // This should store the preference data
 
 
     }

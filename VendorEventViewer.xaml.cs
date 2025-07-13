@@ -40,6 +40,7 @@ namespace Vendor_App
         public VendorEventViewer()
         {
             InitializeComponent();
+            var preference = new Preferences.Preferences(); // This class inherits from ResourceDictionary
             RefreshCommand = new Command(async () => await RefreshCommandAsync());
             this.BindingContext = this;
             
