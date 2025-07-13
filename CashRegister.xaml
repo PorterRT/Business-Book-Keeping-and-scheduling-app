@@ -15,8 +15,8 @@
                     <Frame Padding="5"
                            CornerRadius="10"
                            BorderColor="#502BD4"
-                           BackgroundColor="White"
-                           Margin="0,10,0,10"> <!-- BackGroundColor=White could be the reason why the text box is white -->
+                           BackgroundColor="{DynamicResource FrameBackgroundColor}"
+                           Margin="0,10,0,10"> 
                         <VerticalStackLayout Spacing="5">
                             <!-- DatePicker centered horizontally -->
                             <DatePicker x:Name="TransactionDatePicker"
@@ -36,7 +36,7 @@
                     <Frame Padding="5"
                            CornerRadius="10"
                            BorderColor="#502BD4"
-                           BackgroundColor="White"
+                           BackgroundColor="{DynamicResource FrameBackgroundColor}"
                            Margin="0,10,0,10">
                         <VerticalStackLayout Spacing="5"
                                              VerticalOptions="Center"

@@ -1,5 +1,6 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             BackgroundColor="{DynamicResource BackgroundColor}"
              x:Class="Vendor_App.FinanceBreakdown"
              Title="Summary">
     <RefreshView Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}">
@@ -181,7 +182,7 @@
                 </ListView.ItemTemplate>
             </ListView>
           <!-- Financial Totals -->
-    <Frame Padding="15" BackgroundColor="White" CornerRadius="10" BorderColor="LightGray" Margin="0,10,0,10">
+    <Frame Padding="15" BackgroundColor="{DynamicResource FrameBackgroundColor}" CornerRadius="10" BorderColor="LightGray" Margin="0,10,0,10">
         <Grid RowSpacing="10" ColumnSpacing="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

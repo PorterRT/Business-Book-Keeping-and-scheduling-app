@@ -40,6 +40,7 @@
         public CashRegister()
         {
             InitializeComponent();
+            var preference = new Preferences.Preferences(); // This class inherits from ResourceDictionary
 
             var databaseConnection = new DatabaseConnection();
 

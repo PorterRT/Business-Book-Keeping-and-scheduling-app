@@ -188,7 +188,7 @@ hw.gltransport=pipe
 ## Launch the Program
 
 ```bash
-dotnet build -f net8.0-android -t:Run -p:AndroidSdkDirectory=$HOME/Android/Sdk -p:AndroidDevice=-d
+dotnet build "Vendor App.csproj" -f net8.0-android -t:Run -p:AndroidSdkDirectory=$HOME/Android/Sdk -p:AndroidDevice=-d
 ```
 
 ## TroubleShooting
