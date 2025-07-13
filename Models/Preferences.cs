@@ -22,7 +22,7 @@ namespace Vendor_App.Models
     /// the previous theme before applying a new one, preventing any resource conflicts
     /// or visual artifacts between theme changes.
     /// </remarks>
-    public class Preference
+    public class Preferences
     {
         [PrimaryKey, AutoIncrement]
         public int PreferenceId { get; set; } // Unique identifier for the preference in the database
