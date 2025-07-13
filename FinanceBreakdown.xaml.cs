@@ -53,6 +53,7 @@
         public FinanceBreakdown()
         {
             InitializeComponent();
+            var preference = new Preferences.Preferences(); // This class inherits from ResourceDictionary
 
             // Initialize repositories
             var databaseConnection = new DatabaseConnection();

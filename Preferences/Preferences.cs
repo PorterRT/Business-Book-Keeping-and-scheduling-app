@@ -7,13 +7,22 @@ namespace Vendor_App.Preferences {
     // Wherever InitializeComponent() is called, we need to call in a couple functions to update and modify the theme 
     internal class Preferences : ResourceDictionary, IPreference
     {
-        // Class that will check and update the private property in IPreference
-        /*public Preferences(ICollection<ResourceDictionary> userPref) {
-
-        }*/
         public Preferences() {
             // Initialize with default color
-            this["TextColor"] = Colors.White; // Default color
+            // Check if BackgroundColor="{DynamicResource BackgroundColor}" is black or white
+            // if black then 
+            if (Application.Current.Resources.TryGetValue("BackgroundColor", out object bgColorObj)) {
+                if (bgColorObj is Color currentBgColor) {
+                    if (currentBgColor == Colors.Black) {
+                        this["TextColor"] = Colors.White;
+                        this["FrameBackgroundColor"] = Colors.Black; // Set default to Black
+                    }
+                    else {
+                        //this["TextColor"] = Colors.White;
+                        this["FrameBackgroundColor"] = Colors.White; // Set default to Black
+                    }
+                }
+            }
 
         }
         // Implement IPreference methods

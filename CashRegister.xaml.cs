@@ -40,9 +40,7 @@
         public CashRegister()
         {
             InitializeComponent();
-            // TODO: From here change the text color to red getting the ResourceDictionary
             var preference = new Preferences.Preferences(); // This class inherits from ResourceDictionary
-            preference.SetTextColor(Colors.Red);
 
             var databaseConnection = new DatabaseConnection();
 
