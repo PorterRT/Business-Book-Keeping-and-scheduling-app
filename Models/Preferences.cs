@@ -29,5 +29,6 @@ namespace Vendor_App.Models
         public bool IsPreferenceDataSame { get; set; }
         private ICollection<ResourceDictionary> PreferenceData { get; set; } // This should store the preference data
 
+
     }
 }

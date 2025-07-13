@@ -42,6 +42,7 @@ namespace Vendor_App
             InitializeComponent();
             RefreshCommand = new Command(async () => await RefreshCommandAsync());
             this.BindingContext = this;
+            
 
             try
             {
@@ -70,36 +71,34 @@ namespace Vendor_App
                 DisplayAlert("Error", $"Failed to initialize: {ex.Message}", "OK");
             }
         }
-        
-        private async void OnSearchTextChanged(object sender, EventArgs e)
+
+        private async Task PerformSearchAsync(string searchText)
         {
-            try
+            if (!string.IsNullOrEmpty(searchText))
             {
-                // Get the search text
-                string searchText = EventSearch.Text?.Trim();
+                var filteredEvents = await _vendorEventRepository.GetVendorEventByNameSearchAsync(searchText);
 
-                if (!string.IsNullOrEmpty(searchText))
+                Events.Clear();
+                foreach (var vendorEvent in filteredEvents)
                 {
-                    // Use the repository to filter events
-                    var filteredEvents = await _vendorEventRepository.GetVendorEventByNameSearchAsync(searchText);
-
-                    // Update the observable collection
-                    Events.Clear();
-                    foreach (var vendorEvent in filteredEvents)
-                    {
-                        Events.Add(vendorEvent);
-                    }
-                }
-                else
-                {
-                    // If search text is empty, load all events
-                    await LoadAllVendorEventsAsync();
+                    Events.Add(vendorEvent);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                await DisplayAlert("Error", $"Failed to search events: {ex.Message}", "OK");
+                await LoadAllVendorEventsAsync();
             }
+        }
+
+        private async void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+        {
+            await PerformSearchAsync(e.NewTextValue);
+        }
+
+        private async void OnEventSearchButtonPressed(object sender, EventArgs e)
+        {
+            await PerformSearchAsync(EventSearch.Text);
+            EventSearch.Unfocus();
         }
 
 

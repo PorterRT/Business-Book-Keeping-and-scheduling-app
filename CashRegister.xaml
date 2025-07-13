@@ -112,11 +112,11 @@
 
                     <!-- Label for entering amount -->
                     <Label Text="Enter Amount: " TextColor="{DynamicResource TextColor}"/>
-                    <Entry x:Name="AmountEntry" Keyboard="Numeric" Placeholder="0.00" />
+                    <Entry x:Name="AmountEntry" Keyboard="Numeric" Placeholder="0.00" ReturnType="Next"/>
 
                     <!-- Tip amount entry and label -->
                     <Label Text="Enter Tip Amount: " TextColor="{DynamicResource TextColor}" x:Name="TipEntryLabel" IsVisible="True"/>
-                    <Entry x:Name="TipAmountEntry" Keyboard="Numeric" Placeholder="0.00" IsVisible="True"/>
+                    <Entry x:Name="TipAmountEntry" Keyboard="Numeric" Placeholder="0.00" IsVisible="True" ReturnType="Next"/>
 
                     <!-- Payment Type Picker -->
                     <Label Text="Select Payment Type: " x:Name="PaymentTypeLabel" IsVisible="True" />
@@ -135,7 +135,7 @@
 
                     <!-- Expense Label Entry -->
                     <Label Text="Expense Label:" x:Name="UserExpenseLabel" IsVisible="False"/>
-                    <Entry x:Name="ExpenseLabelEntry" Placeholder="Enter expense label" IsVisible="False" />
+                    <Entry x:Name="ExpenseLabelEntry" Placeholder="Enter expense label" IsVisible="False" ReturnType="Next"/>
 
                     <!-- List of Transactions -->
                     <Label Text="Transactions" x:Name="TransactionListLabel" FontSize="Medium" Margin="10,0,0,10" IsVisible="True"/>
