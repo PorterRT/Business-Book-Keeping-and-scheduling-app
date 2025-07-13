@@ -11,7 +11,7 @@
                 <Frame CornerRadius="10" BorderColor="LightGray">
                     <VerticalStackLayout Spacing="5" Padding="10">
                         <Label Text="Event Name" FontSize="Medium"/>
-                        <Entry x:Name="EventNameEntry" Placeholder="Enter Event Name" Keyboard="Default"/>
+                        <Entry x:Name="EventNameEntry" Placeholder="Enter Event Name" Keyboard="Default" ReturnType="Next"/>
                     </VerticalStackLayout>
                 </Frame>
 
@@ -19,7 +19,7 @@
                 <Frame CornerRadius="10" BorderColor="LightGray">
                     <VerticalStackLayout Spacing="5" Padding="10">
                         <Label Text="Event Date" FontSize="Medium"/>
-                        <DatePicker x:Name="VendorEventDatePicker" DateSelected="OnDateSelected"/>
+                        <DatePicker x:Name="VendorEventDatePicker" DateSelected="OnDateSelected" />
                     </VerticalStackLayout>
                 </Frame>
                 
@@ -43,7 +43,7 @@
                 <Frame CornerRadius="10" BorderColor="LightGray">
                     <VerticalStackLayout Spacing="5" Padding="10">
                         <Label Text="Event Address" FontSize="Medium"/>
-                        <Entry x:Name="EventAddressEntry" Placeholder="Enter Event Address" Keyboard="Default"/>
+                        <Entry x:Name="EventAddressEntry" Placeholder="Enter Event Address" Keyboard="Default" ReturnType="Next"/>
                     </VerticalStackLayout>
                 </Frame>
 
@@ -67,7 +67,7 @@
                 <Frame CornerRadius="10" BorderColor="LightGray">
                     <VerticalStackLayout Spacing="5" Padding="10">
                         <Label Text="Event Fee" FontSize="Medium"/>
-                        <Entry x:Name="EventFeeEntry" Placeholder="0.00" Keyboard="Numeric"/>
+                        <Entry x:Name="EventFeeEntry" Placeholder="0.00" Keyboard="Numeric" ReturnType="Next"/>
                     </VerticalStackLayout>
                 </Frame>
 
@@ -91,7 +91,7 @@
                 <Frame CornerRadius="10" BorderColor="LightGray">
                     <VerticalStackLayout Spacing="5" Padding="10">
                         <Label Text="Email Contact" FontSize="Medium"/>
-                        <Entry x:Name="EventEmailContact" Placeholder="Email" Keyboard="Email"/>
+                        <Entry x:Name="EventEmailContact" Placeholder="Email" Keyboard="Email" ReturnType="Next"/>
                     </VerticalStackLayout>
                 </Frame>
 
@@ -99,7 +99,7 @@
                 <Frame CornerRadius="10" BorderColor="LightGray">
                     <VerticalStackLayout Spacing="5" Padding="10">
                         <Label Text="Phone Number Contact" FontSize="Medium"/>
-                        <Entry x:Name="EventPhoneContact" Placeholder="000-000-0000" Keyboard="Telephone"/>
+                        <Entry x:Name="EventPhoneContact" Placeholder="000-000-0000" Keyboard="Telephone" ReturnType="Next"/>
                     </VerticalStackLayout>
                 </Frame>
 
@@ -107,7 +107,7 @@
                 <Frame CornerRadius="10" BorderColor="LightGray">
                     <VerticalStackLayout Spacing="5" Padding="10">
                         <Label Text="Description" FontSize="Medium"/>
-                        <Entry x:Name="EventDescription" Placeholder="Description" Keyboard="Text"/>
+                        <Entry x:Name="EventDescription" Placeholder="Description" Keyboard="Text" ReturnType="Done"/>
                     </VerticalStackLayout>
                 </Frame>
 

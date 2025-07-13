@@ -11,6 +11,7 @@
                 BackgroundColor="White"
                 TextColor="Black"
                 TextChanged="OnSearchTextChanged"
+                SearchButtonPressed="OnEventSearchButtonPressed"
                 x:Name="EventSearch" />
 
             <!-- Date Filter Toggle Button -->
