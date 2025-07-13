@@ -24,19 +24,19 @@ namespace Vendor_App.Preferences {
 
         }
         // Implement IPreference methods
-        public Task SavePreferenceAsync(Preference pref)
+        public Task SavePreferenceAsync(Models.Preferences pref)
         {
             // Implementation here
             throw new System.NotImplementedException();
         }
 
-        public Task UpdatePreferenceAsync(Preference pref)
+        public Task UpdatePreferenceAsync(Models.Preferences pref)
         {
             // Implementation here
             throw new System.NotImplementedException();
         }
 
-        public Task DeletePreferenceAsync(Preference pref)
+        public Task DeletePreferenceAsync(Models.Preferences pref)
         {
             // Implementation here
             throw new System.NotImplementedException();
