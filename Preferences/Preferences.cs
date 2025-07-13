@@ -10,7 +10,6 @@ namespace Vendor_App.Preferences {
         public Preferences() {
             // Initialize with default color
             // Check if BackgroundColor="{DynamicResource BackgroundColor}" is black or white
-            // if black then 
             if (Application.Current.Resources.TryGetValue("BackgroundColor", out object bgColorObj)) {
                 if (bgColorObj is Color currentBgColor) {
                     if (currentBgColor == Colors.Black) {
@@ -18,7 +17,6 @@ namespace Vendor_App.Preferences {
                         this["FrameBackgroundColor"] = Colors.Black; // Set default to Black
                     }
                     else {
-                        //this["TextColor"] = Colors.White;
                         this["FrameBackgroundColor"] = Colors.White; // Set default to Black
                     }
                 }
