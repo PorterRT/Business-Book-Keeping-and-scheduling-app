@@ -9,8 +9,6 @@ namespace Vendor_App
 {
     public partial class VendorEventManager : ContentPage
     {
-        private Entry _currentFocusedEntry;
-
         private readonly IVendorEventRepository _vendorEventRepository;
 
         // Declare a field to store the current event being edited or added.
@@ -119,73 +117,6 @@ namespace Vendor_App
         }
 
         // Event handler for time picker changes.
-        
-        private void OnNumericEntryFocused(object sender, FocusEventArgs e)
-        {
-            _currentFocusedEntry = sender as Entry;
-            EventFeeDoneButton.IsVisible = true;
-            GlobalDoneButton.IsVisible = true;
-        }
-
-        // Handle phone entry focus (Phone Contact)
-        private void OnPhoneEntryFocused(object sender, FocusEventArgs e)
-        {
-            _currentFocusedEntry = sender as Entry;
-            EventPhoneDoneButton.IsVisible = true;
-            GlobalDoneButton.IsVisible = true;
-        }
-
-        // Handle entry unfocus
-        private void OnEntryUnfocused(object sender, FocusEventArgs e)
-        {
-            HideAllDoneButtons();
-            _currentFocusedEntry = null;
-        }
-
-        // Handle individual Done button clicks
-        private void OnDoneClicked(object sender, EventArgs e)
-        {
-            if (_currentFocusedEntry != null)
-            {
-                _currentFocusedEntry.Unfocus();
-            }
-            HideAllDoneButtons();
-        }
-
-        // Handle global Done button click
-        private void OnGlobalDoneClicked(object sender, EventArgs e)
-        {
-            DismissAllKeyboards();
-            HideAllDoneButtons();
-        }
-
-        // Handle background tap (existing method - you may already have this)
-        private void OnBackgroundTapped(object sender, EventArgs e)
-        {
-            DismissAllKeyboards();
-            HideAllDoneButtons();
-        }
-
-        // Helper method to hide all done buttons
-        private void HideAllDoneButtons()
-        {
-            EventFeeDoneButton.IsVisible = false;
-            EventPhoneDoneButton.IsVisible = false;
-            GlobalDoneButton.IsVisible = false;
-        }
-
-        // Helper method to dismiss all keyboards
-        private void DismissAllKeyboards()
-        {
-            // Unfocus all entries
-            EventNameEntry.Unfocus();
-            EventAddressEntry.Unfocus();
-            EventFeeEntry.Unfocus();
-            EventEmailContact.Unfocus();
-            EventPhoneContact.Unfocus();
-            EventDescription.Unfocus();
-        }
-
         private void TimePicker_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(TimePicker.Time))
