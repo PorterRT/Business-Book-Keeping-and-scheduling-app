@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Handlers;
-using UIKit;
 namespace Vendor_App
 {
     public static class MauiProgram
@@ -21,6 +20,7 @@ namespace Vendor_App
 #endif
             
 #if IOS
+            using UIKit;
             builder.Services.AddSingleton<ICalendarService, CalendarService>();
             SearchBarHandler.Mapper.AppendToMapping(nameof(SearchBar.BackgroundColor), (handler, view) =>
             {
