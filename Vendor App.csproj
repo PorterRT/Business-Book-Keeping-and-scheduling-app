@@ -80,6 +80,7 @@
     <Compile Update="CashRegister.xaml.cs">
       <DependentUpon>CashRegister.xaml</DependentUpon>
     </Compile>
+    <Compile Remove="Platforms\iOS\EntryHandler.cs" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">

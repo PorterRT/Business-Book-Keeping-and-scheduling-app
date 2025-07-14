@@ -63,11 +63,33 @@
                     </VerticalStackLayout>
                 </Frame>
 
-                <!--Event Fee-->
+                <!--Event Fee - MODIFIED with Done Button-->
                 <Frame CornerRadius="10" BorderColor="LightGray">
                     <VerticalStackLayout Spacing="5" Padding="10">
                         <Label Text="Event Fee" FontSize="Medium"/>
-                        <Entry x:Name="EventFeeEntry" Placeholder="0.00" Keyboard="Numeric" ReturnType="Next"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="80" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <Entry x:Name="EventFeeEntry" 
+                                   Grid.Column="0"
+                                   Placeholder="0.00" 
+                                   Keyboard="Numeric" 
+                                   ReturnType="Next"
+                                   Focused="OnNumericEntryFocused"
+                                   Unfocused="OnEntryUnfocused"/>
+                            
+                            <Button x:Name="EventFeeDoneButton"
+                                    Grid.Column="1"
+                                    Text="Done"
+                                    BackgroundColor="#6750A4"
+                                    TextColor="White"
+                                    FontSize="12"
+                                    IsVisible="False"
+                                    Clicked="OnDoneClicked" />
+                        </Grid>
                     </VerticalStackLayout>
                 </Frame>
 
@@ -95,15 +117,37 @@
                     </VerticalStackLayout>
                 </Frame>
 
-                <!--Phone Number Contact -->
+                <!--Phone Number Contact - MODIFIED with Done Button-->
                 <Frame CornerRadius="10" BorderColor="LightGray">
                     <VerticalStackLayout Spacing="5" Padding="10">
                         <Label Text="Phone Number Contact" FontSize="Medium"/>
-                        <Entry x:Name="EventPhoneContact" Placeholder="000-000-0000" Keyboard="Telephone" ReturnType="Next"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="80" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <Entry x:Name="EventPhoneContact" 
+                                   Grid.Column="0"
+                                   Placeholder="000-000-0000" 
+                                   Keyboard="Telephone" 
+                                   ReturnType="Next"
+                                   Focused="OnPhoneEntryFocused"
+                                   Unfocused="OnEntryUnfocused"/>
+                            
+                            <Button x:Name="EventPhoneDoneButton"
+                                    Grid.Column="1"
+                                    Text="Done"
+                                    BackgroundColor="#6750A4"
+                                    TextColor="White"
+                                    FontSize="12"
+                                    IsVisible="False"
+                                    Clicked="OnDoneClicked" />
+                        </Grid>
                     </VerticalStackLayout>
                 </Frame>
 
-                <!--Desciption -->
+                <!--Description -->
                 <Frame CornerRadius="10" BorderColor="LightGray">
                     <VerticalStackLayout Spacing="5" Padding="10">
                         <Label Text="Description" FontSize="Medium"/>
@@ -111,6 +155,14 @@
                     </VerticalStackLayout>
                 </Frame>
 
+                <!-- Global Done Button (appears when any problematic entry is focused) -->
+                <Button x:Name="GlobalDoneButton"
+                        Text="✓ Done"
+                        BackgroundColor="#6750A4"
+                        TextColor="White"
+                        FontSize="16"
+                        IsVisible="False"
+                        Clicked="OnGlobalDoneClicked" />
 
                 <!--Save Button-->
                 <Button 
@@ -131,5 +183,7 @@
             </VerticalStackLayout>
             
         </ScrollView>
+        
     </ContentPage.Content>
+    
 </ContentPage>

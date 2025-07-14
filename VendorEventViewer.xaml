@@ -9,7 +9,7 @@
         <StackLayout Padding="10">
             <SearchBar
                 Placeholder="Search Events"
-                BackgroundColor="{DynamicResource FrameBackGroundColor}"
+                BackgroundColor="{DynamicResource FrameBackgroundColor}"
                 TextColor="{DynamicResource TextColor}"
                 TextChanged="OnSearchTextChanged"
                 SearchButtonPressed="OnEventSearchButtonPressed"
