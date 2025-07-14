@@ -12,6 +12,7 @@
                 BackgroundColor="{DynamicResource FrameBackgroundColor}"
                 TextColor="{DynamicResource TextColor}"
                 TextChanged="OnSearchTextChanged"
+                Keyboard="Default"
                 SearchButtonPressed="OnEventSearchButtonPressed"
                 x:Name="EventSearch" />
 
